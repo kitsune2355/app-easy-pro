@@ -1,6 +1,25 @@
 import React, { createContext, useContext, useState } from "react";
-import { DefaultTheme as NavigationDefaultTheme } from "@react-navigation/native";
 import { extendTheme, NativeBaseProvider } from "native-base";
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_500Medium,
+  Roboto_700Bold,
+} from "@expo-google-fonts/roboto";
+
+const fontConfig = {
+  Roboto: {
+    400: { normal: "Roboto_400Regular" },
+    500: { normal: "Roboto_500Medium" },
+    700: { normal: "Roboto_700Bold" },
+  },
+};
+
+const fonts = {
+  heading: "Roboto",
+  body: "Roboto",
+  mono: "Roboto",
+};
 
 // สร้างธีมของ NativeBase
 const lightTheme = extendTheme({
@@ -10,6 +29,8 @@ const lightTheme = extendTheme({
     card: "#ffffff",
     text: "#333333",
   },
+  fontConfig: fontConfig,
+  fonts: fonts,
 });
 
 const darkTheme = extendTheme({
@@ -19,6 +40,8 @@ const darkTheme = extendTheme({
     card: "#000000",
     text: "#ffffff",
   },
+  fontConfig: fontConfig,
+  fonts: fonts,
 });
 
 // Context
@@ -31,7 +54,17 @@ export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
   const toggleTheme = () => setIsDark(!isDark);
 
+  const [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
+  });
+
   const colorTheme = isDark ? darkTheme : lightTheme;
+
+  if (!fontsLoaded) {
+    return null; // or a loading component
+  }
 
   return (
     <ThemeContext.Provider value={{ colorTheme, toggleTheme }}>

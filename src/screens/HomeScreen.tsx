@@ -1,12 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { useTheme } from "@react-navigation/native";
+import { VStack, Text } from "native-base";
+import React from "react";
 
-const HomeScreen:React.FC = () => {
+const HomeScreen: React.FC = () => {
+  const { colors } = useTheme();
   return (
-    <View>
-      <Text>HomeScreen</Text>
-    </View>
-  )
-}
+    <VStack p="8">
+      <Text color={colors.card}>ภาพรวมงานซ่อม</Text>
+    </VStack>
+  );
+};
 
-export default HomeScreen
+export default HomeScreen;

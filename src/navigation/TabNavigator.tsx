@@ -9,10 +9,12 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator: React.FC = () => {
   const { colors } = useTheme();
+  
   return (
     <Tab.Navigator
+      {...({ id: "TabNavigator" } as any)}
       screenOptions={{
-        header: () => <AppBarHeader/>,
+        header: () => <AppBarHeader />,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: colors.card,
@@ -40,4 +42,5 @@ const TabNavigator: React.FC = () => {
     </Tab.Navigator>
   );
 };
+
 export default TabNavigator;

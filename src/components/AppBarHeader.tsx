@@ -1,11 +1,14 @@
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { VStack, Text, HStack, IconButton, Avatar } from "native-base";
 import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
+type AppBarHeaderNavigationProp = DrawerNavigationProp<any>;
+
 const AppBarHeader: React.FC = () => {
   const { colors } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppBarHeaderNavigationProp>();
 
   return (
     <VStack
