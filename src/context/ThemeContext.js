@@ -2,32 +2,33 @@ import React, { createContext, useContext, useState } from "react";
 import { extendTheme, NativeBaseProvider } from "native-base";
 import {
   useFonts,
-  Roboto_400Regular,
-  Roboto_500Medium,
-  Roboto_700Bold,
-} from "@expo-google-fonts/roboto";
+  Prompt_400Regular,
+  Prompt_500Medium,
+  Prompt_700Bold,
+} from "@expo-google-fonts/prompt";
 
 const fontConfig = {
-  Roboto: {
-    400: { normal: "Roboto_400Regular" },
-    500: { normal: "Roboto_500Medium" },
-    700: { normal: "Roboto_700Bold" },
+  Prompt: {
+    400: { normal: "Prompt_400Regular" },
+    500: { normal: "Prompt_500Medium" },
+    700: { normal: "Prompt_700Bold" },
   },
 };
 
 const fonts = {
-  heading: "Roboto",
-  body: "Roboto",
-  mono: "Roboto",
+  heading: "Prompt",
+  body: "Prompt",
+  mono: "Prompt",
 };
 
 // สร้างธีมของ NativeBase
 const lightTheme = extendTheme({
   colors: {
     primary: "#006B9F",
-    background: "#006B9F",
+    background: "#f0f0fc",
     card: "#ffffff",
     text: "#333333",
+    border: "#e0e0e0",
   },
   fontConfig: fontConfig,
   fonts: fonts,
@@ -39,6 +40,7 @@ const darkTheme = extendTheme({
     background: "#000000",
     card: "#000000",
     text: "#ffffff",
+    border: "#333333",
   },
   fontConfig: fontConfig,
   fonts: fonts,
@@ -55,9 +57,9 @@ export const ThemeProvider = ({ children }) => {
   const toggleTheme = () => setIsDark(!isDark);
 
   const [fontsLoaded] = useFonts({
-    Roboto_400Regular,
-    Roboto_500Medium,
-    Roboto_700Bold,
+    Prompt_400Regular,
+    Prompt_500Medium,
+    Prompt_700Bold,
   });
 
   const colorTheme = isDark ? darkTheme : lightTheme;
