@@ -4,7 +4,7 @@ import { tabRoutes } from '../config/tabs';
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator:React.FC = () => {
+const TabNavigator: React.FC = () => {
   return (
     <Tab.Navigator>
       {tabRoutes.map((route) => (
@@ -16,7 +16,7 @@ const TabNavigator:React.FC = () => {
         />
       ))}
     </Tab.Navigator>
-  )
-}
+  );
+};
 
-export default TabNavigator
+export default TabNavigator;
