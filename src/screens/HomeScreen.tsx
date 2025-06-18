@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   VStack,
   Text,
@@ -11,10 +11,25 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
-import { gradientcolorTheme, processItem, statusAll } from "../constant/ConstantItem";
+import {
+  gradientcolorTheme,
+  processItem,
+  statusAll,
+} from "../constant/ConstantItem";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchRepairs } from "../service/repairService";
+import { AppDispatch } from "../store";
 
 const HomeScreen: React.FC = () => {
   const { colorTheme } = useTheme();
+  const dispatch = useDispatch<AppDispatch>();
+  const { repairs, loading, error } = useSelector((state: any) => state.repair);
+
+  console.log('repairs', repairs)
+
+  useEffect(() => {
+    dispatch(fetchRepairs());
+  }, [dispatch]);
 
   const renderDashboardItem = () => (
     <>
@@ -92,54 +107,73 @@ const HomeScreen: React.FC = () => {
 
   const renderActivityAll = () => {
     return (
-      <Box bg={colorTheme.colors.card} rounded="2xl" shadow={2} p="4">
-        <HStack alignItems="flex-start" space={3}>
-          <Center bg="amber.50" rounded="full" size="10">
-            <Icon as={Ionicons} name="home" size="5" color="amber.500" />
-          </Center>
+      <>
+        {repairs.slice(0,5).map((item, key) => (
+          <Box
+            bg={colorTheme.colors.card}
+            rounded="2xl"
+            shadow={2}
+            p="4"
+            key={key}
+          >
+            <HStack alignItems="flex-start" space={3}>
+              <Center bg="amber.50" rounded="full" size="10">
+                <Icon as={Ionicons} name="home" size="5" color="amber.500" />
+              </Center>
 
-          <VStack flex={1} space={2}>
-            <HStack>
-              <Text
-                color={colorTheme.colors.text}
-                fontSize="md"
-                fontWeight="bold"
-                numberOfLines={2}
-                ellipsizeMode="tail"
-                flex={1}
-              >
-                title
-              </Text>
+              <VStack flex={1} space={1}>
+                <HStack>
+                  <Text
+                    color={colorTheme.colors.text}
+                    fontSize="md"
+                    fontWeight="bold"
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                    flex={1}
+                  >
+                    #{item.id}
+                  </Text>
 
-              <Badge
-                bgColor="amber.500"
-                variant="solid"
-                px={2}
-                py={0.5}
-                rounded="full"
-                _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
-              >
-                รอดำเนินการ
-              </Badge>
+                  <Badge
+                    bgColor="amber.500"
+                    variant="solid"
+                    px={2}
+                    py={0.5}
+                    rounded="full"
+                    _text={{
+                      fontSize: "2xs",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                  >
+                    รอดำเนินการ
+                  </Badge>
+                </HStack>
+
+                <Text
+                  color={colorTheme.colors.text}
+                  fontSize="sm"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {item.problem_detail}
+                </Text>
+                <Text
+                  color={colorTheme.colors.text}
+                  fontSize="sm"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  อาคาร {item.building} ชั้น {item.floor} ห้อง {item.room}
+                </Text>
+                <Text color="gray.500" fontSize="xs">
+                  2025/06/18 12:00
+                </Text>
+              </VStack>
             </HStack>
-
-            <Text
-              color={colorTheme.colors.text}
-              fontSize="sm"
-              numberOfLines={2}
-              ellipsizeMode="tail"
-            >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo fugit
-              sequi, exercitationem animi tempore harum ipsa dolore quasi
-              asperiores, eos tempora voluptatum iste ea vitae distinctio
-              delectus totam veritatis consequatur?
-            </Text>
-            <Text color="gray.500" fontSize="xs">
-              2025/06/18 12:00
-            </Text>
-          </VStack>
-        </HStack>
-      </Box>
+          </Box>
+        ))}
+      </>
     );
   };
 
@@ -159,9 +193,15 @@ const HomeScreen: React.FC = () => {
         {processItem.map((item, key) => renderProcessItem(item, key))}
       </Flex>
 
-      <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-        กิจกรรมล่าสุด
-      </Text>
+      <HStack space={4} justifyContent="space-between" alignItems='center'>
+        <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
+          กิจกรรมล่าสุด
+        </Text>
+        <Text color='gray.500' fontSize="sm" fontWeight="bold">
+          ดูทั้งหมด
+        </Text>
+      </HStack>
+
       {renderActivityAll()}
     </VStack>
   );
