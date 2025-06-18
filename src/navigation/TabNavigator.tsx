@@ -2,9 +2,9 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { tabRoutes } from "../config/tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@react-navigation/native";
 import AppBarHeader from "../components/AppBarHeader";
 import { ScrollView, VStack } from "native-base";
+import { useTheme } from "../context/ThemeContext";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +19,7 @@ const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 };
 
 const TabNavigator: React.FC = () => {
-  const { colors } = useTheme();
+  const { colorTheme } = useTheme();
 
   return (
     <Tab.Navigator
@@ -27,10 +27,16 @@ const TabNavigator: React.FC = () => {
       screenOptions={{
         header: () => <AppBarHeader />,
         tabBarHideOnKeyboard: true,
+        tabBarActiveTintColor: colorTheme.colors.card,
+        tabBarInactiveTintColor: colorTheme.colors.secondary,
         tabBarStyle: {
-          backgroundColor: colors.card,
+          backgroundColor: colorTheme.colors.primary,
           borderRadius: 20,
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "bold",
+        }
       }}
     >
       {tabRoutes.map((route) => (

@@ -7,6 +7,14 @@ import {
   Prompt_700Bold,
 } from "@expo-google-fonts/prompt";
 
+import { LinearGradient } from "expo-linear-gradient";
+
+const config = {
+  dependencies: {
+    "linear-gradient": LinearGradient,
+  },
+};
+
 const fontConfig = {
   Prompt: {
     400: { normal: "Prompt_400Regular" },
@@ -29,6 +37,8 @@ const lightTheme = extendTheme({
     card: "#ffffff",
     text: "#333333",
     border: "#e0e0e0",
+    notification: "#006B9F",
+    secondary: "#9fd7f3",
   },
   fontConfig: fontConfig,
   fonts: fonts,
@@ -70,7 +80,7 @@ export const ThemeProvider = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={{ colorTheme, toggleTheme }}>
-      <NativeBaseProvider theme={colorTheme}>{children}</NativeBaseProvider>
+      <NativeBaseProvider config={config} theme={colorTheme}>{children}</NativeBaseProvider>
     </ThemeContext.Provider>
   );
 };
