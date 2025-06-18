@@ -8,7 +8,9 @@ import { useTheme } from "../context/ThemeContext";
 
 const Tab = createBottomTabNavigator();
 
-const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <VStack py="4" px="8">
@@ -36,23 +38,31 @@ const TabNavigator: React.FC = () => {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "bold",
-        }
+        },
       }}
     >
       {tabRoutes.map((route) => (
         <Tab.Screen
           key={route.name}
           name={route.name}
-          component={() => <ScreenWrapper>{React.createElement(route.component)}</ScreenWrapper>}
+          component={() => (
+            <ScreenWrapper>
+              {React.createElement(route.component)}
+            </ScreenWrapper>
+          )}
           options={{
             title: route.label,
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons
-                name={route.icon as keyof typeof Ionicons.glyphMap}
-                size={size}
-                color={color}
-              />
-            ),
+            tabBarIcon: ({ focused, color, size }) => {
+              const iconName = focused ? route.iconActive : route.iconInactive;
+
+              return (
+                <Ionicons
+                  name={iconName as keyof typeof Ionicons.glyphMap}
+                  size={size}
+                  color={color}
+                />
+              );
+            },
           }}
         />
       ))}

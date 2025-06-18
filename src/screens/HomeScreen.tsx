@@ -15,6 +15,7 @@ import {
   gradientcolorTheme,
   processItem,
   statusAll,
+  statusItems,
 } from "../constant/ConstantItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRepairs } from "../service/repairService";
@@ -24,8 +25,6 @@ const HomeScreen: React.FC = () => {
   const { colorTheme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
-
-  console.log('repairs', repairs)
 
   useEffect(() => {
     dispatch(fetchRepairs());
@@ -55,6 +54,8 @@ const HomeScreen: React.FC = () => {
               fontWeight="medium"
               mb="1"
               textAlign="center"
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
               {st.text}
             </Text>
@@ -106,9 +107,12 @@ const HomeScreen: React.FC = () => {
   };
 
   const renderActivityAll = () => {
-    return (
-      <>
-        {repairs.slice(0,5).map((item, key) => (
+  return (
+    <>
+      {repairs.slice(0, 5).map((item, key) => {
+        const status = statusItems[item.status as keyof typeof statusItems] || statusItems.pending;
+
+        return (
           <Box
             bg={colorTheme.colors.card}
             rounded="2xl"
@@ -118,7 +122,7 @@ const HomeScreen: React.FC = () => {
           >
             <HStack alignItems="flex-start" space={3}>
               <Center bg="amber.50" rounded="full" size="10">
-                <Icon as={Ionicons} name="home" size="5" color="amber.500" />
+                <Icon as={Ionicons} name={status.icon} size="5" color={status.color} />
               </Center>
 
               <VStack flex={1} space={1}>
@@ -135,7 +139,7 @@ const HomeScreen: React.FC = () => {
                   </Text>
 
                   <Badge
-                    bgColor="amber.500"
+                    bgColor={status.color}
                     variant="solid"
                     px={2}
                     py={0.5}
@@ -146,7 +150,7 @@ const HomeScreen: React.FC = () => {
                       color: "white",
                     }}
                   >
-                    รอดำเนินการ
+                    {status.text}
                   </Badge>
                 </HStack>
 
@@ -172,10 +176,11 @@ const HomeScreen: React.FC = () => {
               </VStack>
             </HStack>
           </Box>
-        ))}
-      </>
-    );
-  };
+        );
+      })}
+    </>
+  );
+};
 
   return (
     <VStack space={4}>
