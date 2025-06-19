@@ -1,18 +1,19 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
-import { useNavigation } from "@react-navigation/native";
-import { VStack, Text, HStack, IconButton, Avatar, Box } from "native-base";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
+import {Text, HStack, IconButton,} from "native-base";
 import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
-import { DrawerParamsList } from "../interfaces/navigation/src/interfaces/navigation/navigationParamsList.interface";
 
-const AppBarHeader: React.FC = () => {
+type AppBarHeaderBackNavigationProp = DrawerNavigationProp<any>;
+
+const AppBarHeaderBack: React.FC = () => {
   const { colorTheme } = useTheme();
-  const navigation = useNavigation<DrawerNavigationProp<DrawerParamsList>>();
+  const navigation = useNavigation<AppBarHeaderBackNavigationProp>();
 
   return (
     <HStack
-      bg={colorTheme.colors.card}
+      bg={colorTheme.colors.primary}
       py={2}
       px={8}
       borderBottomWidth={1}
@@ -32,7 +33,7 @@ const AppBarHeader: React.FC = () => {
               color={colorTheme.colors.text}
             />
           }
-          onPress={() => navigation.openDrawer()}
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
           _pressed={{
             bg: colorTheme.colors.border,
             opacity: 0.7,
@@ -65,4 +66,4 @@ const AppBarHeader: React.FC = () => {
   );
 };
 
-export default AppBarHeader;
+export default AppBarHeaderBack;

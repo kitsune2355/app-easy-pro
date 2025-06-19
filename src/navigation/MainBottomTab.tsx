@@ -1,26 +1,33 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { tabRoutes } from "../config/tabs";
-import { Ionicons } from "@expo/vector-icons";
-import AppBarHeader from "../components/AppBarHeader";
-import { ScrollView, VStack } from "native-base";
+import { BottomTabParamsList } from "../interfaces/navigation/src/interfaces/navigation/navigationParamsList.interface";
+import HomeScreen from "../screens/HomeScreen";
+import SettingScreen from "../screens/SettingScreen";
 import { useTheme } from "../context/ThemeContext";
+import AppBarHeader from "../components/AppBarHeader";
+import ScreenWrapper from "../components/ScreenWrapper";
+import { Ionicons } from "@expo/vector-icons";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<BottomTabParamsList>();
 
-const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <VStack py="4" px="8">
-        {children}
-      </VStack>
-    </ScrollView>
-  );
-};
+export const tabRoutes = [
+  {
+    name: 'Home',
+    component: HomeScreen,
+    label: 'หน้าหลัก',
+    iconActive: "home",
+    iconInactive: "home-outline",
+  },
+  {
+    name: 'Settings',
+    component: SettingScreen,
+    label: 'ตั้งค่า',
+    iconActive: "settings",
+    iconInactive: "settings-outline",
+  },
+];
 
-const TabNavigator: React.FC = () => {
+const MainBottomTab: React.FC = () => {
   const { colorTheme } = useTheme();
 
   return (
@@ -44,7 +51,7 @@ const TabNavigator: React.FC = () => {
       {tabRoutes.map((route) => (
         <Tab.Screen
           key={route.name}
-          name={route.name}
+          name={route.name as keyof BottomTabParamsList}
           component={() => (
             <ScreenWrapper>
               {React.createElement(route.component)}
@@ -70,4 +77,4 @@ const TabNavigator: React.FC = () => {
   );
 };
 
-export default TabNavigator;
+export default MainBottomTab;

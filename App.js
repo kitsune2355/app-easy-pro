@@ -1,10 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
-import DrawerNavigator from "./src/navigation/DrawerNavigator";
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
 import { Provider } from 'react-redux';
 import store from './src/store'; 
+import MainStack from "./src/navigation/MainStack";
 
 function AppContent() {
   const { colorTheme } = useTheme();
@@ -13,7 +13,7 @@ function AppContent() {
     <SafeAreaProvider>
       <NavigationContainer theme={colorTheme}>
         <StatusBar hidden={true} />
-        <DrawerNavigator />
+        <MainStack />
       </NavigationContainer>
     </SafeAreaProvider>
   );

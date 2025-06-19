@@ -1,29 +1,36 @@
 import React from "react";
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerContentComponentProps,
-} from "@react-navigation/drawer";
-import { useTheme } from "../context/ThemeContext";
-import {
-  Icon,
-  VStack,
-  Spacer,
-  HStack,
-  Avatar,
-  Text,
-  Button,
-  Divider,
-} from "native-base";
+import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
+import { DrawerParamsList } from "../interfaces/navigation/src/interfaces/navigation/navigationParamsList.interface";
+import RepairScreen from "../screens/RepairScreen";
+import RepairHistoryScreen from "../screens/RepairHistoryScreen";
+import RepairSubmitScreen from "../screens/RepairSubmitScreen";
+import { Avatar, HStack, VStack,Text, Divider, Spacer, Button, Icon } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
-import { drawerRoutes } from "../config/tabs";
-import TabNavigator from "./TabNavigator";
+import { useTheme } from "../context/ThemeContext";
+import MainBottomTab from "./MainBottomTab";
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<DrawerParamsList>();
 
-const DrawerNavigator: React.FC = () => {
-  const { colorTheme } = useTheme();
+export const drawerRoutes = [
+  {
+      title: "แจ้งซ่อม",
+      icon: "build",
+      screen: RepairScreen,
+    },
+    {
+      title: "ประวัติ",
+      icon: "time",
+      screen: RepairHistoryScreen,
+    },
+    {
+      title: "ส่งงาน",
+      icon: "construct",
+      screen: RepairSubmitScreen,
+    },
+];
+
+const MainDrawer: React.FC = () => {
+    const { colorTheme } = useTheme();
 
   const renderDrawerContent = (props: DrawerContentComponentProps) => {
     const handleLogout = () => {
@@ -63,7 +70,7 @@ const DrawerNavigator: React.FC = () => {
       </VStack>
     );
   };
-
+  
   return (
     <Drawer.Navigator
       {...({ id: "DrawerNavigator" } as any)}
@@ -80,9 +87,9 @@ const DrawerNavigator: React.FC = () => {
       }}
       drawerContent={renderDrawerContent}
     >
-      <Drawer.Screen
-        name="MainTabs"
-        component={TabNavigator}
+        <Drawer.Screen
+        name={"MainBottomTab" as keyof DrawerParamsList}
+        component={MainBottomTab}
         options={{
           title: "หน้าหลัก",
           drawerIcon: ({ focused, color }) => (
@@ -95,11 +102,10 @@ const DrawerNavigator: React.FC = () => {
           ),
         }}
       />
-
       {drawerRoutes.map((item, index) => (
         <Drawer.Screen
           key={index}
-          name={item.title}
+          name={item.title as keyof DrawerParamsList}
           component={item.screen}
           options={{
             title: item.title,
@@ -118,4 +124,4 @@ const DrawerNavigator: React.FC = () => {
   );
 };
 
-export default DrawerNavigator;
+export default MainDrawer;
