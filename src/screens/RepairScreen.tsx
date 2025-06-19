@@ -14,7 +14,17 @@ const RepairScreen = () => {
         bgColor={colorTheme.colors.primary}
         textColor={colorTheme.colors.card}
       />
-      <VStack w="full" h="full" bg={colorTheme.colors.primary}>
+      <VStack
+        w="full"
+        h="full"
+        bg={{
+          linearGradient: {
+            colors: ["#006B9F", "#00405f"],
+            start: [1, 0],
+            end: [1, 1],
+          },
+        }}
+      >
         <ScreenWrapper>
           <VStack space={3}>
             <Text color="white" fontSize="md" fontWeight="bold">

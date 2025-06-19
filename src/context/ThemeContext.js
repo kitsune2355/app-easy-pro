@@ -80,7 +80,9 @@ export const ThemeProvider = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={{ colorTheme, toggleTheme }}>
-      <NativeBaseProvider config={config} theme={colorTheme}>{children}</NativeBaseProvider>
+      <NativeBaseProvider config={config} theme={colorTheme}>
+        {children}
+      </NativeBaseProvider>
     </ThemeContext.Provider>
   );
 };

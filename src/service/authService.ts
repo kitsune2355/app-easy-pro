@@ -20,7 +20,7 @@ export interface LoginResponse {
 }
 
 export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
-  const response = await axios.post<LoginResponse[]>(env.API_ENDPOINT, payload, {
+  const response = await axios.post<LoginResponse[]>(`${env.API_ENDPOINT}/login.php`, payload, {
     headers: { 'Content-Type': 'application/json' },
   });
 
