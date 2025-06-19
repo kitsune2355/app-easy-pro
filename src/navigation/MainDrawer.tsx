@@ -22,6 +22,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
 import MainBottomTab from "./MainBottomTab";
+import { useAuth } from "../hooks/useAuth";
 
 const Drawer = createDrawerNavigator<DrawerParamsList>();
 
@@ -45,10 +46,16 @@ export const drawerRoutes = [
 
 const MainDrawer: React.FC = () => {
   const { colorTheme } = useTheme();
+  const { logoutUser } = useAuth();
 
   const renderDrawerContent = (props: DrawerContentComponentProps) => {
-    const handleLogout = () => {
-      console.log("User logged out!");
+    const handleLogout = async () => {
+      try {
+        await logoutUser();
+        props.navigation.navigate("LoginScreen");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
     };
 
     return (
