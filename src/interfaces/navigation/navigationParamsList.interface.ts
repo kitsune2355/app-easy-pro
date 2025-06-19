@@ -1,9 +1,10 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 
 export type StackParamsList = {
+  SplashScreen: undefined;
   LoginScreen: undefined;
-  MainBottomTab: NavigatorScreenParams<BottomTabParamsList>;
-  MainDrawer: NavigatorScreenParams<DrawerParamsList>;
+  MainBottomTab: undefined;
+  MainDrawer: undefined;
 };
 export type DrawerParamsList = {
   RepairScreen: undefined;

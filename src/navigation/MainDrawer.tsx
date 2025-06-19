@@ -88,7 +88,12 @@ const MainDrawer: React.FC = () => {
           </VStack>
           <DrawerItemList {...props} />
           <Spacer />
-          <Button bg={colorTheme.colors.card} rounded="full">
+          <Button
+            bg={colorTheme.colors.card}
+            rounded="full"
+            _text={{ color: "red.500", fontWeight: "bold" }}
+            onPress={handleLogout}
+          >
             ออกจากระบบ
           </Button>
         </DrawerContentScrollView>
