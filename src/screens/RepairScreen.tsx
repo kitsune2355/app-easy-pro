@@ -1,12 +1,33 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from "react";
+import ScreenWrapper from "../components/ScreenWrapper";
+import AppHeader from "../components/AppHeader";
+import { VStack, Text } from "native-base";
+import { useTheme } from "../context/ThemeContext";
 
 const RepairScreen = () => {
-  return (
-    <View>
-      <Text>RepairScreen</Text>
-    </View>
-  )
-}
+  const { colorTheme } = useTheme();
 
-export default RepairScreen
+  return (
+    <>
+      <AppHeader
+        title="แจ้งซ่อม"
+        bgColor={colorTheme.colors.primary}
+        textColor={colorTheme.colors.card}
+      />
+      <VStack w="full" h="full" bg={colorTheme.colors.primary}>
+        <ScreenWrapper>
+          <VStack space={3}>
+            <Text color="white" fontSize="md" fontWeight="bold">
+              ข้อมูลการแจ้ง
+            </Text>
+            <VStack bg={colorTheme.colors.card} borderRadius="3xl" p="5">
+              <Text>RepairScreen</Text>
+            </VStack>
+          </VStack>
+        </ScreenWrapper>
+      </VStack>
+    </>
+  );
+};
+
+export default RepairScreen;

@@ -1,10 +1,24 @@
 import React from "react";
-import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-import { DrawerParamsList } from "../interfaces/navigation/src/interfaces/navigation/navigationParamsList.interface";
+import {
+  createDrawerNavigator,
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
+import { DrawerParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import RepairScreen from "../screens/RepairScreen";
 import RepairHistoryScreen from "../screens/RepairHistoryScreen";
 import RepairSubmitScreen from "../screens/RepairSubmitScreen";
-import { Avatar, HStack, VStack,Text, Divider, Spacer, Button, Icon } from "native-base";
+import {
+  Avatar,
+  HStack,
+  VStack,
+  Text,
+  Divider,
+  Spacer,
+  Button,
+  Icon,
+} from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
 import MainBottomTab from "./MainBottomTab";
@@ -13,24 +27,24 @@ const Drawer = createDrawerNavigator<DrawerParamsList>();
 
 export const drawerRoutes = [
   {
-      title: "แจ้งซ่อม",
-      icon: "build",
-      screen: RepairScreen,
-    },
-    {
-      title: "ประวัติ",
-      icon: "time",
-      screen: RepairHistoryScreen,
-    },
-    {
-      title: "ส่งงาน",
-      icon: "construct",
-      screen: RepairSubmitScreen,
-    },
+    title: "แจ้งซ่อม",
+    icon: "build",
+    screen: RepairScreen,
+  },
+  {
+    title: "ประวัติ",
+    icon: "time",
+    screen: RepairHistoryScreen,
+  },
+  {
+    title: "ส่งงาน",
+    icon: "construct",
+    screen: RepairSubmitScreen,
+  },
 ];
 
 const MainDrawer: React.FC = () => {
-    const { colorTheme } = useTheme();
+  const { colorTheme } = useTheme();
 
   const renderDrawerContent = (props: DrawerContentComponentProps) => {
     const handleLogout = () => {
@@ -70,7 +84,7 @@ const MainDrawer: React.FC = () => {
       </VStack>
     );
   };
-  
+
   return (
     <Drawer.Navigator
       {...({ id: "DrawerNavigator" } as any)}
@@ -87,7 +101,7 @@ const MainDrawer: React.FC = () => {
       }}
       drawerContent={renderDrawerContent}
     >
-        <Drawer.Screen
+      <Drawer.Screen
         name={"MainBottomTab" as keyof DrawerParamsList}
         component={MainBottomTab}
         options={{

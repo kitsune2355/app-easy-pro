@@ -1,10 +1,10 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
-import { VStack, Text, HStack, IconButton, Avatar, Box } from "native-base";
+import { Text, HStack, IconButton } from "native-base";
 import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
-import { DrawerParamsList } from "../interfaces/navigation/src/interfaces/navigation/navigationParamsList.interface";
+import { DrawerParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 const AppBarHeader: React.FC = () => {
   const { colorTheme } = useTheme();

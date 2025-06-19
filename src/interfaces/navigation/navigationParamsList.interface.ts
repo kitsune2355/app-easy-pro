@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 
 export type StackParamsList = {
+  LoginScreen: undefined;
   MainBottomTab: NavigatorScreenParams<BottomTabParamsList>;
   MainDrawer: NavigatorScreenParams<DrawerParamsList>;
 };

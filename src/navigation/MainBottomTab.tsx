@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { BottomTabParamsList } from "../interfaces/navigation/src/interfaces/navigation/navigationParamsList.interface";
+import { BottomTabParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import HomeScreen from "../screens/HomeScreen";
 import SettingScreen from "../screens/SettingScreen";
 import { useTheme } from "../context/ThemeContext";
@@ -12,16 +12,16 @@ const Tab = createBottomTabNavigator<BottomTabParamsList>();
 
 export const tabRoutes = [
   {
-    name: 'Home',
+    name: "Home",
     component: HomeScreen,
-    label: 'หน้าหลัก',
+    label: "หน้าหลัก",
     iconActive: "home",
     iconInactive: "home-outline",
   },
   {
-    name: 'Settings',
+    name: "Settings",
     component: SettingScreen,
-    label: 'ตั้งค่า',
+    label: "ตั้งค่า",
     iconActive: "settings",
     iconInactive: "settings-outline",
   },
