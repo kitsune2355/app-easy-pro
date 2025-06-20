@@ -34,44 +34,55 @@ const HomeScreen: React.FC = () => {
 
   const renderDashboardItem = () => (
     <>
-      {statusAll.map((st) => (
-        <Box key={st.text} width="30%" mb="4">
-          <Center
-            bg={colorTheme.colors.card}
-            rounded="2xl"
-            shadow={2}
-            p="4"
-            h="32"
-          >
-            <Icon
-              as={Ionicons}
-              name={st.icon}
-              size="8"
-              mb="2"
-              color={st.color}
-            />
-            <Text
-              color="gray.500"
-              fontSize="sm"
-              fontWeight="medium"
-              mb="1"
-              textAlign="center"
-              numberOfLines={1}
-              ellipsizeMode="tail"
+      {statusAll.map((st) => {
+        let count = 0;
+        if (st.text === "งานทั้งหมด") {
+          count = repairs.length;
+        } else if (st.text === "รอดำเนินการ") {
+          count = repairs.filter((repair: any) => repair.status === "pending").length;
+        } else if (st.text === "เสร็จสิ้น") {
+          count = repairs.filter((repair: any) => repair.status === "completed").length;
+        }
+
+        return (
+          <Box key={st.text} width="30%" mb="4">
+            <Center
+              bg={colorTheme.colors.card}
+              rounded="2xl"
+              shadow={2}
+              p="4"
+              h="32"
             >
-              {st.text}
-            </Text>
-            <Text
-              color="gray.800"
-              fontSize="lg"
-              fontWeight="bold"
-              textAlign="center"
-            >
-              15
-            </Text>
-          </Center>
-        </Box>
-      ))}
+              <Icon
+                as={Ionicons}
+                name={st.icon}
+                size="8"
+                mb="2"
+                color={st.color}
+              />
+              <Text
+                color="gray.500"
+                fontSize="sm"
+                fontWeight="medium"
+                mb="1"
+                textAlign="center"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {st.text}
+              </Text>
+              <Text
+                color="gray.800"
+                fontSize="2xl"
+                fontWeight='medium'
+                textAlign="center"
+              >
+                {count}
+              </Text>
+            </Center>
+          </Box>
+        );
+      })}
     </>
   );
 
