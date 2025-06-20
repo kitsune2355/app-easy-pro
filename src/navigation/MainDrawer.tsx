@@ -18,6 +18,7 @@ import {
   Spacer,
   Button,
   Icon,
+  Center,
 } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
@@ -103,6 +104,11 @@ const MainDrawer: React.FC = () => {
           >
             ออกจากระบบ
           </Button>
+          <Center pt={4}>
+            <Text color="white" fontSize="xs">
+              PROACTIVE MANAGEMENT CO,.LTD
+            </Text>
+          </Center>
         </DrawerContentScrollView>
       </VStack>
     );

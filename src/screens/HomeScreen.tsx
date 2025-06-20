@@ -139,7 +139,7 @@ const HomeScreen: React.FC = () => {
   const renderActivityAll = () => {
     return (
       <>
-        {repairs.slice(0, 5).map((item, key) => {
+        {repairs.slice(0, 3).map((item, key) => {
           const status =
             statusItems[item.status as keyof typeof statusItems] ||
             statusItems.pending;
