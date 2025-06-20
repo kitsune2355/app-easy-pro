@@ -38,14 +38,17 @@ export const processItem = [
   {
     title: "แจ้งซ่อม",
     icon: "build",
+    screen: "RepairScreen",
   },
   {
     title: "ประวัติ",
     icon: "time",
+    screen: "RepairHistoryScreen",
   },
   {
     title: "ส่งงาน",
     icon: "construct",
+    screen: "RepairSubmitScreen",
   },
 ];
 

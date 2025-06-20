@@ -1,7 +1,7 @@
 import React from "react";
 import ScreenWrapper from "../components/ScreenWrapper";
 import AppHeader from "../components/AppHeader";
-import { VStack, Text } from "native-base";
+import { VStack, Text, Input } from "native-base";
 import { useTheme } from "../context/ThemeContext";
 
 const RepairScreen = () => {
@@ -27,12 +27,15 @@ const RepairScreen = () => {
       >
         <ScreenWrapper>
           <VStack space={3}>
-            <Text color="white" fontSize="md" fontWeight="bold">
-              ข้อมูลการแจ้ง
-            </Text>
-            <VStack bg={colorTheme.colors.card} borderRadius="3xl" p="5">
-              <Text>RepairScreen</Text>
-            </VStack>
+            <>
+              <Text color="white" fontSize="md" fontWeight="bold">
+                ข้อมูลการแจ้ง
+              </Text>
+              <VStack bg={colorTheme.colors.card} borderRadius="3xl" p="5" space={2}>
+                <Text>RepairScreen</Text>
+                <Input placeholder="name" />
+              </VStack>
+            </>
           </VStack>
         </ScreenWrapper>
       </VStack>

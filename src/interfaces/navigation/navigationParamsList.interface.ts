@@ -5,6 +5,9 @@ export type StackParamsList = {
   LoginScreen: undefined;
   MainBottomTab: undefined;
   MainDrawer: undefined;
+  RepairScreen: undefined;
+  RepairHistoryScreen: undefined;
+  RepairSubmitScreen: undefined;
 };
 export type DrawerParamsList = {
   RepairScreen: undefined;
