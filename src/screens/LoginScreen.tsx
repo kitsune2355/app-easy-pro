@@ -6,6 +6,7 @@ import {
   Pressable,
   Text,
   Image,
+  Box,
 } from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { TextInput, StyleSheet } from "react-native";
@@ -19,6 +20,8 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import CryptoJS from "crypto-js";
+import { LanguageButtonGroup } from "../components/LanguageButtonGroup";
+import { useTranslation } from "react-i18next";
 
 export const generateMd5 = (input: string): string => {
   let result = input;
@@ -31,9 +34,11 @@ export const generateMd5 = (input: string): string => {
 };
 
 const LoginScreen = () => {
+  const { i18n, t } = useTranslation();
   const { colorTheme } = useTheme();
   const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const [showPassword, setShowPassword] = useState(false);
+  const [lang, setLang] = useState(i18n.language || "th");
   const { control, handleSubmit, setError, setValue } = useLoginForm();
   const { loginUser, isLoading, error, isLoggedIn } = useAuth();
 
@@ -42,6 +47,11 @@ const LoginScreen = () => {
       navigation.navigate("MainDrawer");
     }
   }, [isLoggedIn, navigation]);
+
+  const handleLangChange = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setLang(lang);
+  };
 
   const onSubmit = useCallback(
     async (formValues: ILoginForm) => {
@@ -81,15 +91,18 @@ const LoginScreen = () => {
         },
       }}
     >
-      <VStack
-        flex={1}
-        justifyContent="center"
-        alignItems="center"
-      >
+      <Box safeAreaTop>
+        <LanguageButtonGroup
+          langs={["th", "en"]}
+          value={lang}
+          onPress={handleLangChange}
+        />
+      </Box>
+      <VStack flex={1} justifyContent="center" alignItems="center">
         <Image
-          source={require("../../assets/logo_full.png")}
+          source={require("../../assets/images/logo_full.png")}
           alt="logo"
-          size="xl"
+          size={48}
           mb={8}
         />
 
@@ -102,7 +115,7 @@ const LoginScreen = () => {
           }) => (
             <FormControl isInvalid={!!error} width="100%" maxWidth={500}>
               <TextInput
-                placeholder="ชื่อผู้ใช้"
+                placeholder={t("LOGIN.USERNAME")}
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -128,7 +141,7 @@ const LoginScreen = () => {
             <FormControl mt="4" isInvalid={!!error} width="100%" maxWidth={500}>
               <VStack position="relative">
                 <TextInput
-                  placeholder="รหัสผ่าน"
+                  placeholder={t("LOGIN.PASSWORD")}
                   secureTextEntry={!showPassword}
                   value={value}
                   onBlur={onBlur}
@@ -175,13 +188,13 @@ const LoginScreen = () => {
           isLoading={isLoading}
           onPress={handleSubmit(onSubmit)}
         >
-          เข้าสู่ระบบ
+          {t("LOGIN.LOGIN_BTN")}
         </Button>
       </VStack>
 
       <Center pb={4}>
         <Text color="white" fontSize="xs">
-          PROACTIVE MANAGEMENT CO,.LTD
+          {t("PRO")}
         </Text>
       </Center>
     </VStack>

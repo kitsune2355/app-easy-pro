@@ -5,6 +5,7 @@ import { StatusBar } from "react-native";
 import { Provider } from 'react-redux';
 import store from './src/store'; 
 import MainStack from "./src/navigation/MainStack";
+import './src/config/il8n'
 
 function AppContent() {
   const { colorTheme } = useTheme();

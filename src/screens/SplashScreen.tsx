@@ -58,7 +58,7 @@ const SplashScreen: React.FC = () => {
             p={6}
             shadow={5}
           >
-            <Image source={require('../../assets/logo.png')} alt="Logo" size={24} />
+            <Image source={require('../../assets/images/logo.png')} alt="Logo" size={24} />
           </Box>
 
           {/* ชื่อแอป */}

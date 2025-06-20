@@ -62,13 +62,7 @@ const MainDrawer: React.FC = () => {
     return (
       <VStack
         flex={1}
-        bg={{
-          linearGradient: {
-            colors: ["#006B9F", "#00405f"],
-            start: [1, 0],
-            end: [1, 1],
-          },
-        }}
+        bg={colorTheme.colors.primary}
         roundedTopRight={20}
         roundedBottomRight={20}
       >
@@ -123,7 +117,7 @@ const MainDrawer: React.FC = () => {
           backgroundColor: colorTheme.colors.primary,
         },
         drawerActiveTintColor: colorTheme.colors.card,
-        drawerInactiveTintColor: colorTheme.colors.secondary,
+        drawerInactiveTintColor: colorTheme.colors.card,
         drawerLabelStyle: {
           fontWeight: "bold",
         },
