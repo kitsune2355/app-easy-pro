@@ -20,8 +20,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRepairs } from "../service/repairService";
 import { AppDispatch } from "../store";
+import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 
 const HomeScreen: React.FC = () => {
+  useDoubleBackExit();
   const { colorTheme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
