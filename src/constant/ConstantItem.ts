@@ -1,52 +1,52 @@
 export const statusItems = {
     pending:{
-        text: "รอดำเนินการ",
+        text: "PENDING",
         color: "#FFA500",
         icon: "hourglass-outline",
     },
     success:{
-        text: "เสร็จสิ้น",
+        text: "COMPLETED",
         color: "#32CD32",
         icon: "checkmark-circle-outline",
     },
     inprogress:{
-        text: "กำลังดำเนินการ",
+        text: "IN_PROGRESS",
         color: "#1E90FF",
         icon: "construct",
     },
 }
 
 export const statusAll = [
-    {
-        text: "งานทั้งหมด",
-        color: "blue.500",
-        icon: "reader-outline",
-    },
-    {
-        text: "รอดำเนินการ",
-        color: "amber.500",
-        icon: "hourglass-outline",
-    },
-    {
-        text: "เสร็จสิ้น",
-        color: "green.500",
-        icon: "checkmark-circle-outline",
-    },
-]
+  {
+    key: "ALL",
+    color: "blue.500",
+    icon: "reader-outline",
+  },
+  {
+    key: "PENDING",
+    color: "amber.500",
+    icon: "hourglass-outline",
+  },
+  {
+    key: "COMPLETED",
+    color: "green.500",
+    icon: "checkmark-circle-outline",
+  },
+];
 
 export const processItem = [
   {
-    title: "แจ้งซ่อม",
+    title: "REPAIR_REQ",
     icon: "build",
     screen: "RepairScreen",
   },
   {
-    title: "ประวัติ",
+    title: "REPAIR_REQ_HISTORY",
     icon: "time",
     screen: "RepairHistoryScreen",
   },
   {
-    title: "ส่งงาน",
+    title: "SUBMIT_REPAIR_REQ",
     icon: "construct",
     screen: "RepairSubmitScreen",
   },

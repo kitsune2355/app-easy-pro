@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomTabParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import HomeScreen from "../screens/HomeScreen";
@@ -7,27 +7,27 @@ import { useTheme } from "../context/ThemeContext";
 import AppBarHeader from "../components/AppBarHeader";
 import ScreenWrapper from "../components/ScreenWrapper";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 const Tab = createBottomTabNavigator<BottomTabParamsList>();
 
 export const tabRoutes = [
   {
-    name: "Home",
+    name: "HOME",
     component: HomeScreen,
-    label: "หน้าหลัก",
     iconActive: "home",
     iconInactive: "home-outline",
   },
   {
-    name: "Settings",
+    name: "SETTINGS",
     component: SettingScreen,
-    label: "ตั้งค่า",
     iconActive: "settings",
     iconInactive: "settings-outline",
   },
 ];
 
 const MainBottomTab: React.FC = () => {
+  const {t} = useTranslation();
   const { colorTheme } = useTheme();
 
   return (
@@ -58,7 +58,7 @@ const MainBottomTab: React.FC = () => {
             </ScreenWrapper>
           )}
           options={{
-            title: route.label,
+            title: t(`SCREENS.${route.name}`),
             tabBarIcon: ({ focused, color, size }) => {
               const iconName = focused ? route.iconActive : route.iconInactive;
 

@@ -23,13 +23,16 @@ import { fetchRepairs } from "../service/repairService";
 import { AppDispatch } from "../store";
 import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const HomeScreen: React.FC = () => {
-  useDoubleBackExit();
+  const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
+
+  useDoubleBackExit();
 
   useEffect(() => {
     dispatch(fetchRepairs());
@@ -39,20 +42,21 @@ const HomeScreen: React.FC = () => {
     <>
       {statusAll.map((st) => {
         let count = 0;
-        if (st.text === "งานทั้งหมด") {
+
+        if (st.key === "ALL") {
           count = repairs.length;
-        } else if (st.text === "รอดำเนินการ") {
+        } else if (st.key === "PENDING") {
           count = repairs.filter(
             (repair: any) => repair.status === "pending"
           ).length;
-        } else if (st.text === "เสร็จสิ้น") {
+        } else if (st.key === "COMPLETED") {
           count = repairs.filter(
             (repair: any) => repair.status === "completed"
           ).length;
         }
 
         return (
-          <Box key={st.text} width="30%" mb="4">
+          <Box key={st.key} width="30%" mb="4">
             <Center
               bg={colorTheme.colors.card}
               rounded="2xl"
@@ -76,7 +80,7 @@ const HomeScreen: React.FC = () => {
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {st.text}
+                {t(`PROCESS.${st.key}`)}
               </Text>
               <Text
                 color="gray.800"
@@ -102,8 +106,8 @@ const HomeScreen: React.FC = () => {
         onPress={() => navigation.navigate(item.screen as never)}
         _pressed={{
           style: {
-            transform: [{ scale: 0.88 }]
-          }
+            transform: [{ scale: 0.88 }],
+          },
         }}
       >
         <Box
@@ -128,7 +132,7 @@ const HomeScreen: React.FC = () => {
               textAlign="center"
               fontWeight="bold"
             >
-              {item.title}
+              {t(`MENU.${item.title}`)}
             </Text>
           </Center>
         </Box>
@@ -141,8 +145,7 @@ const HomeScreen: React.FC = () => {
       <>
         {repairs.slice(0, 3).map((item, key) => {
           const status =
-            statusItems[item.status as keyof typeof statusItems] ||
-            statusItems.pending;
+            statusItems[(item.status as keyof typeof statusItems)]
 
           return (
             <Box
@@ -187,7 +190,7 @@ const HomeScreen: React.FC = () => {
                         color: "white",
                       }}
                     >
-                      {status.text}
+                      {t(`PROCESS.${status.text}`)}
                     </Badge>
                   </HStack>
 
@@ -205,7 +208,7 @@ const HomeScreen: React.FC = () => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                   >
-                    อาคาร {item.building} ชั้น {item.floor} ห้อง {item.room}
+                    {t('BUILDING')} {item.building}, {t('FLOOR')} {item.floor}, {t('ROOM')} {item.room}
                   </Text>
                   <Text color="gray.500" fontSize="xs">
                     2025/06/18 12:00
@@ -222,14 +225,14 @@ const HomeScreen: React.FC = () => {
   return (
     <VStack space={4}>
       <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-        ภาพรวมงานซ่อม
+        {t("MAIN.REPAIR_SUMMARY")}
       </Text>
       <Flex direction="row" wrap="wrap" justify="space-between">
         {renderDashboardItem()}
       </Flex>
 
       <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-        ดำเนินการด่วน
+        {t("MAIN.URGENT_ACTION")}
       </Text>
       <Flex direction="row" wrap="wrap" justify="space-between">
         {processItem.map((item, key) => renderProcessItem(item, key))}
@@ -237,10 +240,7 @@ const HomeScreen: React.FC = () => {
 
       <HStack space={4} justifyContent="space-between" alignItems="center">
         <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-          กิจกรรมล่าสุด
-        </Text>
-        <Text color="gray.500" fontSize="sm" fontWeight="bold">
-          ดูทั้งหมด
+          {t("MAIN.RECENT_ACTIVITY")}
         </Text>
       </HStack>
 

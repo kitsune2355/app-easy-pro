@@ -194,7 +194,7 @@ const LoginScreen = () => {
 
       <Center pb={4}>
         <Text color="white" fontSize="xs">
-          {t("PRO")}
+          {t("PROACTIVE")}
         </Text>
       </Center>
     </VStack>

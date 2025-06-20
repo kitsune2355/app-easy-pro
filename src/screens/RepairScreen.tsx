@@ -3,14 +3,16 @@ import ScreenWrapper from "../components/ScreenWrapper";
 import AppHeader from "../components/AppHeader";
 import { VStack, Text, Input } from "native-base";
 import { useTheme } from "../context/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 const RepairScreen = () => {
+  const {t} = useTranslation();
   const { colorTheme } = useTheme();
 
   return (
     <>
       <AppHeader
-        title="แจ้งซ่อม"
+        title={t("MENU.REPAIR_REQ")}
         bgColor={colorTheme.colors.primary}
         textColor={colorTheme.colors.card}
       />

@@ -1,8 +1,39 @@
 {
-    "LOGIN":{
-        "USERNAME":"Username",
-        "PASSWORD":"Password",
-        "LOGIN_BTN":"Login"
-    },
-    "PRO": "PROACTIVE MANAGEMENT CO,.LTD"
+  "LOGIN": {
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "LOGIN_BTN": "Login"
+  },
+  "LOGOUT": "Logout",
+  "TAP_TO_EXIT": "Tap again to exit",
+  "MAINTENANCE_SYSTEM": "Maintenance Management System",
+  "PROACTIVE": "PROACTIVE MANAGEMENT CO,.LTD",
+  "LOADING": "Loading...",
+  "VERSION": "Version",
+  "APP_BAR": {
+    "WELCOME": "Welcome to"
+  },
+  "SCREENS":{
+    "HOME":"Home",
+    "SETTINGS":"Settings"
+  },
+  "MAIN": {
+    "REPAIR_SUMMARY": "Repair Summary",
+    "URGENT_ACTION": "Urgent Action",
+    "RECENT_ACTIVITY": "Recent Activity"
+  },
+  "PROCESS": {
+    "ALL": "all",
+    "PENDING": "pending",
+    "IN_PROGRESS": "in progress",
+    "COMPLETED": "completed"
+  },
+  "MENU":{
+    "REPAIR_REQ":"Repair Request",
+    "REPAIR_REQ_HISTORY":"History",
+    "SUBMIT_REPAIR_REQ":"Submit Repair"
+  },
+  "BUILDING":"Building",
+  "FLOOR":"Floor",
+  "ROOM":"Room"
 }

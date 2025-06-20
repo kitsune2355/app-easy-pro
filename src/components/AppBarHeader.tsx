@@ -5,8 +5,10 @@ import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
 import { DrawerParamsList } from "../interfaces/navigation/navigationParamsList.interface";
+import { useTranslation } from "react-i18next";
 
 const AppBarHeader: React.FC = () => {
+  const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamsList>>();
 
@@ -41,7 +43,7 @@ const AppBarHeader: React.FC = () => {
           p="2"
         />
         <Text fontSize="xl" fontWeight="bold" color={colorTheme.colors.text}>
-          Welcome, to <Text color={colorTheme.colors.primary}>EasyPro</Text>
+          {t('APP_BAR.WELCOME')} <Text color={colorTheme.colors.primary}>EasyPro</Text>
         </Text>
       </HStack>
 

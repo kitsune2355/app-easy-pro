@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
@@ -24,28 +24,31 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
 import MainBottomTab from "./MainBottomTab";
 import { useAuth } from "../hooks/useAuth";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 const Drawer = createDrawerNavigator<DrawerParamsList>();
 
 export const drawerRoutes = [
   {
-    title: "แจ้งซ่อม",
+    title: "REPAIR_REQ",
     icon: "build",
     screen: RepairScreen,
   },
   {
-    title: "ประวัติ",
+    title: "REPAIR_REQ_HISTORY",
     icon: "time",
     screen: RepairHistoryScreen,
   },
   {
-    title: "ส่งงาน",
+    title: "SUBMIT_REPAIR_REQ",
     icon: "construct",
     screen: RepairSubmitScreen,
   },
 ];
 
 const MainDrawer: React.FC = () => {
+  const {t} = useTranslation();
   const { colorTheme } = useTheme();
   const { logoutUser } = useAuth();
 
@@ -96,11 +99,11 @@ const MainDrawer: React.FC = () => {
             _text={{ color: "red.500", fontWeight: "bold" }}
             onPress={handleLogout}
           >
-            ออกจากระบบ
+            {t("LOGOUT")}
           </Button>
           <Center pt={4}>
             <Text color="white" fontSize="xs">
-              PROACTIVE MANAGEMENT CO,.LTD
+              {t("PROACTIVE")}
             </Text>
           </Center>
         </DrawerContentScrollView>
@@ -128,7 +131,7 @@ const MainDrawer: React.FC = () => {
         name={"MainBottomTab" as keyof DrawerParamsList}
         component={MainBottomTab}
         options={{
-          title: "หน้าหลัก",
+          title: t('SCREENS.HOME'),
           drawerIcon: ({ focused, color }) => (
             <Icon
               as={Ionicons}
@@ -145,7 +148,7 @@ const MainDrawer: React.FC = () => {
           name={item.title as keyof DrawerParamsList}
           component={item.screen}
           options={{
-            title: item.title,
+            title: t(`MENU.${item.title}`),
             drawerIcon: ({ focused, color }) => (
               <Icon
                 as={Ionicons}

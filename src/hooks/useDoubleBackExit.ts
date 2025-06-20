@@ -1,8 +1,10 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BackHandler, ToastAndroid, Platform } from 'react-native';
 
 export const useDoubleBackExit = () => {
+  const {t} = useTranslation();
   const backPressed = useRef<number>(0);
   const isFocused = useIsFocused();
 
@@ -18,7 +20,7 @@ export const useDoubleBackExit = () => {
       }
 
       backPressed.current = now;
-      ToastAndroid.show('แตะอีกครั้งเพื่อออก', ToastAndroid.SHORT);
+      ToastAndroid.show(`${t('TAP_TO_EXIT')}`, ToastAndroid.SHORT);
       return true;
     };
 

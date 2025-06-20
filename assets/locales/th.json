@@ -1,8 +1,39 @@
 {
-    "LOGIN":{
-        "USERNAME":"ชื่อผู้ใช้",
-        "PASSWORD":"รหัสผ่าน",
-        "LOGIN_BTN":"เข้าสู่ระบบ"
-    },
-    "PRO": "โปรแอ็คทีฟ แมเนจเม้นท์ จำกัด"
+  "LOGIN": {
+    "USERNAME": "ชื่อผู้ใช้",
+    "PASSWORD": "รหัสผ่าน",
+    "LOGIN_BTN": "เข้าสู่ระบบ"
+  },
+  "LOGOUT": "ออกจากระบบ",
+  "TAP_TO_EXIT": "แตะอีกครั้งเพื่อออก",
+  "MAINTENANCE_SYSTEM":"ระบบจัดการงานซ่อมบำรุง",
+  "PROACTIVE": "PROACTIVE MANAGEMENT CO,.LTD",
+  "LOADING": "กำลังโหลด...",
+  "VERSION": "เวอร์ชั่น",
+  "APP_BAR": {
+    "WELCOME": "ยินดีต้อนรับสู่"
+  },
+  "SCREENS":{
+    "HOME":"หน้าหลัก",
+    "SETTING":"ตั้งค่า"
+  },
+  "MAIN":{
+    "REPAIR_SUMMARY":"ภาพรวมงานซ่อม",
+    "URGENT_ACTION":"ดำเนินการด่วน",
+    "RECENT_ACTIVITY":"กิจกรรมล่าสุด"
+  },
+  "PROCESS":{
+    "ALL":"งานทั้งหมด",
+    "PENDING":"รอดำเนินการ",
+    "IN_PROGRESS":"กำลังดำเนินการ",
+    "COMPLETED":"เสร็จสิ้น"
+  },
+  "MENU":{
+    "REPAIR_REQ":"แจ้งซ่อม",
+    "REPAIR_REQ_HISTORY":"ประวัติ",
+    "SUBMIT_REPAIR_REQ":"ส่งงาน"
+  },
+  "BUILDING":"Building",
+  "FLOOR":"Floor",
+  "ROOM":"Room"
 }
