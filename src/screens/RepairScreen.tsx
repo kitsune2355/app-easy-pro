@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from "react";
-import {
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { TouchableOpacity, Alert } from "react-native";
 import ScreenWrapper from "../components/ScreenWrapper";
 import AppHeader from "../components/AppHeader";
-import { VStack, Text, FormControl, Button } from "native-base";
+import {
+  VStack,
+  Text,
+  FormControl,
+  Button,
+  Select,
+  CheckIcon,
+  Input,
+  TextArea,
+  Box,
+  Actionsheet,
+  Icon,
+  HStack,
+  ScrollView,
+  Image,
+} from "native-base";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -15,6 +25,45 @@ import { useRepairForm } from "../hooks/useRepairForm";
 import { IRepairForm } from "../interfaces/form/repairForm";
 import { Controller } from "react-hook-form";
 import { dayJs, setDayJsLocale } from "../config/dayJs";
+import * as ImagePicker from "expo-image-picker";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
+const mockBuildings = [
+  { label: "Building A", value: "building_a" },
+  { label: "Building B", value: "building_b" },
+  { label: "Building C", value: "building_c" },
+  { label: "Main Building", value: "main_building" },
+  { label: "Annex Building", value: "annex_building" },
+];
+
+const mockFloors = [
+  { label: "Ground Floor", value: "0" },
+  { label: "1st Floor", value: "1" },
+  { label: "2nd Floor", value: "2" },
+  { label: "3rd Floor", value: "3" },
+  { label: "4th Floor", value: "4" },
+  { label: "5th Floor", value: "5" },
+  { label: "6th Floor", value: "6" },
+  { label: "7th Floor", value: "7" },
+  { label: "8th Floor", value: "8" },
+  { label: "9th Floor", value: "9" },
+  { label: "10th Floor", value: "10" },
+];
+
+const mockRooms = [
+  { label: "Room 101", value: "101" },
+  { label: "Room 102", value: "102" },
+  { label: "Room 103", value: "103" },
+  { label: "Room 201", value: "201" },
+  { label: "Room 202", value: "202" },
+  { label: "Room 203", value: "203" },
+  { label: "Conference Room A", value: "conf_a" },
+  { label: "Conference Room B", value: "conf_b" },
+  { label: "Meeting Room 1", value: "meeting_1" },
+  { label: "Meeting Room 2", value: "meeting_2" },
+  { label: "Storage Room", value: "storage" },
+  { label: "Server Room", value: "server" },
+];
 
 const RepairScreen = () => {
   const { t, i18n } = useTranslation();
@@ -24,6 +73,9 @@ const RepairScreen = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [showImagePickerSheet, setShowImagePickerSheet] = useState(false);
 
   const {
     control,
@@ -35,8 +87,8 @@ const RepairScreen = () => {
   const currentLanguage = i18n.language;
 
   useEffect(() => {
-      setDayJsLocale(currentLanguage);
-      
+    setDayJsLocale(currentLanguage);
+
     if (!getValues("report_date")) {
       setValue("report_date", dayJs().format("YYYY-MM-DD"));
     }
@@ -45,25 +97,107 @@ const RepairScreen = () => {
     }
   }, [setValue, getValues, currentLanguage]);
 
+  const handleCamera = async () => {
+    const { granted } = await ImagePicker.requestCameraPermissionsAsync();
+    if (!granted) {
+      Alert.alert("Permission required", "Camera access is needed");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.7,
+    });
+
+    if (!result.canceled && result.assets?.length > 0) {
+      const uri = result.assets[0].uri;
+      setImages((prev) => [...prev, uri]);
+      setValue("imgUrl", uri); // ✅ ส่งค่าภาพล่าสุดให้ form
+    }
+  };
+
+  const handleGallery = async () => {
+    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!granted) {
+      Alert.alert("Permission required", "Gallery access is needed");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 0.7,
+      allowsMultipleSelection: true,
+      selectionLimit: 5,
+    });
+
+    if (!result.canceled && result.assets?.length > 0) {
+      const uris = result.assets.map((asset) => asset.uri);
+      setImages((prev) => [...prev, ...uris]);
+      setValue("imgUrl", uris[0]); // ✅ เก็บ URI แรกไว้ใน form
+    }
+  };
+
   const onSubmit = (data: IRepairForm) => {
     console.log("Form Data:", data);
+    // Here you would typically upload the image (if imageUri is not null)
+    // to your backend and then submit the form data with the image URL.
     alert("Form Submitted! Check console for data.");
   };
 
-  const getInputStyle = (hasError: boolean) => ({
-    ...styles.input,
-    borderColor: hasError ? "#ef4444" : "#d1d5db",
-    color: colorTheme.colors.text,
-    backgroundColor: colorTheme.colors.card,
-  });
-
-  // Style สำหรับ TextArea
-  const getTextAreaStyle = (hasError: boolean) => ({
-    ...styles.textArea,
-    borderColor: hasError ? "#ef4444" : "#d1d5db",
-    color: colorTheme.colors.text,
-    backgroundColor: colorTheme.colors.card,
-  });
+  const renderPreviewImages = () => {
+    return (
+      <Box mt="3">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HStack space={3} my={2}>
+            {images.map((uri, index) => (
+              <Box key={index}>
+                <Box
+                  shadow={3}
+                  borderRadius="lg"
+                  overflow="hidden"
+                  width={100}
+                  height={100}
+                  position="relative"
+                >
+                  <Image
+                    source={{ uri }}
+                    alt={`Selected ${index}`}
+                    style={{ width: "100%", height: "100%"}}
+                  />
+                </Box>
+                <TouchableOpacity
+                  style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    backgroundColor: "black",
+                    borderRadius: 100,
+                    padding: 5,
+                  }}
+                  onPress={() => {
+                    const filtered = images.filter((_, i) => i !== index);
+                    setImages(filtered);
+                    if (filtered.length > 0) {
+                      setValue("imgUrl", filtered[0]);
+                    } else {
+                      setValue("imgUrl", "");
+                    }
+                  }}
+                >
+                  <Icon
+                    as={MaterialIcons}
+                    name="close"
+                    size="4"
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </Box>
+            ))}
+          </HStack>
+        </ScrollView>
+      </Box>
+    );
+  };
 
   return (
     <React.Fragment>
@@ -76,7 +210,7 @@ const RepairScreen = () => {
           <VStack space={3}>
             {/* Report Information Section */}
             <Text fontSize="md" fontWeight="bold">
-              {t("FORM.REPORT_INFO")}
+              {t("FORM.REPAIR.REPORT_INFO")}
             </Text>
             <VStack
               bg={colorTheme.colors.card}
@@ -85,9 +219,9 @@ const RepairScreen = () => {
               space={4}
             >
               {/* Report Date */}
-              <FormControl isInvalid={!!errors.report_date}>
+              <FormControl isRequired isInvalid={!!errors.report_date}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPORT_DATE")}</Text>
+                  <Text>{t("FORM.REPAIR.REPORT_DATE")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -95,24 +229,24 @@ const RepairScreen = () => {
                   render={({ field: { value }, fieldState: { error } }) => (
                     <>
                       <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                        <View pointerEvents="none">
-                          <TextInput
-                            value={
-                              value ? dayJs(value).format("DD MMM YYYY") : ""
-                            }
-                            editable={false}
-                            placeholder={t("FORM.SELECT_DATE")}
-                            style={getInputStyle(!!error)}
-                            placeholderTextColor="#9ca3af"
-                          />
-                        </View>
+                        <Input
+                          isReadOnly
+                          value={
+                            value ? dayJs(value).format("DD MMM YYYY") : ""
+                          }
+                          placeholder={t("FORM.REPAIR.SELECT_DATE")}
+                          isInvalid={!!error}
+                          borderColor={error ? "#ef4444" : "#d1d5db"}
+                          pointerEvents="none"
+                        />
                       </TouchableOpacity>
+
                       {showDatePicker && (
                         <DateTimePicker
                           value={date}
                           mode="date"
                           display="default"
-                          locale={i18n.language === 'th' ? 'th-TH' : 'en-US'}
+                          locale={i18n.language === "th" ? "th-TH" : "en-US"}
                           onChange={(event, selectedDate) => {
                             setShowDatePicker(false);
                             if (selectedDate) {
@@ -134,9 +268,9 @@ const RepairScreen = () => {
               </FormControl>
 
               {/* Report Time */}
-              <FormControl isInvalid={!!errors.report_time}>
+              <FormControl isRequired isInvalid={!!errors.report_time}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPORT_TIME")}</Text>
+                  <Text>{t("FORM.REPAIR.REPORT_TIME")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -144,16 +278,16 @@ const RepairScreen = () => {
                   render={({ field: { value }, fieldState: { error } }) => (
                     <>
                       <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-                        <View pointerEvents="none">
-                          <TextInput
-                            value={value}
-                            editable={false}
-                            placeholder={t("FORM.SELECT_TIME")}
-                            style={getInputStyle(!!error)}
-                            placeholderTextColor="#9ca3af"
-                          />
-                        </View>
+                        <Input
+                          isReadOnly
+                          value={value}
+                          placeholder={t("FORM.REPAIR.SELECT_TIME")}
+                          isInvalid={!!error}
+                          borderColor={error ? "#ef4444" : "#d1d5db"}
+                          pointerEvents="none"
+                        />
                       </TouchableOpacity>
+
                       {showTimePicker && (
                         <DateTimePicker
                           value={time}
@@ -176,15 +310,16 @@ const RepairScreen = () => {
                     </>
                   )}
                 />
+
                 <FormControl.ErrorMessage>
                   {errors.report_time?.message}
                 </FormControl.ErrorMessage>
               </FormControl>
 
               {/* Name */}
-              <FormControl isInvalid={!!errors.name}>
+              <FormControl isRequired isInvalid={!!errors.name}>
                 <FormControl.Label>
-                  <Text>{t("FORM.NAME")}</Text>
+                  <Text>{t("FORM.REPAIR.NAME")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -193,25 +328,27 @@ const RepairScreen = () => {
                     field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
-                    <TextInput
-                      placeholder={t("FORM.NAME_PLACEHOLDER")}
+                    <Input
+                      placeholder={t("FORM.REPAIR.NAME_PLACEHOLDER")}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      style={getInputStyle(!!error)}
+                      isInvalid={!!error}
+                      borderColor={error ? "#ef4444" : "#d1d5db"}
                       placeholderTextColor="#9ca3af"
                     />
                   )}
                 />
+
                 <FormControl.ErrorMessage>
                   {errors.name?.message}
                 </FormControl.ErrorMessage>
               </FormControl>
 
               {/* Phone */}
-              <FormControl isInvalid={!!errors.phone}>
+              <FormControl isRequired isInvalid={!!errors.phone}>
                 <FormControl.Label>
-                  <Text>{t("FORM.PHONE")}</Text>
+                  <Text>{t("FORM.REPAIR.PHONE")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -220,14 +357,14 @@ const RepairScreen = () => {
                     field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
-                    <TextInput
-                      placeholder={t("FORM.PHONE_PLACEHOLDER")}
-                      keyboardType="phone-pad"
+                    <Input
+                      placeholder={t("FORM.REPAIR.PHONE_PLACEHOLDER")} // Changed placeholder
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      style={getInputStyle(!!error)}
-                      placeholderTextColor="#9ca3af"
+                      isInvalid={!!error}
+                      borderColor={error ? "#ef4444" : "#d1d5db"}
+                      keyboardType="phone-pad" // Added keyboardType for phone numbers
                     />
                   )}
                 />
@@ -239,7 +376,7 @@ const RepairScreen = () => {
 
             {/* Location Information Section */}
             <Text fontSize="md" fontWeight="bold" mt="5">
-              {t("FORM.LOCATION_INFO")}
+              {t("FORM.REPAIR.LOCATION_INFO")}
             </Text>
             <VStack
               bg={colorTheme.colors.card}
@@ -248,25 +385,37 @@ const RepairScreen = () => {
               space={4}
             >
               {/* Building */}
-              <FormControl isInvalid={!!errors.building}>
+              <FormControl isRequired isInvalid={!!errors.building}>
                 <FormControl.Label>
-                  <Text>{t("FORM.BUILDING")}</Text>
+                  <Text>{t("FORM.REPAIR.BUILDING")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
                   name="building"
                   render={({
-                    field: { onChange, onBlur, value },
+                    field: { onChange, value },
                     fieldState: { error },
                   }) => (
-                    <TextInput
-                      placeholder={t("FORM.BUILDING_PLACEHOLDER")}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      style={getInputStyle(!!error)}
-                      placeholderTextColor="#9ca3af"
-                    />
+                    <Select
+                      selectedValue={value}
+                      accessibilityLabel={t("FORM.REPAIR.BUILDING_PLACEHOLDER")}
+                      placeholder={t("FORM.REPAIR.BUILDING_PLACEHOLDER")}
+                      _selectedItem={{
+                        bg: colorTheme.colors.secondary,
+                        endIcon: <CheckIcon size="5" color="teal.600" />,
+                      }}
+                      mt={1}
+                      onValueChange={onChange}
+                      borderColor={error ? "#ef4444" : "#d1d5db"}
+                    >
+                      {mockBuildings.map((building) => (
+                        <Select.Item
+                          key={building.value}
+                          label={building.label}
+                          value={building.value}
+                        />
+                      ))}
+                    </Select>
                   )}
                 />
                 <FormControl.ErrorMessage>
@@ -275,26 +424,37 @@ const RepairScreen = () => {
               </FormControl>
 
               {/* Floor */}
-              <FormControl isInvalid={!!errors.floor}>
+              <FormControl isRequired isInvalid={!!errors.floor}>
                 <FormControl.Label>
-                  <Text>{t("FORM.FLOOR")}</Text>
+                  <Text>{t("FORM.REPAIR.FLOOR")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
                   name="floor"
                   render={({
-                    field: { onChange, onBlur, value },
+                    field: { onChange, value },
                     fieldState: { error },
                   }) => (
-                    <TextInput
-                      placeholder={t("FORM.FLOOR_PLACEHOLDER")}
-                      keyboardType="numeric"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      style={getInputStyle(!!error)}
-                      placeholderTextColor="#9ca3af"
-                    />
+                    <Select
+                      selectedValue={value}
+                      accessibilityLabel={t("FORM.REPAIR.FLOOR_PLACEHOLDER")}
+                      placeholder={t("FORM.REPAIR.FLOOR_PLACEHOLDER")}
+                      _selectedItem={{
+                        bg: colorTheme.colors.secondary,
+                        endIcon: <CheckIcon size="5" color="teal.600" />,
+                      }}
+                      mt={1}
+                      onValueChange={onChange}
+                      borderColor={error ? "#ef4444" : "#d1d5db"}
+                    >
+                      {mockFloors.map((floor) => (
+                        <Select.Item
+                          key={floor.value}
+                          label={floor.label}
+                          value={floor.value}
+                        />
+                      ))}
+                    </Select>
                   )}
                 />
                 <FormControl.ErrorMessage>
@@ -303,25 +463,37 @@ const RepairScreen = () => {
               </FormControl>
 
               {/* Room */}
-              <FormControl isInvalid={!!errors.room}>
+              <FormControl isRequired isInvalid={!!errors.room}>
                 <FormControl.Label>
-                  <Text>{t("FORM.ROOM")}</Text>
+                  <Text>{t("FORM.REPAIR.ROOM")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
                   name="room"
                   render={({
-                    field: { onChange, onBlur, value },
+                    field: { onChange, value },
                     fieldState: { error },
                   }) => (
-                    <TextInput
-                      placeholder={t("FORM.ROOM_PLACEHOLDER")}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      style={getInputStyle(!!error)}
-                      placeholderTextColor="#9ca3af"
-                    />
+                    <Select
+                      selectedValue={value}
+                      accessibilityLabel={t("FORM.REPAIR.ROOM_PLACEHOLDER")}
+                      placeholder={t("FORM.REPAIR.ROOM_PLACEHOLDER")}
+                      _selectedItem={{
+                        bg: colorTheme.colors.secondary,
+                        endIcon: <CheckIcon size="5" color="teal.600" />,
+                      }}
+                      mt={1}
+                      onValueChange={onChange}
+                      borderColor={error ? "#ef4444" : "#d1d5db"}
+                    >
+                      {mockRooms.map((room) => (
+                        <Select.Item
+                          key={room.value}
+                          label={room.label}
+                          value={room.value}
+                        />
+                      ))}
+                    </Select>
                   )}
                 />
                 <FormControl.ErrorMessage>
@@ -332,7 +504,7 @@ const RepairScreen = () => {
 
             {/* Description and Image Section */}
             <Text fontSize="md" fontWeight="bold" mt="5">
-              {t("FORM.PROBLEM_DETAILS")}
+              {t("FORM.REPAIR.PROBLEM_DETAILS")}
             </Text>
             <VStack
               bg={colorTheme.colors.card}
@@ -341,9 +513,9 @@ const RepairScreen = () => {
               space={4}
             >
               {/* Description */}
-              <FormControl isInvalid={!!errors.desc}>
+              <FormControl isRequired isInvalid={!!errors.desc}>
                 <FormControl.Label>
-                  <Text>{t("FORM.DESCRIPTION")}</Text>
+                  <Text>{t("FORM.REPAIR.DESCRIPTION")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -352,15 +524,17 @@ const RepairScreen = () => {
                     field: { onChange, onBlur, value },
                     fieldState: { error },
                   }) => (
-                    <TextInput
-                      placeholder={t("FORM.DESCRIPTION_PLACEHOLDER")}
+                    <TextArea
+                      placeholder={t("FORM.REPAIR.DESCRIPTION_PLACEHOLDER")}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
-                      multiline
-                      numberOfLines={4}
-                      style={getTextAreaStyle(!!error)}
-                      placeholderTextColor="#9ca3af"
+                      isInvalid={!!error}
+                      borderColor={error ? "#ef4444" : "#d1d5db"}
+                      totalLines={4}
+                      tvParallaxProperties={undefined}
+                      onTextInput={undefined}
+                      autoCompleteType={undefined}
                     />
                   )}
                 />
@@ -369,28 +543,63 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Image URL */}
+              {/* Image Upload */}
               <FormControl isInvalid={!!errors.imgUrl}>
                 <FormControl.Label>
-                  <Text>{t("FORM.IMAGE_URL")}</Text>
+                  <Text>{t("FORM.REPAIR.IMAGE_URL")}</Text>
                 </FormControl.Label>
-                <Controller
-                  control={control}
-                  name="imgUrl"
-                  render={({
-                    field: { onChange, onBlur, value },
-                    fieldState: { error },
-                  }) => (
-                    <TextInput
-                      placeholder={t("FORM.IMAGE_URL_PLACEHOLDER")}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      style={getInputStyle(!!error)}
-                      placeholderTextColor="#9ca3af"
-                    />
-                  )}
-                />
+                <Button
+                  variant="outline"
+                  borderRadius={10}
+                  borderColor={colorTheme.colors.primary}
+                  _text={{ color: colorTheme.colors.primary }}
+                  onPress={() => setShowImagePickerSheet(true)}
+                >
+                  {imageUri
+                    ? t("FORM.REPAIR.CHANGE_IMAGE")
+                    : t("FORM.REPAIR.UPLOAD_IMAGE")}
+                </Button>
+                <Actionsheet
+                  isOpen={showImagePickerSheet}
+                  onClose={() => setShowImagePickerSheet(false)}
+                >
+                  <Actionsheet.Content>
+                    <Actionsheet.Item
+                      startIcon={
+                        <Icon
+                          as={MaterialIcons}
+                          name="camera-alt"
+                          size="6"
+                          color="primary.500"
+                        />
+                      }
+                      onPress={() => {
+                        setShowImagePickerSheet(false);
+                        handleCamera();
+                      }}
+                    >
+                      {t("FORM.REPAIR.CAMERA")}
+                    </Actionsheet.Item>
+                    <Actionsheet.Item
+                      startIcon={
+                        <Icon
+                          as={MaterialIcons}
+                          name="photo-library"
+                          size="6"
+                          color="primary.500"
+                        />
+                      }
+                      onPress={() => {
+                        setShowImagePickerSheet(false);
+                        handleGallery();
+                      }}
+                    >
+                      {t("FORM.REPAIR.PHOTO_LIBRARY")}
+                    </Actionsheet.Item>
+                  </Actionsheet.Content>
+                </Actionsheet>
+                {/* Preview images */}
+                {images.length > 0 && renderPreviewImages()}
                 <FormControl.ErrorMessage>
                   {errors.imgUrl?.message}
                 </FormControl.ErrorMessage>
@@ -406,7 +615,7 @@ const RepairScreen = () => {
               _text={{ color: "white" }}
               onPress={handleSubmit(onSubmit)}
             >
-              {t("FORM.SUBMIT")}
+              {t("FORM.REPAIR.SUBMIT")}
             </Button>
           </VStack>
         </VStack>
@@ -414,22 +623,5 @@ const RepairScreen = () => {
     </React.Fragment>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 48,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    backgroundColor: "#ffffff",
-  },
-  textArea: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 16,
-    textAlignVertical: "top",
-    backgroundColor: "#ffffff",
-  },
-});
 
 export default RepairScreen;

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { extendTheme, NativeBaseProvider } from "native-base";
+import { extendTheme, Input, NativeBaseProvider, TextArea } from "native-base";
 import {
   useFonts,
   Prompt_400Regular,
@@ -12,7 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 if (__DEV__) {
   const originalWarn = console.warn;
   console.warn = (...args) => {
-    if (args[0]?.includes?.('SSRProvider is not necessary')) {
+    if (args[0]?.includes?.("SSRProvider is not necessary")) {
       return;
     }
     originalWarn(...args);
@@ -53,6 +53,44 @@ const lightTheme = extendTheme({
   },
   fontConfig: fontConfig,
   fonts: fonts,
+  components: {
+    Input: {
+      baseStyle: {
+        borderRadius: 10,
+        backgroundColor: "#ffffff",
+        color: "#333333",
+        placeholderTextColor: "#9ca3af",
+        _focus: {
+          borderColor: "#006B9F",
+          backgroundColor: "#ffffff",
+        },
+      },
+    },
+    TextArea: {
+      baseStyle: {
+        borderRadius: 10,
+        backgroundColor: "#ffffff",
+        color: "#333333",
+        placeholderTextColor: "#9ca3af",
+        _focus: {
+          borderColor: "#006B9F",
+          backgroundColor: "#ffffff",
+        },
+      },
+    },
+    Select: {
+      baseStyle: {
+        borderRadius: 10,
+        backgroundColor: "#ffffff",
+        color: "#333333",
+        placeholderTextColor: "#9ca3af",
+        _focus: {
+          borderColor: "#006B9F",
+          backgroundColor: "#ffffff",
+        },
+      },
+    }
+  },
 });
 
 const darkTheme = extendTheme({

@@ -13,9 +13,9 @@
   "APP_BAR": {
     "WELCOME": "Welcome to"
   },
-  "SCREENS":{
-    "HOME":"Home",
-    "SETTINGS":"Settings"
+  "SCREENS": {
+    "HOME": "Home",
+    "SETTINGS": "Settings"
   },
   "MAIN": {
     "REPAIR_SUMMARY": "Repair Summary",
@@ -28,37 +28,58 @@
     "IN_PROGRESS": "in progress",
     "COMPLETED": "completed"
   },
-  "MENU":{
-    "REPAIR_REQ":"Repair Request",
-    "REPAIR_REQ_HISTORY":"History",
-    "SUBMIT_REPAIR_REQ":"Submit Repair"
+  "MENU": {
+    "REPAIR_REQ": "Repair Request",
+    "REPAIR_REQ_HISTORY": "History",
+    "SUBMIT_REPAIR_REQ": "Submit Repair"
   },
-  "BUILDING":"Building",
-  "FLOOR":"Floor",
-  "ROOM":"Room",
-   "FORM": {
-    "REPORT_INFO": "Report Information",
-    "REPORT_DATE": "Report Date",
-    "SELECT_DATE": "Select Date",
-    "REPORT_TIME": "Report Time",
-    "SELECT_TIME": "Select Time",
-    "NAME": "Name",
-    "NAME_PLACEHOLDER": "Enter your name",
-    "PHONE": "Phone Number",
-    "PHONE_PLACEHOLDER": "Enter your phone number",
-    "LOCATION_INFO": "Location Information",
-    "BUILDING": "Building",
-    "BUILDING_PLACEHOLDER": "Enter building name",
-    "FLOOR": "Floor",
-    "FLOOR_PLACEHOLDER": "Enter floor number",
-    "ROOM": "Room",
-    "ROOM_PLACEHOLDER": "Enter room number",
-    "PROBLEM_DETAILS": "Problem Details",
-    "DESCRIPTION": "Description",
-    "DESCRIPTION_PLACEHOLDER": "Describe the problem in detail",
-    "IMAGE_URL": "Image URL",
-    "IMAGE_URL_PLACEHOLDER": "Optional: URL of an image related to the problem",
-    "SUBMIT": "Submit Request"
+  "BUILDING": "Building",
+  "FLOOR": "Floor",
+  "ROOM": "Room",
+  "FORM": {
+    "REPAIR": {
+      "REPORT_INFO": "Report Information",
+      "REPORT_DATE": "Report Date",
+      "SELECT_DATE": "Select Date",
+      "REPORT_TIME": "Report Time",
+      "SELECT_TIME": "Select Time",
+      "NAME": "Name",
+      "NAME_PLACEHOLDER": "Enter your name",
+      "PHONE": "Phone Number",
+      "PHONE_PLACEHOLDER": "Enter your phone number",
+      "LOCATION_INFO": "Location Information",
+      "BUILDING": "Building",
+      "BUILDING_PLACEHOLDER": "Enter building name",
+      "FLOOR": "Floor",
+      "FLOOR_PLACEHOLDER": "Enter floor number",
+      "ROOM": "Room",
+      "ROOM_PLACEHOLDER": "Enter room number",
+      "PROBLEM_DETAILS": "Problem Details",
+      "DESCRIPTION": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Describe the problem in detail",
+      "IMAGE_URL": "Take/Upload PhotoL",
+      "IMAGE_URL_PLACEHOLDER": "Optional: URL of an image related to the problem",
+      "UPLOAD_IMAGE_TITLE": "Upload Image",
+      "UPLOAD_IMAGE_MESSAGE": "Choose an option to upload an image",
+      "CAMERA": "Take Photo",
+      "PHOTO_LIBRARY": "Choose from Library",
+      "IMAGE": "Image",
+      "CHANGE_IMAGE": "Change Image",
+      "UPLOAD_IMAGE": "Upload Image",
+      "SUBMIT": "Submit Request",
+      "VALIDATION": {
+        "DATE": "Date is required",
+        "TIME": "Time is required",
+        "NAME": "Name is required",
+        "PHONE": "Phone number is required",
+        "BUILDING": "Building is required",
+        "FLOOR": "Floor is required",
+        "ROOM": "Room is required",
+        "DESCRIPTION": "Description is required"
+      }
+    }
+  },
+  "COMMON": {
+    "CANCEL": "Cancel"
   }
-  
 }
