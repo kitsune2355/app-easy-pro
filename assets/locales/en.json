@@ -67,6 +67,8 @@
       "CHANGE_IMAGE": "Change Image",
       "UPLOAD_IMAGE": "Upload Image",
       "SUBMIT": "Submit Request",
+      "SUBMIT_SUCCESS_TITLE": "Successfully",
+      "SUBMIT_SUCCESS_DESC": "Your request has been submitted successfully",
       "VALIDATION": {
         "DATE": "Date is required",
         "TIME": "Time is required",

@@ -67,6 +67,8 @@
       "CHANGE_IMAGE": "เปลี่ยนรูปภาพ",
       "UPLOAD_IMAGE": "อัพโหลดรูปภาพ",
       "SUBMIT": "ส่งคำขอ",
+      "SUBMIT_SUCCESS_TITLE": "ส่งคำขอสำเร็จ",
+      "SUBMIT_SUCCESS_DESC": "คำขอของคุณถูกส่งไปแล้ว",
       "VALIDATION": {
         "DATE": "กรุณาเลือกวันที่",
         "TIME": "กรุณาเลือกเวลา",

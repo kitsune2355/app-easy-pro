@@ -17,7 +17,6 @@ import {
   HStack,
   ScrollView,
   Image,
-  useToast,
 } from "native-base";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -72,7 +71,6 @@ const RepairScreen = () => {
   const { t, i18n } = useTranslation();
   const { colorTheme } = useTheme();
   const dispatch = useDispatch();
-  const toast = useToast();
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -100,7 +98,7 @@ const RepairScreen = () => {
       setValue("report_time", dayJs().format("HH:mm"));
     }
     if (!getValues("imgUrl")) {
-        setValue("imgUrl", []);
+      setValue("imgUrl", []);
     }
   }, [setValue, getValues, currentLanguage]);
 
@@ -147,48 +145,52 @@ const RepairScreen = () => {
       setValue("imgUrl", newImages);
     }
     setShowImagePickerSheet(false);
-  };  const onSubmit = async (data: IRepairForm) => {
-    console.log("Form Data:", data);
-    try {
-      const result = await dispatch(submitRepairForm(data) as any);
-      if (result && result.status === 'success') {
-        toast.show({
-          title: t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
-          description: t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
-          variant: "success",
-          duration: 3000,
-          placement: "top",
-        });
-        setValue("report_date", dayJs().format("YYYY-MM-DD"));
-        setValue("report_time", dayJs().format("HH:mm"));
-        setValue("name", "");
-        setValue("phone", "");
-        setValue("building", "");
-        setValue("floor", "");
-        setValue("room", "");
-        setValue("desc", "");
-        setValue("imgUrl", []);
-        setImages([]);
-      } else {
-        toast.show({
-          title: t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
-          description: result?.message || t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
-          variant: "error",
-          duration: 3000,
-          placement: "top",
-        });
-      }
-    } catch (error: any) {
-      console.error("Error submitting repair form:", error);
-      toast.show({
-        title: t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
-        description: error.message || t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
-        variant: "error",
-        duration: 3000,
-        placement: "top",
-      });
-    }
   };
+
+  const onSubmit = async (data: IRepairForm) => {
+  console.log("Form Data:", data);
+  try {
+    const result = await dispatch(submitRepairForm(data) as any);
+    if (result && result.status === "success") {
+      Alert.alert(
+        t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
+        t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              // Reset form after user clicks OK
+              setValue("report_date", dayJs().format("YYYY-MM-DD"));
+              setValue("report_time", dayJs().format("HH:mm"));
+              setValue("name", "");
+              setValue("phone", "");
+              setValue("building", "");
+              setValue("floor", "");
+              setValue("room", "");
+              setValue("desc", "");
+              setValue("imgUrl", []);
+              setImages([]);
+            }
+          }
+        ]
+      );
+    } else {
+      Alert.alert(
+        t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
+        result?.message || t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
+        [{ text: "OK" }]
+      );
+    }
+  } catch (error: any) {
+    console.error("Error submitting repair form:", error);
+    Alert.alert(
+      t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
+      error.message || t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
+      [{ text: "OK" }]
+    );
+  }
+};
+
   const renderPreviewImages = () => {
     return (
       <Box mt="3">

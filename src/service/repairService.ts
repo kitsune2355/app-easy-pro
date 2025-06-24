@@ -3,6 +3,7 @@ import { setRepairs, setLoading, setError } from '../redux/repairSlice';
 import { AppDispatch } from '../store';
 import { env } from '../config/environment';
 import { IRepairForm } from '../interfaces/form/repairForm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const fetchAllRepairs = () => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
@@ -18,8 +19,15 @@ export const fetchAllRepairs = () => async (dispatch: AppDispatch) => {
 
 export const submitRepairForm = (form: IRepairForm) => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
-
+  
   try {
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const user = userInfoString ? JSON.parse(userInfoString) : null;
+    
+    if (!user || !user.id) {
+      throw new Error('User information not found');
+    }
+
     const formData = new FormData();
     formData.append('reportDate', form.report_date);
     formData.append('reportTime', form.report_time);
@@ -29,6 +37,7 @@ export const submitRepairForm = (form: IRepairForm) => async (dispatch: AppDispa
     formData.append('floor', form.floor);
     formData.append('room', form.room);
     formData.append('problemDetail', form.desc);
+    formData.append('createdBy', user.id);
 
     const imgUrlsArray = Array.isArray(form.imgUrl) ? form.imgUrl : (form.imgUrl ? [form.imgUrl] : []);
 
@@ -71,3 +80,4 @@ export const submitRepairForm = (form: IRepairForm) => async (dispatch: AppDispa
     dispatch(setLoading(false));
   }
 };
+
