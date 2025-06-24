@@ -7,5 +7,5 @@ export interface IRepairForm {
   floor: string;
   room: string;
   desc: string;
-  imgUrl: string;
+  imgUrl?:File[] | string[];
 }

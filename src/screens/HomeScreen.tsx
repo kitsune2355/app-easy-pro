@@ -19,11 +19,12 @@ import {
   statusItems,
 } from "../constant/ConstantItem";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchRepairs } from "../service/repairService";
+import { fetchAllRepairs } from "../service/repairService";
 import { AppDispatch } from "../store";
 import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { dayJs } from "../config/dayJs";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ const HomeScreen: React.FC = () => {
   useDoubleBackExit();
 
   useEffect(() => {
-    dispatch(fetchRepairs());
+    dispatch(fetchAllRepairs());
   }, [dispatch]);
 
   const renderDashboardItem = () => (
@@ -144,8 +145,7 @@ const HomeScreen: React.FC = () => {
     return (
       <>
         {repairs.slice(0, 3).map((item, key) => {
-          const status =
-            statusItems[(item.status as keyof typeof statusItems)]
+          const status = statusItems[item.status as keyof typeof statusItems];
 
           return (
             <Box
@@ -208,10 +208,11 @@ const HomeScreen: React.FC = () => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                   >
-                    {t('BUILDING')} {item.building}, {t('FLOOR')} {item.floor}, {t('ROOM')} {item.room}
+                    {t("BUILDING")} {item.building}, {t("FLOOR")} {item.floor},{" "}
+                    {t("ROOM")} {item.room}
                   </Text>
                   <Text color="gray.500" fontSize="xs">
-                    2025/06/18 12:00
+                    {dayJs(item.created_at).format("DD MMM YYYY, HH:mm น.")}
                   </Text>
                 </VStack>
               </HStack>

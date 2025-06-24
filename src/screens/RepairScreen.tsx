@@ -17,6 +17,7 @@ import {
   HStack,
   ScrollView,
   Image,
+  useToast,
 } from "native-base";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -27,13 +28,15 @@ import { Controller } from "react-hook-form";
 import { dayJs, setDayJsLocale } from "../config/dayJs";
 import * as ImagePicker from "expo-image-picker";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { submitRepairForm } from "../service/repairService";
+import { useDispatch } from "react-redux";
 
 const mockBuildings = [
-  { label: "Building A", value: "building_a" },
-  { label: "Building B", value: "building_b" },
-  { label: "Building C", value: "building_c" },
-  { label: "Main Building", value: "main_building" },
-  { label: "Annex Building", value: "annex_building" },
+  { label: "A", value: "building_a" },
+  { label: "B", value: "building_b" },
+  { label: "C", value: "building_c" },
+  { label: "Main", value: "main_building" },
+  { label: "Annex", value: "annex_building" },
 ];
 
 const mockFloors = [
@@ -68,12 +71,13 @@ const mockRooms = [
 const RepairScreen = () => {
   const { t, i18n } = useTranslation();
   const { colorTheme } = useTheme();
+  const dispatch = useDispatch();
+  const toast = useToast();
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
-  const [imageUri, setImageUri] = useState<string | null>(null);
   const [images, setImages] = useState<string[]>([]);
   const [showImagePickerSheet, setShowImagePickerSheet] = useState(false);
 
@@ -95,12 +99,16 @@ const RepairScreen = () => {
     if (!getValues("report_time")) {
       setValue("report_time", dayJs().format("HH:mm"));
     }
+    if (!getValues("imgUrl")) {
+        setValue("imgUrl", []);
+    }
   }, [setValue, getValues, currentLanguage]);
 
   const handleCamera = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
     if (!granted) {
       Alert.alert("Permission required", "Camera access is needed");
+      setShowImagePickerSheet(false);
       return;
     }
 
@@ -111,15 +119,17 @@ const RepairScreen = () => {
 
     if (!result.canceled && result.assets?.length > 0) {
       const uri = result.assets[0].uri;
-      setImages((prev) => [...prev, uri]);
-      setValue("imgUrl", uri); // ✅ ส่งค่าภาพล่าสุดให้ form
+      const newImages = [...images, uri];
+      setImages(newImages);
+      setValue("imgUrl", newImages);
     }
+    setShowImagePickerSheet(false);
   };
-
   const handleGallery = async () => {
     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!granted) {
       Alert.alert("Permission required", "Gallery access is needed");
+      setShowImagePickerSheet(false);
       return;
     }
 
@@ -132,18 +142,53 @@ const RepairScreen = () => {
 
     if (!result.canceled && result.assets?.length > 0) {
       const uris = result.assets.map((asset) => asset.uri);
-      setImages((prev) => [...prev, ...uris]);
-      setValue("imgUrl", uris[0]); // ✅ เก็บ URI แรกไว้ใน form
+      const newImages = [...images, ...uris];
+      setImages(newImages);
+      setValue("imgUrl", newImages);
+    }
+    setShowImagePickerSheet(false);
+  };  const onSubmit = async (data: IRepairForm) => {
+    console.log("Form Data:", data);
+    try {
+      const result = await dispatch(submitRepairForm(data) as any);
+      if (result && result.status === 'success') {
+        toast.show({
+          title: t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
+          description: t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
+          variant: "success",
+          duration: 3000,
+          placement: "top",
+        });
+        setValue("report_date", dayJs().format("YYYY-MM-DD"));
+        setValue("report_time", dayJs().format("HH:mm"));
+        setValue("name", "");
+        setValue("phone", "");
+        setValue("building", "");
+        setValue("floor", "");
+        setValue("room", "");
+        setValue("desc", "");
+        setValue("imgUrl", []);
+        setImages([]);
+      } else {
+        toast.show({
+          title: t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
+          description: result?.message || t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
+          variant: "error",
+          duration: 3000,
+          placement: "top",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error submitting repair form:", error);
+      toast.show({
+        title: t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
+        description: error.message || t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
+        variant: "error",
+        duration: 3000,
+        placement: "top",
+      });
     }
   };
-
-  const onSubmit = (data: IRepairForm) => {
-    console.log("Form Data:", data);
-    // Here you would typically upload the image (if imageUri is not null)
-    // to your backend and then submit the form data with the image URL.
-    alert("Form Submitted! Check console for data.");
-  };
-
   const renderPreviewImages = () => {
     return (
       <Box mt="3">
@@ -160,9 +205,9 @@ const RepairScreen = () => {
                   position="relative"
                 >
                   <Image
-                    source={{ uri }}
+                    source={{ uri: uri.toString() }}
                     alt={`Selected ${index}`}
-                    style={{ width: "100%", height: "100%"}}
+                    style={{ width: "100%", height: "100%" }}
                   />
                 </Box>
                 <TouchableOpacity
@@ -175,13 +220,11 @@ const RepairScreen = () => {
                     padding: 5,
                   }}
                   onPress={() => {
-                    const filtered = images.filter((_, i) => i !== index);
+                    const filtered = images.filter(
+                      (_, i) => i !== index
+                    ) as string[];
                     setImages(filtered);
-                    if (filtered.length > 0) {
-                      setValue("imgUrl", filtered[0]);
-                    } else {
-                      setValue("imgUrl", "");
-                    }
+                    setValue("imgUrl", filtered);
                   }}
                 >
                   <Icon
@@ -208,7 +251,6 @@ const RepairScreen = () => {
       <ScreenWrapper>
         <VStack bg={colorTheme.colors.background}>
           <VStack space={3}>
-            {/* Report Information Section */}
             <Text fontSize="md" fontWeight="bold">
               {t("FORM.REPAIR.REPORT_INFO")}
             </Text>
@@ -218,7 +260,6 @@ const RepairScreen = () => {
               p="5"
               space={4}
             >
-              {/* Report Date */}
               <FormControl isRequired isInvalid={!!errors.report_date}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.REPORT_DATE")}</Text>
@@ -267,7 +308,6 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Report Time */}
               <FormControl isRequired isInvalid={!!errors.report_time}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.REPORT_TIME")}</Text>
@@ -316,7 +356,6 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Name */}
               <FormControl isRequired isInvalid={!!errors.name}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.NAME")}</Text>
@@ -345,7 +384,6 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Phone */}
               <FormControl isRequired isInvalid={!!errors.phone}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.PHONE")}</Text>
@@ -358,13 +396,13 @@ const RepairScreen = () => {
                     fieldState: { error },
                   }) => (
                     <Input
-                      placeholder={t("FORM.REPAIR.PHONE_PLACEHOLDER")} // Changed placeholder
+                      placeholder={t("FORM.REPAIR.PHONE_PLACEHOLDER")}
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
                       isInvalid={!!error}
                       borderColor={error ? "#ef4444" : "#d1d5db"}
-                      keyboardType="phone-pad" // Added keyboardType for phone numbers
+                      keyboardType="phone-pad"
                     />
                   )}
                 />
@@ -374,7 +412,6 @@ const RepairScreen = () => {
               </FormControl>
             </VStack>
 
-            {/* Location Information Section */}
             <Text fontSize="md" fontWeight="bold" mt="5">
               {t("FORM.REPAIR.LOCATION_INFO")}
             </Text>
@@ -384,7 +421,6 @@ const RepairScreen = () => {
               p="5"
               space={4}
             >
-              {/* Building */}
               <FormControl isRequired isInvalid={!!errors.building}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.BUILDING")}</Text>
@@ -423,7 +459,6 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Floor */}
               <FormControl isRequired isInvalid={!!errors.floor}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.FLOOR")}</Text>
@@ -462,7 +497,6 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Room */}
               <FormControl isRequired isInvalid={!!errors.room}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.ROOM")}</Text>
@@ -502,7 +536,6 @@ const RepairScreen = () => {
               </FormControl>
             </VStack>
 
-            {/* Description and Image Section */}
             <Text fontSize="md" fontWeight="bold" mt="5">
               {t("FORM.REPAIR.PROBLEM_DETAILS")}
             </Text>
@@ -512,7 +545,6 @@ const RepairScreen = () => {
               p="5"
               space={4}
             >
-              {/* Description */}
               <FormControl isRequired isInvalid={!!errors.desc}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.DESCRIPTION")}</Text>
@@ -543,7 +575,6 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              {/* Image Upload */}
               <FormControl isInvalid={!!errors.imgUrl}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.IMAGE_URL")}</Text>
@@ -555,9 +586,7 @@ const RepairScreen = () => {
                   _text={{ color: colorTheme.colors.primary }}
                   onPress={() => setShowImagePickerSheet(true)}
                 >
-                  {imageUri
-                    ? t("FORM.REPAIR.CHANGE_IMAGE")
-                    : t("FORM.REPAIR.UPLOAD_IMAGE")}
+                  {t("FORM.REPAIR.UPLOAD_IMAGE")}
                 </Button>
                 <Actionsheet
                   isOpen={showImagePickerSheet}
@@ -598,7 +627,6 @@ const RepairScreen = () => {
                     </Actionsheet.Item>
                   </Actionsheet.Content>
                 </Actionsheet>
-                {/* Preview images */}
                 {images.length > 0 && renderPreviewImages()}
                 <FormControl.ErrorMessage>
                   {errors.imgUrl?.message}
@@ -606,7 +634,6 @@ const RepairScreen = () => {
               </FormControl>
             </VStack>
 
-            {/* Submit Button */}
             <Button
               mt="5"
               mb="10"
