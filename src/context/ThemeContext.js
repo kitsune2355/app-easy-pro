@@ -9,10 +9,21 @@ import {
 
 import { LinearGradient } from "expo-linear-gradient";
 
+if (__DEV__) {
+  const originalWarn = console.warn;
+  console.warn = (...args) => {
+    if (args[0]?.includes?.('SSRProvider is not necessary')) {
+      return;
+    }
+    originalWarn(...args);
+  };
+}
+
 const config = {
   dependencies: {
     "linear-gradient": LinearGradient,
   },
+  suppressColorAccessibilityWarning: true,
 };
 
 const fontConfig = {

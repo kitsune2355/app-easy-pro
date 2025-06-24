@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomTabParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import HomeScreen from "../screens/HomeScreen";
@@ -27,7 +27,7 @@ export const tabRoutes = [
 ];
 
 const MainBottomTab: React.FC = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { colorTheme } = useTheme();
 
   return (
@@ -52,11 +52,6 @@ const MainBottomTab: React.FC = () => {
         <Tab.Screen
           key={route.name}
           name={route.name as keyof BottomTabParamsList}
-          component={() => (
-            <ScreenWrapper>
-              {React.createElement(route.component)}
-            </ScreenWrapper>
-          )}
           options={{
             title: t(`SCREENS.${route.name}`),
             tabBarIcon: ({ focused, color, size }) => {
@@ -71,7 +66,13 @@ const MainBottomTab: React.FC = () => {
               );
             },
           }}
-        />
+        >
+          {() => (
+            <ScreenWrapper>
+              {React.createElement(route.component)}
+            </ScreenWrapper>
+          )}
+        </Tab.Screen>
       ))}
     </Tab.Navigator>
   );

@@ -192,7 +192,7 @@ const LoginScreen = () => {
         </Button>
       </VStack>
 
-      <Center pb={4}>
+      <Center safeAreaBottom pb={2}>
         <Text color="white" fontSize="xs">
           {t("PROACTIVE")}
         </Text>

@@ -15,7 +15,7 @@
   },
   "SCREENS":{
     "HOME":"หน้าหลัก",
-    "SETTING":"ตั้งค่า"
+    "SETTINGS":"ตั้งค่า"
   },
   "MAIN":{
     "REPAIR_SUMMARY":"ภาพรวมงานซ่อม",
@@ -33,7 +33,31 @@
     "REPAIR_REQ_HISTORY":"ประวัติ",
     "SUBMIT_REPAIR_REQ":"ส่งงาน"
   },
-  "BUILDING":"Building",
-  "FLOOR":"Floor",
-  "ROOM":"Room"
+  "BUILDING":"อาคาร",
+  "FLOOR":"ชั้น",
+  "ROOM":"ห้อง",
+  "FORM": {
+    "REPORT_INFO": "ข้อมูลการแจ้ง",
+    "REPORT_DATE": "วันที่แจ้ง",
+    "SELECT_DATE": "เลือกวันที่",
+    "REPORT_TIME": "เวลาที่แจ้ง",
+    "SELECT_TIME": "เลือกเวลา",
+    "NAME": "ชื่อผู้แจ้ง",
+    "NAME_PLACEHOLDER": "กรอกชื่อของคุณ",
+    "PHONE": "เบอร์โทรศัพท์",
+    "PHONE_PLACEHOLDER": "กรอกเบอร์โทรศัพท์ของคุณ",
+    "LOCATION_INFO": "ข้อมูลสถานที่",
+    "BUILDING": "อาคาร",
+    "BUILDING_PLACEHOLDER": "กรอกชื่ออาคาร",
+    "FLOOR": "ชั้น",
+    "FLOOR_PLACEHOLDER": "กรอกหมายเลขชั้น",
+    "ROOM": "ห้อง",
+    "ROOM_PLACEHOLDER": "กรอกหมายเลขห้อง",
+    "PROBLEM_DETAILS": "รายละเอียดปัญหา",
+    "DESCRIPTION": "คำอธิบาย",
+    "DESCRIPTION_PLACEHOLDER": "อธิบายปัญหาโดยละเอียด",
+    "IMAGE_URL": "ลิงก์รูปภาพ",
+    "IMAGE_URL_PLACEHOLDER": "ไม่บังคับ: ลิงก์รูปภาพที่เกี่ยวข้องกับปัญหา",
+    "SUBMIT": "ส่งคำขอ"
+  }
 }
