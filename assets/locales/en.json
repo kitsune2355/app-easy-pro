@@ -69,6 +69,9 @@
       "SUBMIT": "Submit Request",
       "SUBMIT_SUCCESS_TITLE": "Successfully",
       "SUBMIT_SUCCESS_DESC": "Your request has been submitted successfully",
+      "SUBMIT_ERROR_TITLE": "Error",
+      "SUBMIT_ERROR_DESC": "An error occurred while submitting your request. Please try again later.",
+      "SUBMITTING": "Submitting...",
       "VALIDATION": {
         "DATE": "Date is required",
         "TIME": "Time is required",

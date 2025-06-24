@@ -17,6 +17,8 @@ import {
   HStack,
   ScrollView,
   Image,
+  Spinner,
+  Center,
 } from "native-base";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -78,6 +80,7 @@ const RepairScreen = () => {
   const [time, setTime] = useState(new Date());
   const [images, setImages] = useState<string[]>([]);
   const [showImagePickerSheet, setShowImagePickerSheet] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -148,48 +151,50 @@ const RepairScreen = () => {
   };
 
   const onSubmit = async (data: IRepairForm) => {
-  console.log("Form Data:", data);
-  try {
-    const result = await dispatch(submitRepairForm(data) as any);
-    if (result && result.status === "success") {
-      Alert.alert(
-        t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
-        t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              // Reset form after user clicks OK
-              setValue("report_date", dayJs().format("YYYY-MM-DD"));
-              setValue("report_time", dayJs().format("HH:mm"));
-              setValue("name", "");
-              setValue("phone", "");
-              setValue("building", "");
-              setValue("floor", "");
-              setValue("room", "");
-              setValue("desc", "");
-              setValue("imgUrl", []);
-              setImages([]);
-            }
-          }
-        ]
-      );
-    } else {
+    setIsSubmitting(true);
+
+    try {
+      const result = await dispatch(submitRepairForm(data) as any);
+      if (result && result.status === "success") {
+        Alert.alert(
+          t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
+          t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                setValue("report_date", dayJs().format("YYYY-MM-DD"));
+                setValue("report_time", dayJs().format("HH:mm"));
+                setValue("name", "");
+                setValue("phone", "");
+                setValue("building", "");
+                setValue("floor", "");
+                setValue("room", "");
+                setValue("desc", "");
+                setValue("imgUrl", []);
+                setImages([]);
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert(
+          t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
+          result?.message || t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error: any) {
+      console.error("Error submitting repair form:", error);
       Alert.alert(
         t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
-        result?.message || t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
+        error.message || t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
         [{ text: "OK" }]
       );
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (error: any) {
-    console.error("Error submitting repair form:", error);
-    Alert.alert(
-      t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
-      error.message || t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
-      [{ text: "OK" }]
-    );
-  }
-};
+  };
 
   const renderPreviewImages = () => {
     return (
@@ -637,18 +642,40 @@ const RepairScreen = () => {
             </VStack>
 
             <Button
-              mt="5"
-              mb="10"
-              rounded="2xl"
-              bg={colorTheme.colors.primary}
-              _text={{ color: "white" }}
-              onPress={handleSubmit(onSubmit)}
-            >
-              {t("FORM.REPAIR.SUBMIT")}
-            </Button>
+            mt="5"
+            mb="10"
+            rounded="2xl"
+            bg={colorTheme.colors.primary}
+            _text={{ color: "white" }}
+            onPress={handleSubmit(onSubmit)}
+            isDisabled={isSubmitting}
+          >
+            {t("FORM.REPAIR.SUBMIT")}
+          </Button>
           </VStack>
         </VStack>
       </ScreenWrapper>
+
+      {isSubmitting && (
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        bg="rgba(0, 0, 0, 0.5)"
+        zIndex={9999}
+      >
+        <Center flex={1}>
+          <VStack space={3} alignItems="center">
+            <Spinner size="lg" color="white" />
+            <Text color="white" fontSize="md">
+              {t("FORM.REPAIR.SUBMITTING")}
+            </Text>
+          </VStack>
+        </Center>
+      </Box>
+    )}
     </React.Fragment>
   );
 };
