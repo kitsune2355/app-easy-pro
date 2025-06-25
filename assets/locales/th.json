@@ -31,7 +31,8 @@
   "MENU": {
     "REPAIR_REQ": "แจ้งซ่อม",
     "REPAIR_REQ_HISTORY": "ประวัติ",
-    "SUBMIT_REPAIR_REQ": "ส่งงาน"
+    "SUBMIT_REPAIR_REQ": "ส่งงาน",
+    "REPAIR_DESC": "รายละเอียด"
   },
   "BUILDING": "อาคาร",
   "FLOOR": "ชั้น",
@@ -85,6 +86,8 @@
       }
     }
   },
+  "SEARCH_PLACEHOLDER": "ค้นหา",
+  "NO_SEARCH_RESULTS": "ไม่พบผลการค้นหา",
   "COMMON": {
     "CANCEL": "ยกเลิก"
   }

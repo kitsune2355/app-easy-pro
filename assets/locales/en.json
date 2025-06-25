@@ -31,7 +31,8 @@
   "MENU": {
     "REPAIR_REQ": "Repair Request",
     "REPAIR_REQ_HISTORY": "History",
-    "SUBMIT_REPAIR_REQ": "Submit Repair"
+    "SUBMIT_REPAIR_REQ": "Submit Repair",
+    "REPAIR_DESC": "Detail"
   },
   "BUILDING": "Building",
   "FLOOR": "Floor",
@@ -85,6 +86,8 @@
       }
     }
   },
+  "SEARCH_PLACEHOLDER": "Search",
+  "NO_SEARCH_RESULTS": "No results found",
   "COMMON": {
     "CANCEL": "Cancel"
   }

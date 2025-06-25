@@ -22,6 +22,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
 import { dayJs } from "../config/dayJs";
+import SearchBar from "../components/SearchBar";
 
 type RepairHistoryScreenRouteProp = RouteProp<
   { RepairHistoryScreen: { statusKey?: string } },
@@ -152,6 +153,7 @@ const RepairHistoryScreen = () => {
   const route = useRoute<RepairHistoryScreenRouteProp>();
 
   const [activeTab, setActiveTab] = useState<"ALL" | "PENDING" | "INPROGRESS" | "COMPLETED">("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (route.params?.statusKey) {
@@ -163,9 +165,28 @@ const RepairHistoryScreen = () => {
     return tab === "ALL" ? "all" : tab.toLowerCase() as any;
   };
 
-  const filteredRepairs = repairs.filter((item: RepairItem) =>
-    activeTab === "ALL" ? true : item.status === activeTab.toLowerCase()
-  );
+  const filteredRepairs = repairs.filter((item: RepairItem) => {
+    // Filter by status
+    const statusMatch = activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
+    
+    // Filter by search query
+    const searchMatch = searchQuery === "" ? true : 
+      item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.problem_detail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.room.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return statusMatch && searchMatch;
+  });
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
 
   return (
     <>
@@ -195,6 +216,13 @@ const RepairHistoryScreen = () => {
 
       <ScreenWrapper>
         <VStack bg={colorTheme.colors.background} flex={1} pb={4}>
+          {/* Search Bar Component */}
+          <SearchBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            onClearSearch={handleClearSearch}
+          />
+
           <VStack pb={4}>
             <RepairStatusProgress statusKey={getStatusKey(activeTab)} />
           </VStack>
@@ -216,7 +244,9 @@ const RepairHistoryScreen = () => {
             })
           ) : (
             <Center>
-              <Text color={colorTheme.colors.text}>{t("NO_REPAIRS_FOUND")}</Text>
+              <Text color={colorTheme.colors.text}>
+                {searchQuery ? t("NO_SEARCH_RESULTS") : t("NO_REPAIRS_FOUND")}
+              </Text>
             </Center>
           )}
         </VStack>
