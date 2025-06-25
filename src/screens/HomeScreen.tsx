@@ -151,12 +151,22 @@ const HomeScreen: React.FC = () => {
           const status = statusItems[item.status as keyof typeof statusItems];
 
           return (
-            <Box
+            <Pressable
               bg={colorTheme.colors.card}
               rounded="2xl"
               shadow={2}
               p="4"
               key={key}
+              onPress={() =>
+                navigation.navigate("RepairDetailScreen", {
+                  repairId: item.id,
+                })
+              }
+              _pressed={{
+                style: {
+                  transform: [{ scale: 0.88 }],
+                },
+              }}
             >
               <HStack alignItems="flex-start" space={3}>
                 <Center
@@ -223,7 +233,7 @@ const HomeScreen: React.FC = () => {
                   </Text>
                 </VStack>
               </HStack>
-            </Box>
+            </Pressable>
           );
         })}
       </>

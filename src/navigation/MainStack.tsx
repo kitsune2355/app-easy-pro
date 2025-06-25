@@ -8,6 +8,7 @@ import SplashScreen from "../screens/SplashScreen";
 import RepairScreen from "../screens/RepairScreen";
 import RepairHistoryScreen from "../screens/RepairHistoryScreen";
 import RepairSubmitScreen from "../screens/RepairSubmitScreen";
+import RepairDetailScreen from "../screens/RepairDetailScreen";
 
 const Stack = createStackNavigator<StackParamsList>();
 
@@ -24,6 +25,7 @@ const MainStack: React.FC = () => {
       <Stack.Screen name="RepairScreen" component={RepairScreen} />
       <Stack.Screen name="RepairHistoryScreen" component={RepairHistoryScreen} />
       <Stack.Screen name="RepairSubmitScreen" component={RepairSubmitScreen} />
+      <Stack.Screen name="RepairDetailScreen" component={RepairDetailScreen} />
       <Stack.Screen name="MainBottomTab" component={MainBottomTab} />
     </Stack.Navigator>
   );
