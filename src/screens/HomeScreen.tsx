@@ -26,15 +26,17 @@ import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { dayJs } from "../config/dayJs";
-import RepairStatusProgress, { getStatusCounts } from "../components/RepairStatusProgress";
+import RepairStatusProgress, {
+  getStatusCounts,
+} from "../components/RepairStatusProgress";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
-  const statusCounts = getStatusCounts(repairs)
+  const statusCounts = getStatusCounts(repairs);
 
   useDoubleBackExit();
 
@@ -56,7 +58,17 @@ const HomeScreen: React.FC = () => {
         }
 
         return (
-          <Box key={st.key} width="30%" mb="4">
+          <Pressable
+            key={st.key}
+            width="30%"
+            mb="4"
+            onPress={() => navigation.navigate("RepairHistoryScreen", { statusKey: st.key })}
+            _pressed={{
+              style: {
+                transform: [{ scale: 0.88 }],
+              },
+            }}
+          >
             <Center bg={colorTheme.colors.card} rounded="2xl" shadow={2} h="32">
               <Icon
                 as={Ionicons}
@@ -83,7 +95,7 @@ const HomeScreen: React.FC = () => {
                 {count}
               </Text>
             </Center>
-          </Box>
+          </Pressable>
         );
       })}
     </>

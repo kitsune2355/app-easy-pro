@@ -6,13 +6,11 @@ export type StackParamsList = {
   MainBottomTab: undefined;
   MainDrawer: undefined;
   RepairScreen: undefined;
-  RepairHistoryScreen: undefined;
+  RepairHistoryScreen: {statusKey: string};
   RepairSubmitScreen: undefined;
 };
 export type DrawerParamsList = {
-  RepairScreen: undefined;
-  RepairHistoryScreen: undefined;
-  RepairSubmitScreen: undefined;
+  MainStack: NavigatorScreenParams<StackParamsList>;
 };
 
 export type BottomTabParamsList = {

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Pressable } from "react-native";
-import ScreenWrapper from "../components/ScreenWrapper";
-import AppHeader from "../components/AppHeader";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import {
   VStack,
   HStack,
@@ -12,13 +12,41 @@ import {
   Badge,
   Button,
 } from "native-base";
+import { Ionicons, FontAwesome } from "react-native-vector-icons";
+
+import ScreenWrapper from "../components/ScreenWrapper";
+import AppHeader from "../components/AppHeader";
+import RepairStatusProgress from "../components/RepairStatusProgress";
+
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
-import { Ionicons, FontAwesome } from "react-native-vector-icons";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
-import { useSelector } from "react-redux";
 import { dayJs } from "../config/dayJs";
-import RepairStatusProgress from "../components/RepairStatusProgress";
+
+type RepairHistoryScreenRouteProp = RouteProp<
+  { RepairHistoryScreen: { statusKey?: string } },
+  "RepairHistoryScreen"
+>;
+
+type RepairItem = {
+  id: string;
+  problem_detail: string;
+  building: string;
+  floor: string;
+  room: string;
+  report_date: string;
+  report_time: string;
+  status: "pending" | "inprogress" | "completed";
+};
+
+type RepairHistoryCardProps = {
+  item: RepairItem;
+  colorTheme: any;
+  statusText: string;
+  statusIcon: string;
+  statusColor: string;
+  t: any;
+};
 
 const RepairHistoryCard = ({
   item,
@@ -27,35 +55,18 @@ const RepairHistoryCard = ({
   statusIcon,
   statusColor,
   t,
-}) => {
+}: RepairHistoryCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <VStack
-      bg={colorTheme.colors.card}
-      p={4}
-      mb={3}
-      borderRadius="md"
-      shadow={1}
-    >
+    <VStack bg={colorTheme.colors.card} p={4} mb={3} borderRadius="md" shadow={1}>
       <Pressable onPress={() => setIsOpen(!isOpen)}>
         <HStack space={3} justifyContent="space-between" alignItems="center">
           <Center bg={getBackgroundColor(statusColor)} rounded="full" size="10">
-            <Icon
-              as={Ionicons}
-              name={statusIcon}
-              size="5"
-              color={statusColor}
-            />
+            <Icon as={Ionicons} name={statusIcon} size="5" color={statusColor} />
           </Center>
           <VStack flex={1}>
-            <Text
-              w="80%"
-              bold
-              fontSize="md"
-              color={colorTheme.colors.text}
-              numberOfLines={1}
-            >
+            <Text w="80%" bold fontSize="md" color={colorTheme.colors.text} numberOfLines={1}>
               #{item.id}
             </Text>
           </VStack>
@@ -69,13 +80,7 @@ const RepairHistoryCard = ({
       </Pressable>
 
       <Collapse isOpen={isOpen}>
-        <VStack
-          mt={3}
-          pt={3}
-          borderTopWidth={1}
-          borderTopColor={colorTheme.colors.border}
-          space={3}
-        >
+        <VStack mt={3} pt={3} borderTopWidth={1} borderTopColor={colorTheme.colors.border} space={3}>
           <HStack space={2} alignItems="center">
             <Badge
               bgColor={statusColor}
@@ -83,60 +88,36 @@ const RepairHistoryCard = ({
               px={2}
               py={0.5}
               rounded="full"
-              _text={{
-                fontSize: "2xs",
-                fontWeight: "bold",
-                color: "white",
-              }}
+              _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
             >
               {t(`PROCESS.${statusText}`)}
             </Badge>
           </HStack>
+
           <HStack space={3}>
-            <Icon
-              as={FontAwesome}
-              name="file-text"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={FontAwesome} name="file-text" size="sm" color={colorTheme.colors.text} />
             <Text color={colorTheme.colors.text}>{item.problem_detail}</Text>
           </HStack>
+
           <HStack space={3}>
-            <Icon
-              as={FontAwesome}
-              name="map-marker"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={FontAwesome} name="map-marker" size="sm" color={colorTheme.colors.text} />
             <HStack space={2}>
-              <Text color={colorTheme.colors.text}>
-                {t("BUILDING")} {item.building}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("FLOOR")} {item.floor}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("ROOM")} {item.room}
-              </Text>
+              <Text color={colorTheme.colors.text}>{t("BUILDING")} {item.building}</Text>
+              <Text color={colorTheme.colors.text}>{t("FLOOR")} {item.floor}</Text>
+              <Text color={colorTheme.colors.text}>{t("ROOM")} {item.room}</Text>
             </HStack>
           </HStack>
+
           <HStack space={3}>
-            <Icon
-              as={Ionicons}
-              name="calendar"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={Ionicons} name="calendar" size="sm" color={colorTheme.colors.text} />
             <Text color={colorTheme.colors.text}>
-              {dayJs(`${item.report_date} ${item.report_time}`).format(
-                "DD MMM YYYY, HH:mm น."
-              )}
+              {dayJs(`${item.report_date} ${item.report_time}`).format("DD MMM YYYY, HH:mm น.")}
             </Text>
           </HStack>
 
           <VStack space={1}>
             <Button
-              variant={"solid"}
+              variant="solid"
               rounded="3xl"
               size="sm"
               bg={statusColor}
@@ -147,7 +128,7 @@ const RepairHistoryCard = ({
             </Button>
             {item.status !== "pending" && (
               <Button
-                variant={"solid"}
+                variant="solid"
                 rounded="3xl"
                 size="sm"
                 bg={statusColor}
@@ -168,28 +149,28 @@ const RepairHistoryScreen = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { repairs } = useSelector((state: any) => state.repair);
+  const route = useRoute<RepairHistoryScreenRouteProp>();
 
   const [activeTab, setActiveTab] = useState<"ALL" | "PENDING" | "INPROGRESS" | "COMPLETED">("ALL");
 
-  const filteredRepairs = repairs.filter((item) => {
-    if (activeTab === "ALL") {
-      return true;
+  useEffect(() => {
+    if (route.params?.statusKey) {
+      setActiveTab(route.params.statusKey.toUpperCase() as typeof activeTab);
     }
-    return item.status === activeTab.toLowerCase();
-  });
+  }, [route.params?.statusKey]);
 
-  const getStatusKey = (tab: string): "pending" | "completed" | "inprogress" | "all" => {
-    if (tab === "ALL") return "all";
-    return tab.toLowerCase() as "pending" | "completed" | "inprogress";
+  const getStatusKey = (tab: typeof activeTab): "all" | "pending" | "inprogress" | "completed" => {
+    return tab === "ALL" ? "all" : tab.toLowerCase() as any;
   };
 
+  const filteredRepairs = repairs.filter((item: RepairItem) =>
+    activeTab === "ALL" ? true : item.status === activeTab.toLowerCase()
+  );
+
   return (
-    <React.Fragment>
-      <AppHeader
-        title={t("MENU.REPAIR_REQ_HISTORY")}
-        bgColor={colorTheme.colors.card}
-      />
-      {/* Tab Navigation */}
+    <>
+      <AppHeader title={t("MENU.REPAIR_REQ_HISTORY")} bgColor={colorTheme.colors.card} />
+
       <HStack
         bg={colorTheme.colors.card}
         justifyContent="space-around"
@@ -198,21 +179,14 @@ const RepairHistoryScreen = () => {
         borderBottomColor={colorTheme.colors.border}
       >
         {["ALL", "PENDING", "INPROGRESS", "COMPLETED"].map((tab) => (
-          <Pressable
-            key={tab}
-            onPress={() => setActiveTab(tab as "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED")}
-            style={{ flex: 1 }}
-          >
-            <Center
-              py={2}
-              bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}
-            >
+          <Pressable key={tab} onPress={() => setActiveTab(tab as typeof activeTab)} style={{ flex: 1 }}>
+            <Center py={2} bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}>
               <Text
                 fontSize="sm"
                 fontWeight="bold"
                 color={activeTab === tab ? "white" : colorTheme.colors.text}
               >
-                {tab === "ALL" ? t(`PROCESS.ALL`) : t(`PROCESS.${tab}`)}
+                {t(`PROCESS.${tab}`)}
               </Text>
             </Center>
           </Pressable>
@@ -224,11 +198,10 @@ const RepairHistoryScreen = () => {
           <VStack pb={4}>
             <RepairStatusProgress statusKey={getStatusKey(activeTab)} />
           </VStack>
-          {/* Render filtered repairs */}
+
           {filteredRepairs.length > 0 ? (
-            filteredRepairs.map((item) => {
-              const status =
-                statusItems[item.status as keyof typeof statusItems];
+            filteredRepairs.map((item: RepairItem) => {
+              const status = statusItems[item.status];
               return (
                 <RepairHistoryCard
                   key={item.id}
@@ -243,14 +216,13 @@ const RepairHistoryScreen = () => {
             })
           ) : (
             <Center>
-              <Text color={colorTheme.colors.text}>
-                {t("NO_REPAIRS_FOUND")}
-              </Text>
+              <Text color={colorTheme.colors.text}>{t("NO_REPAIRS_FOUND")}</Text>
             </Center>
           )}
         </VStack>
       </ScreenWrapper>
-    </React.Fragment>
+    </>
   );
 };
+
 export default RepairHistoryScreen;
