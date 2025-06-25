@@ -25,7 +25,7 @@
   "PROCESS": {
     "ALL": "งานทั้งหมด",
     "PENDING": "รอดำเนินการ",
-    "IN_PROGRESS": "กำลังดำเนินการ",
+    "INPROGRESS": "กำลังดำเนินการ",
     "COMPLETED": "เสร็จสิ้น"
   },
   "MENU": {
@@ -36,6 +36,7 @@
   "BUILDING": "อาคาร",
   "FLOOR": "ชั้น",
   "ROOM": "ห้อง",
+  "NO_REPAIRS_FOUND": "ไม่พบงานซ่อม",
   "FORM": {
     "REPAIR": {
       "REPORT_INFO": "ข้อมูลการแจ้ง",

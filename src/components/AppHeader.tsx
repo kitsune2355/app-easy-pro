@@ -42,7 +42,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             <IconButton
               icon={
                 <Icons
-                  name="arrow-back"
+                  name="arrow-back-ios"
                   size={24}
                   color={headerTextColor}
                 />

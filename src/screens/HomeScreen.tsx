@@ -13,6 +13,7 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
 import {
+  getBackgroundColor,
   gradientcolorTheme,
   processItem,
   statusAll,
@@ -25,6 +26,7 @@ import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { dayJs } from "../config/dayJs";
+import RepairStatusProgress, { getStatusCounts } from "../components/RepairStatusProgress";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -32,6 +34,7 @@ const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
+  const statusCounts = getStatusCounts(repairs)
 
   useDoubleBackExit();
 
@@ -44,27 +47,17 @@ const HomeScreen: React.FC = () => {
       {statusAll.map((st) => {
         let count = 0;
 
-        if (st.key === "ALL") {
-          count = repairs.length;
-        } else if (st.key === "PENDING") {
-          count = repairs.filter(
-            (repair: any) => repair.status === "pending"
-          ).length;
+        if (st.key === "PENDING") {
+          count = statusCounts.pending;
+        } else if (st.key === "INPROGRESS") {
+          count = statusCounts.inprogress;
         } else if (st.key === "COMPLETED") {
-          count = repairs.filter(
-            (repair: any) => repair.status === "completed"
-          ).length;
+          count = statusCounts.completed;
         }
 
         return (
           <Box key={st.key} width="30%" mb="4">
-            <Center
-              bg={colorTheme.colors.card}
-              rounded="2xl"
-              shadow={2}
-              p="4"
-              h="32"
-            >
+            <Center bg={colorTheme.colors.card} rounded="2xl" shadow={2} h="32">
               <Icon
                 as={Ionicons}
                 name={st.icon}
@@ -78,8 +71,6 @@ const HomeScreen: React.FC = () => {
                 fontWeight="medium"
                 mb="1"
                 textAlign="center"
-                numberOfLines={1}
-                ellipsizeMode="tail"
               >
                 {t(`PROCESS.${st.key}`)}
               </Text>
@@ -156,7 +147,11 @@ const HomeScreen: React.FC = () => {
               key={key}
             >
               <HStack alignItems="flex-start" space={3}>
-                <Center bg="amber.50" rounded="full" size="10">
+                <Center
+                  bg={getBackgroundColor(status.color)}
+                  rounded="full"
+                  size="10"
+                >
                   <Icon
                     as={Ionicons}
                     name={status.icon}
@@ -225,9 +220,15 @@ const HomeScreen: React.FC = () => {
 
   return (
     <VStack space={4}>
-      <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-        {t("MAIN.REPAIR_SUMMARY")}
-      </Text>
+      <HStack justifyContent="space-between" alignItems="center">
+        <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
+          {t("MAIN.REPAIR_SUMMARY")}
+        </Text>
+        <Text color={colorTheme.colors.text} fontSize="sm" fontWeight="medium">
+          ทั้งหมด: {statusCounts.total}
+        </Text>
+      </HStack>
+
       <Flex direction="row" wrap="wrap" justify="space-between">
         {renderDashboardItem()}
       </Flex>

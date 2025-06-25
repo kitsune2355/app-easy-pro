@@ -155,7 +155,7 @@ const RepairScreen = () => {
 
     try {
       const result = await dispatch(submitRepairForm(data) as any);
-      if (result && result.status === "success") {
+      if (result && result.status === "completed") {
         Alert.alert(
           t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
           t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),

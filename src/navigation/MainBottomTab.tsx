@@ -42,10 +42,11 @@ const MainBottomTab: React.FC = () => {
           backgroundColor: colorTheme.colors.primary,
           borderRadius: 20,
         },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "bold",
-        },
+        tabBarShowLabel: false,
+        // tabBarLabelStyle: {
+        //   fontSize: 12,
+        //   fontWeight: "bold",
+        // },
       }}
     >
       {tabRoutes.map((route) => (

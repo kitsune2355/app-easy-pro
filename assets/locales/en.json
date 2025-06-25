@@ -25,7 +25,7 @@
   "PROCESS": {
     "ALL": "all",
     "PENDING": "pending",
-    "IN_PROGRESS": "in progress",
+    "INPROGRESS": "in progress",
     "COMPLETED": "completed"
   },
   "MENU": {
@@ -36,6 +36,7 @@
   "BUILDING": "Building",
   "FLOOR": "Floor",
   "ROOM": "Room",
+  "NO_REPAIRS_FOUND": "No repairs found",
   "FORM": {
     "REPAIR": {
       "REPORT_INFO": "Report Information",
