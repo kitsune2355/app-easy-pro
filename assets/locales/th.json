@@ -89,6 +89,10 @@
       }
     }
   },
+  "RECEIVED_DATE": "วันที่รับเรื่อง",
+  "PROCESSING_DATE": "วันที่ดำเนินการ",
+  "COMPLETION_DATE": "วันที่สำเร็จ",
+  "DETAIL_OF_SOLUTION": "รายละเอียดวิธีการแก้ไขปัญหา",
   "SEARCH_PLACEHOLDER": "ค้นหา",
   "NO_SEARCH_RESULTS": "ไม่พบผลการค้นหา",
   "COMMON": {

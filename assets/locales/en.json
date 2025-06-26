@@ -89,6 +89,10 @@
       }
     }
   },
+  "RECEIVED_DATE": "Received Date",
+  "PROCESSING_DATE": "Processing Date",
+  "COMPLETION_DATE": "Completion Date",
+  "DETAIL_OF_SOLUTION": "Details of the solution method",
   "SEARCH_PLACEHOLDER": "Search",
   "NO_SEARCH_RESULTS": "No results found",
   "COMMON": {
