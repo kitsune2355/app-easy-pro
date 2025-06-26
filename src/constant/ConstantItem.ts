@@ -7,7 +7,7 @@ export const statusItems = {
   completed: {
     text: "COMPLETED",
     color: "#32CD32",
-    icon: "checkmark-circle-outline",
+    icon: "checkmark-circle",
   },
   inprogress: {
     text: "INPROGRESS",

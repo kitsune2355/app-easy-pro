@@ -23,17 +23,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllRepairs } from "../service/repairService";
 import { AppDispatch } from "../store";
 import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
-import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { dayJs } from "../config/dayJs";
 import RepairStatusProgress, {
   getStatusCounts,
 } from "../components/RepairStatusProgress";
+import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const navigation = useNavigation<any>();
+  const navigateWithLoading = useNavigateWithLoading();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
   const statusCounts = getStatusCounts(repairs);
@@ -62,7 +62,9 @@ const HomeScreen: React.FC = () => {
             key={st.key}
             width="30%"
             mb="4"
-            onPress={() => navigation.navigate("RepairHistoryScreen", { statusKey: st.key })}
+            onPress={() =>
+              navigateWithLoading("RepairHistoryScreen", { statusKey: st.key })
+            }
             _pressed={{
               style: {
                 transform: [{ scale: 0.88 }],
@@ -107,7 +109,7 @@ const HomeScreen: React.FC = () => {
         key={item.title}
         width="48%"
         mb="4"
-        onPress={() => navigation.navigate(item.screen as never)}
+        onPress={() => navigateWithLoading(item.screen as never)}
         _pressed={{
           style: {
             transform: [{ scale: 0.88 }],
@@ -158,7 +160,7 @@ const HomeScreen: React.FC = () => {
               p="4"
               key={key}
               onPress={() =>
-                navigation.navigate("RepairDetailScreen", {
+                navigateWithLoading("RepairDetailScreen", {
                   repairId: item.id,
                 })
               }
