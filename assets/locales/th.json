@@ -38,6 +38,7 @@
   "FLOOR": "ชั้น",
   "ROOM": "ห้อง",
   "NO_REPAIRS_FOUND": "ไม่พบงานซ่อม",
+  "NO_IMAGES_AVAILABLE": "ไม่มีรูปภาพ",
   "FORM": {
     "REPAIR": {
       "REPORT_INFO": "ข้อมูลการแจ้ง",
@@ -73,6 +74,8 @@
       "SUBMIT_SUCCESS_DESC": "ข้อมูลของคุณถูกส่งไปแล้ว",
       "SUBMIT_ERROR_TITLE": "ส่งข้อมูลล้มเหลว",
       "SUBMIT_ERROR_DESC": "เกิดข้อผิดพลาดในการส่งข้อมูล. กรุณาลองใหม่อีกครั้ง",
+      "SUBMIT_GENERIC_ERROR": "เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้ง",
+      "SUBMIT_NETWORK_ERROR": "ข้อผิดพลาดเครือข่าย โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ",
       "SUBMITTING": "กำลังส่งข้อมูล...",
       "VALIDATION": {
         "DATE": "กรุณาเลือกวันที่",
@@ -89,6 +92,10 @@
   "SEARCH_PLACEHOLDER": "ค้นหา",
   "NO_SEARCH_RESULTS": "ไม่พบผลการค้นหา",
   "COMMON": {
-    "CANCEL": "ยกเลิก"
-  }
+    "CANCEL": "ยกเลิก",
+    "OK": "ตกลง",
+    "MORE_DETAILS": "รายละเอียดเพิ่มเติม"
+  },
+  "ACCEPT_WORK": "รับงาน",
+  "SUBMIT_WORK": "ส่งงาน"
 }

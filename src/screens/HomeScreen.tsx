@@ -26,7 +26,7 @@ import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useTranslation } from "react-i18next";
 import { dayJs } from "../config/dayJs";
 import RepairStatusProgress, {
-  getStatusCounts,
+  getStatusSummary,
 } from "../components/RepairStatusProgress";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 
@@ -36,7 +36,7 @@ const HomeScreen: React.FC = () => {
   const navigateWithLoading = useNavigateWithLoading();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs, loading, error } = useSelector((state: any) => state.repair);
-  const statusCounts = getStatusCounts(repairs);
+  const statusItem = getStatusSummary(repairs);
 
   useDoubleBackExit();
 
@@ -50,11 +50,11 @@ const HomeScreen: React.FC = () => {
         let count = 0;
 
         if (st.key === "PENDING") {
-          count = statusCounts.pending;
+          count = statusItem.pending.count;
         } else if (st.key === "INPROGRESS") {
-          count = statusCounts.inprogress;
+          count = statusItem.inprogress.count;
         } else if (st.key === "COMPLETED") {
-          count = statusCounts.completed;
+          count = statusItem.completed.count;
         }
 
         return (
@@ -249,7 +249,7 @@ const HomeScreen: React.FC = () => {
           {t("MAIN.REPAIR_SUMMARY")}
         </Text>
         <Text color={colorTheme.colors.text} fontSize="sm" fontWeight="medium">
-          ทั้งหมด: {statusCounts.total}
+          ทั้งหมด: {statusItem.total.count}
         </Text>
       </HStack>
 

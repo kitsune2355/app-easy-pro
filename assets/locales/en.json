@@ -38,6 +38,7 @@
   "FLOOR": "Floor",
   "ROOM": "Room",
   "NO_REPAIRS_FOUND": "No repairs found",
+  "NO_IMAGES_AVAILABLE": "No images available",
   "FORM": {
     "REPAIR": {
       "REPORT_INFO": "Report Information",
@@ -73,6 +74,8 @@
       "SUBMIT_SUCCESS_DESC": "Your request has been submitted successfully",
       "SUBMIT_ERROR_TITLE": "Error",
       "SUBMIT_ERROR_DESC": "An error occurred while submitting your request. Please try again later.",
+      "SUBMIT_GENERIC_ERROR": "Something went wrong. Please try again.",
+      "SUBMIT_NETWORK_ERROR": "Network error. Please check your internet connection.",
       "SUBMITTING": "Submitting...",
       "VALIDATION": {
         "DATE": "Date is required",
@@ -89,6 +92,10 @@
   "SEARCH_PLACEHOLDER": "Search",
   "NO_SEARCH_RESULTS": "No results found",
   "COMMON": {
-    "CANCEL": "Cancel"
-  }
+    "CANCEL": "Cancel",
+    "OK": "OK",
+    "MORE_DETAILS": "More Details"
+  },
+  "ACCEPT_WORK": "Accept Work",
+  "SUBMIT_WORK": "Submit Work"
 }

@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
 import { dayJs } from "../config/dayJs";
 import SearchBar from "../components/SearchBar";
+import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 
 type RepairHistoryScreenRouteProp = RouteProp<
   { RepairHistoryScreen: { statusKey?: string } },
@@ -38,6 +39,8 @@ type RepairItem = {
   report_date: string;
   report_time: string;
   status: "pending" | "inprogress" | "completed";
+  name: string;
+  phone: string;
 };
 
 type RepairHistoryCardProps = {
@@ -57,17 +60,35 @@ const RepairHistoryCard = ({
   statusColor,
   t,
 }: RepairHistoryCardProps) => {
+  const navigateWithLoading = useNavigateWithLoading();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <VStack bg={colorTheme.colors.card} p={4} mb={3} borderRadius="md" shadow={1}>
+    <VStack
+      bg={colorTheme.colors.card}
+      p={4}
+      mb={3}
+      borderRadius="md"
+      shadow={1}
+    >
       <Pressable onPress={() => setIsOpen(!isOpen)}>
         <HStack space={3} justifyContent="space-between" alignItems="center">
           <Center bg={getBackgroundColor(statusColor)} rounded="full" size="10">
-            <Icon as={Ionicons} name={statusIcon} size="5" color={statusColor} />
+            <Icon
+              as={Ionicons}
+              name={statusIcon}
+              size="5"
+              color={statusColor}
+            />
           </Center>
           <VStack flex={1}>
-            <Text w="80%" bold fontSize="md" color={colorTheme.colors.text} numberOfLines={1}>
+            <Text
+              w="80%"
+              bold
+              fontSize="md"
+              color={colorTheme.colors.text}
+              numberOfLines={1}
+            >
               #{item.id}
             </Text>
           </VStack>
@@ -81,7 +102,13 @@ const RepairHistoryCard = ({
       </Pressable>
 
       <Collapse isOpen={isOpen}>
-        <VStack mt={3} pt={3} borderTopWidth={1} borderTopColor={colorTheme.colors.border} space={3}>
+        <VStack
+          mt={3}
+          pt={3}
+          borderTopWidth={1}
+          borderTopColor={colorTheme.colors.border}
+          space={3}
+        >
           <HStack space={2} alignItems="center">
             <Badge
               bgColor={statusColor}
@@ -96,27 +123,84 @@ const RepairHistoryCard = ({
           </HStack>
 
           <HStack space={3}>
-            <Icon as={FontAwesome} name="file-text" size="sm" color={colorTheme.colors.text} />
+            <Icon
+              as={FontAwesome}
+              name="user"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <Text color={colorTheme.colors.text}>{item.name}</Text>
+          </HStack>
+
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="phone"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <Text color={colorTheme.colors.text}>{item.phone}</Text>
+          </HStack>
+
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="file-text"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
             <Text color={colorTheme.colors.text}>{item.problem_detail}</Text>
           </HStack>
 
           <HStack space={3}>
-            <Icon as={FontAwesome} name="map-marker" size="sm" color={colorTheme.colors.text} />
+            <Icon
+              as={FontAwesome}
+              name="map-marker"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
             <HStack space={2}>
-              <Text color={colorTheme.colors.text}>{t("BUILDING")} {item.building}</Text>
-              <Text color={colorTheme.colors.text}>{t("FLOOR")} {item.floor}</Text>
-              <Text color={colorTheme.colors.text}>{t("ROOM")} {item.room}</Text>
+              <Text color={colorTheme.colors.text}>
+                {t("BUILDING")} {item.building}
+              </Text>
+              <Text color={colorTheme.colors.text}>
+                {t("FLOOR")} {item.floor}
+              </Text>
+              <Text color={colorTheme.colors.text}>
+                {t("ROOM")} {item.room}
+              </Text>
             </HStack>
           </HStack>
 
           <HStack space={3}>
-            <Icon as={Ionicons} name="calendar" size="sm" color={colorTheme.colors.text} />
+            <Icon
+              as={Ionicons}
+              name="calendar"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
             <Text color={colorTheme.colors.text}>
-              {dayJs(`${item.report_date} ${item.report_time}`).format("DD MMM YYYY, HH:mm น.")}
+              {dayJs(`${item.report_date} ${item.report_time}`).format(
+                "DD MMM YYYY, HH:mm น."
+              )}
             </Text>
           </HStack>
 
           <VStack space={1}>
+            <Button
+              variant="outline"
+              rounded="3xl"
+              size="sm"
+              borderColor={statusColor}
+              _text={{ color: statusColor, fontWeight: "bold" }}
+              onPress={() =>
+                navigateWithLoading("RepairDetailScreen", {
+                  repairId: item.id,
+                })
+              }
+            >
+              {t("COMMON.MORE_DETAILS")}
+            </Button>
             <Button
               variant="solid"
               rounded="3xl"
@@ -125,7 +209,7 @@ const RepairHistoryCard = ({
               _text={{ color: "white", fontWeight: "bold" }}
               isDisabled={item.status !== "pending"}
             >
-              รับงาน
+              {t("ACCEPT_WORK")}
             </Button>
             {item.status !== "pending" && (
               <Button
@@ -136,7 +220,7 @@ const RepairHistoryCard = ({
                 _text={{ color: "white", fontWeight: "bold" }}
                 isDisabled={item.status === "completed"}
               >
-                ส่งงาน
+                {t("SUBMIT_WORK")}
               </Button>
             )}
           </VStack>
@@ -152,7 +236,9 @@ const RepairHistoryScreen = () => {
   const { repairs } = useSelector((state: any) => state.repair);
   const route = useRoute<RepairHistoryScreenRouteProp>();
 
-  const [activeTab, setActiveTab] = useState<"ALL" | "PENDING" | "INPROGRESS" | "COMPLETED">("ALL");
+  const [activeTab, setActiveTab] = useState<
+    "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED"
+  >("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -161,22 +247,27 @@ const RepairHistoryScreen = () => {
     }
   }, [route.params?.statusKey]);
 
-  const getStatusKey = (tab: typeof activeTab): "all" | "pending" | "inprogress" | "completed" => {
-    return tab === "ALL" ? "all" : tab.toLowerCase() as any;
+  const getStatusKey = (
+    tab: typeof activeTab
+  ): "all" | "pending" | "inprogress" | "completed" => {
+    return tab === "ALL" ? "all" : (tab.toLowerCase() as any);
   };
 
   const filteredRepairs = repairs.filter((item: RepairItem) => {
-    // Filter by status
-    const statusMatch = activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
-    
-    // Filter by search query
-    const searchMatch = searchQuery === "" ? true : 
-      item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.problem_detail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.room.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const statusMatch =
+      activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
+
+    const searchMatch =
+      searchQuery === ""
+        ? true
+        : item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.problem_detail
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.room.toLowerCase().includes(searchQuery.toLowerCase());
+
     return statusMatch && searchMatch;
   });
 
@@ -190,7 +281,10 @@ const RepairHistoryScreen = () => {
 
   return (
     <>
-      <AppHeader title={t("MENU.REPAIR_REQ_HISTORY")} bgColor={colorTheme.colors.card} />
+      <AppHeader
+        title={t("MENU.REPAIR_REQ_HISTORY")}
+        bgColor={colorTheme.colors.card}
+      />
 
       <HStack
         bg={colorTheme.colors.card}
@@ -200,8 +294,15 @@ const RepairHistoryScreen = () => {
         borderBottomColor={colorTheme.colors.border}
       >
         {["ALL", "PENDING", "INPROGRESS", "COMPLETED"].map((tab) => (
-          <Pressable key={tab} onPress={() => setActiveTab(tab as typeof activeTab)} style={{ flex: 1 }}>
-            <Center py={2} bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}>
+          <Pressable
+            key={tab}
+            onPress={() => setActiveTab(tab as typeof activeTab)}
+            style={{ flex: 1 }}
+          >
+            <Center
+              py={2}
+              bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}
+            >
               <Text
                 fontSize="sm"
                 fontWeight="bold"

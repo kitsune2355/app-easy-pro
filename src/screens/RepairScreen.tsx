@@ -31,6 +31,7 @@ import * as ImagePicker from "expo-image-picker";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { submitRepairForm } from "../service/repairService";
 import { useDispatch } from "react-redux";
+import ImagePreview from "../components/ImagePreview";
 
 const mockBuildings = [
   { label: "A", value: "building_a" },
@@ -155,7 +156,8 @@ const RepairScreen = () => {
 
     try {
       const result = await dispatch(submitRepairForm(data) as any);
-      if (result && result.status === "completed") {
+      console.log('result', result)
+      if (result && result.status === "success") {
         Alert.alert(
           t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
           t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
@@ -180,16 +182,16 @@ const RepairScreen = () => {
       } else {
         Alert.alert(
           t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
-          result?.message || t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
-          [{ text: "OK" }]
+          t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
+          [{ text: t("COMMON.OK") }]
         );
       }
     } catch (error: any) {
       console.error("Error submitting repair form:", error);
       Alert.alert(
         t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
-        error.message || t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
-        [{ text: "OK" }]
+        t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
+        [{ text: t("COMMON.OK") }]
       );
     } finally {
       setIsSubmitting(false);
@@ -198,54 +200,11 @@ const RepairScreen = () => {
 
   const renderPreviewImages = () => {
     return (
-      <Box mt="3">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <HStack space={3} my={2}>
-            {images.map((uri, index) => (
-              <Box key={index}>
-                <Box
-                  shadow={3}
-                  borderRadius="lg"
-                  overflow="hidden"
-                  width={100}
-                  height={100}
-                  position="relative"
-                >
-                  <Image
-                    source={{ uri: uri.toString() }}
-                    alt={`Selected ${index}`}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </Box>
-                <TouchableOpacity
-                  style={{
-                    position: "absolute",
-                    top: -5,
-                    right: -5,
-                    backgroundColor: "black",
-                    borderRadius: 100,
-                    padding: 5,
-                  }}
-                  onPress={() => {
-                    const filtered = images.filter(
-                      (_, i) => i !== index
-                    ) as string[];
-                    setImages(filtered);
-                    setValue("imgUrl", filtered);
-                  }}
-                >
-                  <Icon
-                    as={MaterialIcons}
-                    name="close"
-                    size="4"
-                    color="white"
-                  />
-                </TouchableOpacity>
-              </Box>
-            ))}
-          </HStack>
-        </ScrollView>
-      </Box>
+      <ImagePreview images={images} onRemoveImage={(index) => {
+        const newImages = [...images];
+        newImages.splice(index, 1);
+        setImages(newImages);
+      }} />
     );
   };
 
@@ -466,7 +425,7 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors.floor}>
+              <FormControl isInvalid={!!errors.floor}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.FLOOR")}</Text>
                 </FormControl.Label>
@@ -504,7 +463,7 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors.room}>
+              <FormControl isInvalid={!!errors.room}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.ROOM")}</Text>
                 </FormControl.Label>

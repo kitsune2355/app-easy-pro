@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icons from "react-native-vector-icons/MaterialIcons";
 
 interface AppHeaderProps {
-  title: string;
+  title: string | React.ReactNode;
   leftContent?: React.ReactNode;
   rightContent?: React.ReactNode;
   bgColor?: string;
@@ -48,6 +48,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 />
               }
               onPress={() => navigation.goBack()}
+              _pressed={{
+                bg: colorTheme.colors.border,
+                opacity: 0.7,
+              }}
               borderRadius="full"
             />
           )}

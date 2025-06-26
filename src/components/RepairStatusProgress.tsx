@@ -3,39 +3,41 @@ import { Box, HStack, Icon, Progress, Text, VStack } from "native-base";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FontAwesome } from "react-native-vector-icons";
+import { statusItems } from "../constant/ConstantItem";
 
 interface RepairStatusProgressProps {
   statusKey: "all" | "pending" | "inprogress" | "completed";
 }
 type StatusKey = "pending" | "inprogress" | "completed";
 
-export const getStatusCounts = (repairs: any[]) => {
-  const pendingCount = repairs.filter((r) => r.status === "pending").length;
-  const inProgressCount = repairs.filter(
-    (r) => r.status === "inprogress"
-  ).length;
-  const completedCount = repairs.filter((r) => r.status === "completed").length;
-  const totalCount = repairs.length;
+export const getStatusSummary = (repairs: any[]) => {
+  const statusKeys = ["pending", "inprogress", "completed"];
 
-  return {
-    total: totalCount,
-    pending: pendingCount,
-    inprogress: inProgressCount,
-    completed: completedCount,
+  const summary = statusKeys.reduce((acc, key) => {
+    const count = repairs.filter((r) => r.status === key).length;
+    const color =
+      key === "pending"
+        ? "amber.500"
+        : key === "inprogress"
+        ? "blue.500"
+        : key === "completed"
+        ? "green.500"
+        : "gray.200";
+    const text = statusItems[key].text;
+    const icon = statusItems[key].icon;
+
+    acc[key] = { count, color, text, icon };
+    return acc;
+  }, {} as Record<string, { count: number; color: string; text: string; icon: string }>);
+
+  summary.total = {
+    count: repairs.length,
+    color: "gray.200",
+    text: "",
+    icon: "list",
   };
-};
 
-const getColor = (key: string) => {
-  switch (key) {
-    case "pending":
-      return "amber.500";
-    case "inprogress":
-      return "blue.500";
-    case "completed":
-      return "green.500";
-    default:
-      return "gray.200";
-  }
+  return summary;
 };
 
 const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
@@ -43,11 +45,11 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
 }) => {
   const { t } = useTranslation();
   const { repairs } = useSelector((state: any) => state.repair);
-  const statusCounts = getStatusCounts(repairs);
+  const statusItem = getStatusSummary(repairs);
 
-  const getValue = (key: keyof typeof statusCounts) => {
-    if (statusCounts.total === 0) return 0;
-    return (statusCounts[key] / statusCounts.total) * 100;
+  const getValue = (key: keyof typeof statusItem) => {
+    if (statusItem.total.count === 0) return 0;
+    return (statusItem[key].count / statusItem.total.count) * 100;
   };
 
   const rounded = (n: number) => Math.round(n);
@@ -64,21 +66,21 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
               as={FontAwesome}
               name="circle"
               size="xs"
-              color={getColor(key)}
+              color={statusItem[key].color}
             />
             <Text mb="1" fontSize="xs" color="coolGray.700">
               {t(`PROCESS.${key.toUpperCase()}`)}
             </Text>
           </HStack>
           <Text mb="1" fontSize="xs" color="coolGray.700">
-            {rounded(percent)} %
+            {Math.round(percent)} %
           </Text>
         </HStack>
         <Progress
-          value={percent}
+          value={Math.round(percent)}
           size="lg"
           bg="gray.200"
-          _filledTrack={{ bg: getColor(key) }}
+          _filledTrack={{ bg: statusItem[key].color }}
         />
       </Box>
     );
@@ -98,7 +100,12 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
     const renderLegendItem = (key: StatusKey) => (
       <HStack justifyContent="space-between" alignItems="center" key={key}>
         <HStack space={1} alignItems="center">
-          <Icon as={FontAwesome} name="circle" size="xs" color={getColor(key)} />
+          <Icon
+            as={FontAwesome}
+            name="circle"
+            size="xs"
+            color={statusItem[key].color}
+          />
           <Text fontSize="xs" color="coolGray.700">
             {t(`PROCESS.${key.toUpperCase()}`)}
           </Text>
@@ -118,7 +125,12 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
         </VStack>
 
         <Box position="relative" mt={2}>
-          <Progress value={100} size="lg" bg="gray.200" _filledTrack={{ bg: "gray.200" }} />
+          <Progress
+            value={100}
+            size="lg"
+            bg="gray.200"
+            _filledTrack={{ bg: "gray.200" }}
+          />
           {barLayers.map((layer, index) => (
             <Progress
               key={index}
@@ -126,7 +138,7 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
               top="0"
               left="0"
               right="0"
-              value={layer.value}
+              value={Math.round(layer.value)}
               size="lg"
               bg="transparent"
               _filledTrack={{ bg: layer.color }}

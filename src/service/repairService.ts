@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setRepairs, setLoading, setError } from '../redux/repairSlice';
+import { setRepairs, setLoading, setError, setRepairDetail } from '../redux/repairSlice';
 import { AppDispatch } from '../store';
 import { env } from '../config/environment';
 import { IRepairForm } from '../interfaces/form/repairForm';
@@ -12,6 +12,22 @@ export const fetchAllRepairs = () => async (dispatch: AppDispatch) => {
     dispatch(setRepairs(response.data.data));
   } catch (error) {
     dispatch(setError('Failed to fetch repairs'));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const fetchRepairById = (id: string) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await axios.get(`${env.API_ENDPOINT}/get_repair_by_id.php?id=${id}`);
+    if (response.data.status === "success") {
+      dispatch(setRepairDetail(response.data.data));
+    } else {
+      dispatch(setError(response.data.message || "ไม่พบข้อมูล"));
+    }
+  } catch (error: any) {
+    dispatch(setError(error.message || "เกิดข้อผิดพลาด"));
   } finally {
     dispatch(setLoading(false));
   }

@@ -15,8 +15,8 @@ export const useRepairForm = () => {
     name: yup.string().required(t(`${invalid}.NAME`)).default(''),
     phone: yup.string().required(t(`${invalid}.PHONE`)).default(''),
     building: yup.string().required(t(`${invalid}.BUILDING`)).default(''),
-    floor: yup.string().required(t(`${invalid}.FLOOR`)).default(''),
-    room: yup.string().required(t(`${invalid}.ROOM`)).default(''),
+    floor: yup.string().notRequired().default(''),
+    room: yup.string().notRequired().default(''),
     desc: yup.string().required(t(`${invalid}.DESCRIPTION`)).default(''),
     imgUrl: yup.array().of(yup.string()).nullable().notRequired().default(undefined)
   });
