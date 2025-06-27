@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Pressable } from "react-native";
+import { Alert, Pressable } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   VStack,
   HStack,
@@ -11,6 +11,8 @@ import {
   Center,
   Badge,
   Button,
+  Box,
+  useToast,
 } from "native-base";
 import { Ionicons, FontAwesome } from "react-native-vector-icons";
 
@@ -24,6 +26,8 @@ import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
 import { dayJs } from "../config/dayJs";
 import SearchBar from "../components/SearchBar";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
+import { fetchAllRepairs, updateRepairStatus } from "../service/repairService";
+import { AppDispatch } from "../store";
 
 type RepairHistoryScreenRouteProp = RouteProp<
   { RepairHistoryScreen: { statusKey?: string } },
@@ -60,8 +64,43 @@ const RepairHistoryCard = ({
   statusColor,
   t,
 }: RepairHistoryCardProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigateWithLoading = useNavigateWithLoading();
   const [isOpen, setIsOpen] = useState(false);
+  const [accepting, setAccepting] = useState(false);
+  const toast = useToast();
+
+  const handleAcceptWork = async (id: string) => {
+    try {
+      setAccepting(true);
+      const res = await dispatch(updateRepairStatus(id));
+      if (res.status === "success") {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="emerald.500" px="2" py="1" rounded="full" mb={5}>
+              <Text color="white"> {t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #{id}</Text>
+            </Box>
+          );
+        },
+      });
+      } else {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="red.500" px="2" py="1" rounded="full" mb={5}>
+              <Text color="white">{t("WORK_ACCEPTANCE.ERROR_MESSAGE")}</Text>
+            </Box>
+          );
+        },
+      });
+    }
+    } catch (error) {
+      console.error("Error updating repair status:", error);
+    } finally {
+      setAccepting(false);
+    }
+  };
 
   return (
     <VStack
@@ -181,7 +220,7 @@ const RepairHistoryCard = ({
             />
             <Text color={colorTheme.colors.text}>
               {dayJs(`${item.report_date} ${item.report_time}`).format(
-                "DD MMM YYYY, HH:mm น."
+                "DD MMM YYYY, HH:mm "
               )}
             </Text>
           </HStack>
@@ -208,6 +247,8 @@ const RepairHistoryCard = ({
               bg={statusColor}
               _text={{ color: "white", fontWeight: "bold" }}
               isDisabled={item.status !== "pending"}
+              isLoading={accepting}
+              onPress={() => handleAcceptWork(item.id)}
             >
               {t("ACCEPT_WORK")}
             </Button>
@@ -231,6 +272,7 @@ const RepairHistoryCard = ({
 };
 
 const RepairHistoryScreen = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { repairs } = useSelector((state: any) => state.repair);
@@ -240,6 +282,10 @@ const RepairHistoryScreen = () => {
     "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED"
   >("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchAllRepairs());
+  }, [repairs]);
 
   useEffect(() => {
     if (route.params?.statusKey) {

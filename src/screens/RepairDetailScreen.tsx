@@ -1,12 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AppHeader from "../components/AppHeader";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
 import ScreenWrapper from "../components/ScreenWrapper";
-import { VStack, Text, Center, Icon, HStack, Divider } from "native-base";
+import {
+  VStack,
+  Text,
+  Center,
+  Icon,
+  HStack,
+  Button,
+  useToast,
+  Box,
+} from "native-base";
 import { useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchRepairById } from "../service/repairService";
+import { fetchRepairById, updateRepairStatus } from "../service/repairService";
 import { AppDispatch, RootState } from "../store";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
 import { Ionicons, FontAwesome } from "react-native-vector-icons";
@@ -21,7 +30,9 @@ const RepairDetailScreen: React.FC = () => {
   const route = useRoute();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
+  const toast = useToast();
   const { repairId } = route.params as { repairId: string };
+  const [accepting, setAccepting] = useState(false);
 
   const { repairDetail, loading, error } = useSelector(
     (state: RootState) => state.repair
@@ -44,6 +55,41 @@ const RepairDetailScreen: React.FC = () => {
       await dispatch(fetchRepairById(repairId));
     } catch (err) {
       console.error("Failed to fetch repair details:", err);
+    }
+  };
+
+  const handleAcceptWork = async (id: string) => {
+    setAccepting(true);
+    try {
+      const res = await dispatch(updateRepairStatus(id));
+      if (res.status === "success") {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="full" mb={5}>
+                <Text color="white">
+                  {" "}
+                  {t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #{id}
+                </Text>
+              </Box>
+            );
+          },
+        });
+      } else {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="red.500" px="2" py="1" rounded="full" mb={5}>
+                <Text color="white">{t("WORK_ACCEPTANCE.ERROR_MESSAGE")}</Text>
+              </Box>
+            );
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error updating repair status:", error);
+    } finally {
+      setAccepting(false);
     }
   };
 
@@ -80,7 +126,12 @@ const RepairDetailScreen: React.FC = () => {
                 size="sm"
                 color={colorTheme.colors.text}
               />
-              <Text color={colorTheme.colors.text}>{repairDetail.name}</Text>
+              <VStack>
+                <Text fontSize="xs" color="gray.500">
+                  {t("FORM.REPAIR.NAME")}
+                </Text>
+                <Text color={colorTheme.colors.text}>{repairDetail.name}</Text>
+              </VStack>
             </HStack>
 
             <HStack space={3}>
@@ -90,7 +141,12 @@ const RepairDetailScreen: React.FC = () => {
                 size="sm"
                 color={colorTheme.colors.text}
               />
-              <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+              <VStack>
+                <Text fontSize="xs" color="gray.500">
+                  {t("FORM.REPAIR.PHONE")}
+                </Text>
+                <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+              </VStack>
             </HStack>
 
             <HStack space={3}>
@@ -100,9 +156,14 @@ const RepairDetailScreen: React.FC = () => {
                 size="sm"
                 color={colorTheme.colors.text}
               />
-              <Text color={colorTheme.colors.text} flex={1}>
-                {repairDetail.problem_detail}
-              </Text>
+              <VStack>
+                <Text fontSize="xs" color="gray.500">
+                  {t("FORM.REPAIR.PROBLEM_DETAILS")}
+                </Text>
+                <Text color={colorTheme.colors.text} flex={1}>
+                  {repairDetail.problem_detail}
+                </Text>
+              </VStack>
             </HStack>
 
             <HStack space={3}>
@@ -112,17 +173,22 @@ const RepairDetailScreen: React.FC = () => {
                 size="sm"
                 color={colorTheme.colors.text}
               />
-              <HStack space={2}>
-                <Text color={colorTheme.colors.text}>
-                  {t("BUILDING")} {repairDetail.building}
+              <VStack>
+                <Text fontSize="xs" color="gray.500">
+                  {t("FORM.REPAIR.LOCATION_INFO")}
                 </Text>
-                <Text color={colorTheme.colors.text}>
-                  {t("FLOOR")} {repairDetail.floor}
-                </Text>
-                <Text color={colorTheme.colors.text}>
-                  {t("ROOM")} {repairDetail.room}
-                </Text>
-              </HStack>
+                <HStack space={2}>
+                  <Text color={colorTheme.colors.text}>
+                    {t("BUILDING")} {repairDetail.building}
+                  </Text>
+                  <Text color={colorTheme.colors.text}>
+                    {t("FLOOR")} {repairDetail.floor}
+                  </Text>
+                  <Text color={colorTheme.colors.text}>
+                    {t("ROOM")} {repairDetail.room}
+                  </Text>
+                </HStack>
+              </VStack>
             </HStack>
 
             <HStack space={3}>
@@ -139,7 +205,7 @@ const RepairDetailScreen: React.FC = () => {
                 <Text color={colorTheme.colors.text}>
                   {dayJs(
                     `${repairDetail.report_date} ${repairDetail.report_time}`
-                  ).format("DD MMM YYYY, HH:mm น.")}
+                  ).format("DD MMM YYYY, HH:mm ")}
                 </Text>
               </VStack>
             </HStack>
@@ -165,7 +231,7 @@ const RepairDetailScreen: React.FC = () => {
             fontSize="lg"
             fontWeight="bold"
           >
-            ข้อมูลผู้รับผิดชอบ
+            {t("RES_PERSON")}
           </Text>
           <VStack
             mt={3}
@@ -181,7 +247,14 @@ const RepairDetailScreen: React.FC = () => {
                 size="sm"
                 color={colorTheme.colors.text}
               />
-              <Text color={colorTheme.colors.text}>{repairDetail.name}</Text>
+              <VStack>
+                <Text fontSize="xs" color="gray.500">
+                  {t("FORM.REPAIR.TECHNICIAN_NAME")}
+                </Text>
+                <Text color={colorTheme.colors.text}>
+                  {repairDetail.received_by}
+                </Text>
+              </VStack>
             </HStack>
 
             <HStack space={3}>
@@ -191,7 +264,12 @@ const RepairDetailScreen: React.FC = () => {
                 size="sm"
                 color={colorTheme.colors.text}
               />
-              <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+              <VStack>
+                <Text fontSize="xs" color="gray.500">
+                  {t("FORM.REPAIR.PHONE")}
+                </Text>
+                <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+              </VStack>
             </HStack>
 
             <HStack space={3}>
@@ -206,9 +284,9 @@ const RepairDetailScreen: React.FC = () => {
                   {t("RECEIVED_DATE")}
                 </Text>
                 <Text color={colorTheme.colors.text}>
-                  {dayJs(
-                    `${repairDetail.report_date} ${repairDetail.report_time}`
-                  ).format("DD MMM YYYY, HH:mm น.")}
+                  {dayJs(repairDetail.received_date).format(
+                    "DD MMM YYYY, HH:mm"
+                  )}
                 </Text>
               </VStack>
             </HStack>
@@ -225,9 +303,9 @@ const RepairDetailScreen: React.FC = () => {
                   {t("PROCESSING_DATE")}
                 </Text>
                 <Text color={colorTheme.colors.text}>
-                  {dayJs(
-                    `${repairDetail.report_date} ${repairDetail.report_time}`
-                  ).format("DD MMM YYYY, HH:mm น.")}
+                  {dayJs(repairDetail.processing_date).format(
+                    "DD MMM YYYY, HH:mm"
+                  )}
                 </Text>
               </VStack>
             </HStack>
@@ -248,7 +326,7 @@ const RepairDetailScreen: React.FC = () => {
                     <Text color={colorTheme.colors.text}>
                       {dayJs(
                         `${repairDetail.report_date} ${repairDetail.report_time}`
-                      ).format("DD MMM YYYY, HH:mm น.")}
+                      ).format("DD MMM YYYY, HH:mm ")}
                     </Text>
                   </VStack>
                 </HStack>
@@ -324,8 +402,36 @@ const RepairDetailScreen: React.FC = () => {
               </Text>
             </VStack>
 
+            {repairDetail.status === "pending" && (
+              <Button
+                variant="solid"
+                rounded="xl"
+                size="sm"
+                shadow={1}
+                bg={statusItem.color}
+                _text={{ color: "white", fontWeight: "bold" }}
+                isLoading={accepting}
+                onPress={() => handleAcceptWork(repairDetail.id)}
+              >
+                {t("ACCEPT_WORK")}
+              </Button>
+            )}
             {renderRepairDetail()}
             {statusItem.text !== "PENDING" && renderDetailTechnician()}
+
+            {repairDetail.status === "inprogress" && (
+              <Button
+                variant="solid"
+                rounded="xl"
+                size="sm"
+                shadow={1}
+                bg={statusItem.color}
+                _text={{ color: "white", fontWeight: "bold" }}
+                isDisabled={repairDetail.status === "completed"}
+              >
+                {t("SUBMIT_WORK")}
+              </Button>
+            )}
           </VStack>
         )}
       </ScreenWrapper>

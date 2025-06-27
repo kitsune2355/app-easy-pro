@@ -116,3 +116,32 @@ export const submitRepairForm = (form: IRepairForm) => async (dispatch: AppDispa
   }
 };
 
+export const updateRepairStatus = (id: string) => async (dispatch: AppDispatch) => {
+  dispatch(setLoading(true));
+
+  try {
+    const userInfoString = await AsyncStorage.getItem('userInfo');
+    const user = userInfoString ? JSON.parse(userInfoString) : null;
+    
+    if (!user || !user.id) {
+      throw new Error('User information not found');
+    }
+    const response = await axios.post(`${env.API_ENDPOINT}/update_repair_by_id.php`, {
+      id,
+      received_by: user.id
+    });
+
+    if (response.data.status === 'success') {
+      dispatch(fetchRepairById(id));
+      return response.data;
+    } else {
+      dispatch(setError(response.data.message || 'Failed to update repair status'));
+      throw new Error(response.data.message || 'Failed to update repair status');
+    }
+  } catch (error: any) {
+    dispatch(setError(error.message || 'เกิดข้อผิดพลาด'));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+

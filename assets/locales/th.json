@@ -47,6 +47,7 @@
       "REPORT_TIME": "เวลาที่แจ้ง",
       "SELECT_TIME": "เลือกเวลา",
       "NAME": "ชื่อผู้แจ้ง",
+      "TECHNICIAN_NAME": "ชื่อผู้ดูแล",
       "NAME_PLACEHOLDER": "กรอกชื่อของคุณ",
       "PHONE": "เบอร์โทรศัพท์",
       "PHONE_PLACEHOLDER": "กรอกเบอร์โทรศัพท์ของคุณ",
@@ -89,6 +90,7 @@
       }
     }
   },
+  "RES_PERSON": "ข้อมูลผู้ดูแล",
   "RECEIVED_DATE": "วันที่รับเรื่อง",
   "PROCESSING_DATE": "วันที่ดำเนินการ",
   "COMPLETION_DATE": "วันที่สำเร็จ",
@@ -101,5 +103,16 @@
     "MORE_DETAILS": "รายละเอียดเพิ่มเติม"
   },
   "ACCEPT_WORK": "รับงาน",
-  "SUBMIT_WORK": "ส่งงาน"
+  "SUBMIT_WORK": "ส่งงาน",
+  "WORK_ACCEPTANCE": {
+    "SUCCESS_MESSAGE": "คุณได้รับงาน",
+    "ERROR_MESSAGE": "เกิดข้อผิดพลาดในการรับงาน กรุณาลองใหม่อีกครั้ง",
+    "NETWORK_ERROR": "ข้อผิดพลาดเครือข่าย กรุณาตรวจสอบการเชื่อมต่อ",
+    "ACCEPTING": "กำลังรับงาน..."
+  },
+  "WORK_SUBMISSION": {
+    "SUCCESS_MESSAGE": "ส่งงานเรียบร้อยแล้ว",
+    "ERROR_MESSAGE": "เกิดข้อผิดพลาดในการส่งงาน กรุณาลองใหม่อีกครั้ง",
+    "SUBMITTING": "กำลังส่งงาน..."
+  }
 }

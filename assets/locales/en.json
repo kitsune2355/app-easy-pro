@@ -47,6 +47,7 @@
       "REPORT_TIME": "Report Time",
       "SELECT_TIME": "Select Time",
       "NAME": "Name",
+      "TECHNICIAN_NAME": "Responsible Person name",
       "NAME_PLACEHOLDER": "Enter your name",
       "PHONE": "Phone Number",
       "PHONE_PLACEHOLDER": "Enter your phone number",
@@ -89,6 +90,7 @@
       }
     }
   },
+  "RES_PERSON": "Responsible Person",
   "RECEIVED_DATE": "Received Date",
   "PROCESSING_DATE": "Processing Date",
   "COMPLETION_DATE": "Completion Date",
@@ -101,5 +103,16 @@
     "MORE_DETAILS": "More Details"
   },
   "ACCEPT_WORK": "Accept Work",
-  "SUBMIT_WORK": "Submit Work"
+  "SUBMIT_WORK": "Submit Work",
+  "WORK_ACCEPTANCE": {
+    "SUCCESS_MESSAGE": "You have successfully accepted work #{id}",
+    "ERROR_MESSAGE": "Failed to accept work. Please try again.",
+    "NETWORK_ERROR": "Network error. Please check your connection.",
+    "ACCEPTING": "Accepting work..."
+  },
+  "WORK_SUBMISSION": {
+    "SUCCESS_MESSAGE": "Work #{id} has been submitted successfully",
+    "ERROR_MESSAGE": "Failed to submit work. Please try again.",
+    "SUBMITTING": "Submitting work..."
+  }
 }

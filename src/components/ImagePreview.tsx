@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { Box, ScrollView, HStack, Image, Icon, Text } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTranslation } from "react-i18next";
+import ImageViewing from "react-native-image-viewing";
 import { env } from "../config/environment";
 
 
@@ -37,13 +38,18 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const [isViewerVisible, setViewerVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   if (!images || images.length === 0) {
     return (
       <Box py={4} alignItems="center">
-        <Text color="gray.500">{t('NO_IMAGES_AVAILABLE')}</Text>
+        <Text color="gray.500">{t("NO_IMAGES_AVAILABLE")}</Text>
       </Box>
     );
   }
+
+  const imageSources = images.map((uri) => ({ uri }));
 
   return (
     <Box mt="3">
@@ -51,20 +57,27 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
         <HStack space={3} my={2}>
           {images.map((uri, index) => (
             <Box key={index}>
-              <Box
-                shadow={3}
-                borderRadius="lg"
-                overflow="hidden"
-                width={imageSize}
-                height={imageSize}
-                position="relative"
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedIndex(index);
+                  setViewerVisible(true);
+                }}
               >
-                <Image
-                  source={{ uri: uri.toString() }}
-                  alt={`Selected ${index}`}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Box>
+                <Box
+                  shadow={3}
+                  borderRadius="lg"
+                  overflow="hidden"
+                  width={imageSize}
+                  height={imageSize}
+                  position="relative"
+                >
+                  <Image
+                    source={{ uri: uri.toString() }}
+                    alt={`Selected ${index}`}
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </Box>
+              </TouchableOpacity>
               {showRemoveButton && onRemoveImage && (
                 <TouchableOpacity
                   style={{
@@ -89,6 +102,14 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
           ))}
         </HStack>
       </ScrollView>
+
+      {/* Fullscreen image viewer */}
+      <ImageViewing
+        images={imageSources}
+        imageIndex={selectedIndex}
+        visible={isViewerVisible}
+        onRequestClose={() => setViewerVisible(false)}
+      />
     </Box>
   );
 };

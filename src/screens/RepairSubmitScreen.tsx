@@ -1,12 +1,26 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { Text } from "react-native";
+import React from "react";
+import AppHeader from "../components/AppHeader";
+import { useTranslation } from "react-i18next";
+import { useTheme } from "../context/ThemeContext";
+import ScreenWrapper from "../components/ScreenWrapper";
 
-const RepairSubmitScreen = () => {
+const RepairSubmitScreen: React.FC = () => {
+  const { t } = useTranslation();
+  const { colorTheme } = useTheme();
+
   return (
-    <View>
-      <Text>RepairSubmitScreen</Text>
-    </View>
-  )
-}
+    <>
+      <AppHeader
+        title={t("MENU.SUBMIT_REPAIR_REQ")}
+        bgColor={colorTheme.colors.primary}
+        textColor="white"
+      />
+      <ScreenWrapper>
+        <Text>RepairSubmitScreen</Text>
+      </ScreenWrapper>
+    </>
+  );
+};
 
-export default RepairSubmitScreen
+export default RepairSubmitScreen;

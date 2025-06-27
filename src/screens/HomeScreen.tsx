@@ -42,7 +42,7 @@ const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAllRepairs());
-  }, [dispatch]);
+  }, [repairs]);
 
   const renderDashboardItem = () => (
     <>
@@ -231,7 +231,7 @@ const HomeScreen: React.FC = () => {
                     {t("ROOM")} {item.room}
                   </Text>
                   <Text color="gray.500" fontSize="xs">
-                    {dayJs(item.created_at).format("DD MMM YYYY, HH:mm น.")}
+                    {dayJs(item.created_at).format("DD MMM YYYY, HH:mm ")}
                   </Text>
                 </VStack>
               </HStack>
