@@ -14,9 +14,6 @@ import {
   Box,
   Actionsheet,
   Icon,
-  HStack,
-  ScrollView,
-  Image,
   Spinner,
   Center,
 } from "native-base";
@@ -29,51 +26,23 @@ import { Controller } from "react-hook-form";
 import { dayJs, setDayJsLocale } from "../config/dayJs";
 import * as ImagePicker from "expo-image-picker";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { submitRepairForm } from "../service/repairService";
-import { useDispatch } from "react-redux";
+import { fetchAllAreas, submitRepairForm } from "../service/repairService";
+import { useDispatch, useSelector } from "react-redux";
 import ImagePreview from "../components/ImagePreview";
-
-const mockBuildings = [
-  { label: "A", value: "building_a" },
-  { label: "B", value: "building_b" },
-  { label: "C", value: "building_c" },
-  { label: "Main", value: "main_building" },
-  { label: "Annex", value: "annex_building" },
-];
-
-const mockFloors = [
-  { label: "Ground Floor", value: "0" },
-  { label: "1st Floor", value: "1" },
-  { label: "2nd Floor", value: "2" },
-  { label: "3rd Floor", value: "3" },
-  { label: "4th Floor", value: "4" },
-  { label: "5th Floor", value: "5" },
-  { label: "6th Floor", value: "6" },
-  { label: "7th Floor", value: "7" },
-  { label: "8th Floor", value: "8" },
-  { label: "9th Floor", value: "9" },
-  { label: "10th Floor", value: "10" },
-];
-
-const mockRooms = [
-  { label: "Room 101", value: "101" },
-  { label: "Room 102", value: "102" },
-  { label: "Room 103", value: "103" },
-  { label: "Room 201", value: "201" },
-  { label: "Room 202", value: "202" },
-  { label: "Room 203", value: "203" },
-  { label: "Conference Room A", value: "conf_a" },
-  { label: "Conference Room B", value: "conf_b" },
-  { label: "Meeting Room 1", value: "meeting_1" },
-  { label: "Meeting Room 2", value: "meeting_2" },
-  { label: "Storage Room", value: "storage" },
-  { label: "Server Room", value: "server" },
-];
+import { AppDispatch, RootState } from "../store";
+import {
+  getBuildingOptions,
+  getFloorOptions,
+  getRoomOptions,
+} from "../constant/ConstantItem";
 
 const RepairScreen = () => {
   const { t, i18n } = useTranslation();
   const { colorTheme } = useTheme();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const { buildings, loading, error } = useSelector(
+    (state: RootState) => state.area
+  );
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -89,8 +58,24 @@ const RepairScreen = () => {
     formState: { errors },
     setValue,
     getValues,
+    watch,
   } = useRepairForm();
   const currentLanguage = i18n.language;
+
+  const selectedBuildingId = watch("building");
+  const selectedFloorId = watch("floor");
+
+  const buildingOptions = getBuildingOptions(buildings);
+  const floorOptions = getFloorOptions(buildings, selectedBuildingId);
+  const roomOptions = getRoomOptions(
+    buildings,
+    selectedBuildingId,
+    selectedFloorId
+  );
+
+  useEffect(() => {
+    dispatch(fetchAllAreas());
+  }, [dispatch]);
 
   useEffect(() => {
     setDayJsLocale(currentLanguage);
@@ -156,7 +141,6 @@ const RepairScreen = () => {
 
     try {
       const result = await dispatch(submitRepairForm(data) as any);
-      console.log('result', result)
       if (result && result.status === "success") {
         Alert.alert(
           t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
@@ -200,11 +184,14 @@ const RepairScreen = () => {
 
   const renderPreviewImages = () => {
     return (
-      <ImagePreview images={images} onRemoveImage={(index) => {
-        const newImages = [...images];
-        newImages.splice(index, 1);
-        setImages(newImages);
-      }} />
+      <ImagePreview
+        images={images}
+        onRemoveImage={(index) => {
+          const newImages = [...images];
+          newImages.splice(index, 1);
+          setImages(newImages);
+        }}
+      />
     );
   };
 
@@ -406,11 +393,10 @@ const RepairScreen = () => {
                         bg: colorTheme.colors.secondary,
                         endIcon: <CheckIcon size="5" color="teal.600" />,
                       }}
-                      mt={1}
                       onValueChange={onChange}
                       borderColor={error ? "#ef4444" : "#d1d5db"}
                     >
-                      {mockBuildings.map((building) => (
+                      {buildingOptions.map((building) => (
                         <Select.Item
                           key={building.value}
                           label={building.label}
@@ -444,11 +430,11 @@ const RepairScreen = () => {
                         bg: colorTheme.colors.secondary,
                         endIcon: <CheckIcon size="5" color="teal.600" />,
                       }}
-                      mt={1}
                       onValueChange={onChange}
                       borderColor={error ? "#ef4444" : "#d1d5db"}
+                      isDisabled={!selectedBuildingId || floorOptions.length === 0}
                     >
-                      {mockFloors.map((floor) => (
+                      {floorOptions.map((floor) => (
                         <Select.Item
                           key={floor.value}
                           label={floor.label}
@@ -482,11 +468,11 @@ const RepairScreen = () => {
                         bg: colorTheme.colors.secondary,
                         endIcon: <CheckIcon size="5" color="teal.600" />,
                       }}
-                      mt={1}
                       onValueChange={onChange}
                       borderColor={error ? "#ef4444" : "#d1d5db"}
+                      isDisabled={!selectedFloorId || roomOptions.length === 0}
                     >
-                      {mockRooms.map((room) => (
+                      {roomOptions.map((room) => (
                         <Select.Item
                           key={room.value}
                           label={room.label}
@@ -601,40 +587,40 @@ const RepairScreen = () => {
             </VStack>
 
             <Button
-            mt="5"
-            mb="10"
-            rounded="2xl"
-            bg={colorTheme.colors.primary}
-            _text={{ color: "white" }}
-            onPress={handleSubmit(onSubmit)}
-            isDisabled={isSubmitting}
-          >
-            {t("FORM.REPAIR.SUBMIT")}
-          </Button>
+              mt="5"
+              mb="10"
+              rounded="2xl"
+              bg={colorTheme.colors.primary}
+              _text={{ color: "white" }}
+              onPress={handleSubmit(onSubmit)}
+              isDisabled={isSubmitting}
+            >
+              {t("FORM.REPAIR.SUBMIT")}
+            </Button>
           </VStack>
         </VStack>
       </ScreenWrapper>
 
       {isSubmitting && (
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        bg="rgba(0, 0, 0, 0.5)"
-        zIndex={9999}
-      >
-        <Center flex={1}>
-          <VStack space={3} alignItems="center">
-            <Spinner size="lg" color="white" />
-            <Text color="white" fontSize="md">
-              {t("FORM.REPAIR.SUBMITTING")}
-            </Text>
-          </VStack>
-        </Center>
-      </Box>
-    )}
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="rgba(0, 0, 0, 0.5)"
+          zIndex={9999}
+        >
+          <Center flex={1}>
+            <VStack space={3} alignItems="center">
+              <Spinner size="lg" color="white" />
+              <Text color="white" fontSize="md">
+                {t("FORM.REPAIR.SUBMITTING")}
+              </Text>
+            </VStack>
+          </Center>
+        </Box>
+      )}
     </React.Fragment>
   );
 };

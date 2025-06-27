@@ -69,3 +69,33 @@ export const gradientcolorTheme = {
   1: ["#b13579", "#7e57c2"],
   2: ["#3598b1", "#6f35b1"],
 };
+
+export const getBuildingOptions = (buildings: any[]) => {
+  return buildings.map((b) => ({
+    label: b.area_name,
+    value: String(b.area_id),
+  }));
+};
+
+export const getFloorOptions = (buildings: any[], buildingId: string) => {
+  return (
+    buildings
+      .find((b) => String(b.area_id) === buildingId)
+      ?.floor.map((f) => ({
+        label: f.ac_name,
+        value: String(f.ac_id),
+      })) || []
+  );
+};
+
+export const getRoomOptions = (buildings: any[], buildingId: string, floorId: string) => {
+  return (
+    buildings
+      .find((b) => String(b.area_id) === buildingId)
+      ?.floor.find((f) => String(f.ac_id) === floorId)
+      ?.room.map((r) => ({
+        label: r.ar_name,
+        value: String(r.ar_id),
+      })) || []
+  );
+};

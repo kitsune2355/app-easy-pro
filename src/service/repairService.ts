@@ -4,6 +4,7 @@ import { AppDispatch } from '../store';
 import { env } from '../config/environment';
 import { IRepairForm } from '../interfaces/form/repairForm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setAreaStructure } from '../redux/areaSlice';
 
 export const fetchAllRepairs = () => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
@@ -28,6 +29,24 @@ export const fetchRepairById = (id: string) => async (dispatch: AppDispatch) => 
     }
   } catch (error: any) {
     dispatch(setError(error.message || "เกิดข้อผิดพลาด"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const fetchAllAreas = () => async (dispatch: AppDispatch) => {
+  dispatch(setLoading(true));
+
+  try {
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_building.php`);
+    
+    if (response.data && response.data.building) {
+      dispatch(setAreaStructure(response.data.building));
+    } else {
+      dispatch(setError('ไม่พบข้อมูลอาคาร'));
+    }
+  } catch (error: any) {
+    dispatch(setError(error.message || 'เกิดข้อผิดพลาดในการดึงข้อมูลอาคาร'));
   } finally {
     dispatch(setLoading(false));
   }

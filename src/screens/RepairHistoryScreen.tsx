@@ -266,7 +266,9 @@ const RepairHistoryScreen = () => {
             .includes(searchQuery.toLowerCase()) ||
           item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.room.toLowerCase().includes(searchQuery.toLowerCase());
+          item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.phone.toLowerCase().includes(searchQuery.toLowerCase());
 
     return statusMatch && searchMatch;
   });

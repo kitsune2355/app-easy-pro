@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import repairReducer from './redux/repairSlice';
 import authReducer from './redux/authSlice';
+import areaReducer from './redux/areaSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    repair: repairReducer
+    repair: repairReducer,
+    area: areaReducer,
   }
 });
 
