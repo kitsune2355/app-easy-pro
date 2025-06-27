@@ -16,6 +16,7 @@ import {
   Icon,
   Spinner,
   Center,
+  ChevronDownIcon,
 } from "native-base";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -147,7 +148,7 @@ const RepairScreen = () => {
           t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
           [
             {
-              text: "OK",
+              text: t("COMMON.OK"),
               onPress: () => {
                 setValue("report_date", dayJs().format("YYYY-MM-DD"));
                 setValue("report_time", dayJs().format("HH:mm"));

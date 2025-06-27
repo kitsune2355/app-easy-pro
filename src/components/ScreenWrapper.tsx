@@ -1,5 +1,6 @@
-import { ScrollView, VStack } from "native-base";
+import { KeyboardAvoidingView, ScrollView, VStack } from "native-base";
 import React from "react";
+import { Platform } from "react-native";
 
 interface ScreenWrapperProps {
   children: React.ReactNode;
@@ -7,11 +8,17 @@ interface ScreenWrapperProps {
 
 const ScreenWrapper: React.FC<ScreenWrapperProps> = ({ children }) => {
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <VStack py="4" px="8">
-        {children}
-      </VStack>
-    </ScrollView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // ปรับให้เหมาะกับ iOS
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <VStack py="4" px="8">
+          {children}
+        </VStack>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
