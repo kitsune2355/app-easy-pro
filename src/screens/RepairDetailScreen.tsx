@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import AppHeader from "../components/AppHeader";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
@@ -26,7 +26,6 @@ import ImagePreview, {
   BASE_UPLOAD_PATH,
   parseImageUrls,
 } from "../components/ImagePreview";
-import { Controller } from "react-hook-form";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,11 +46,17 @@ const RepairDetailScreen: React.FC = () => {
     text: "UNKNOWN",
   };
 
-  // Ensure repairDetail exists before accessing its properties
-  const statusItem = repairDetail?.status
-    ? statusItems[repairDetail.status as keyof typeof statusItems] ||
-      defaultStatus
-    : defaultStatus;
+  const statusItem = useMemo(() => {
+    return repairDetail?.status
+      ? statusItems[repairDetail.status as keyof typeof statusItems] || defaultStatus
+      : defaultStatus;
+  }, [repairDetail]);
+
+  const imagesForPreview = useMemo(() => {
+    return parseImageUrls(repairDetail?.image_url).map(
+      (path: string) => BASE_UPLOAD_PATH + path.replace(/\\/g, "/")
+    );
+  }, [repairDetail?.image_url]);
 
   const onFetchRepairsById = async () => {
     try {
@@ -97,204 +102,188 @@ const RepairDetailScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    onFetchRepairsById();
+    if (repairId) {
+      onFetchRepairsById();
+    }
   }, [repairId]);
-
-  const imagesForPreview = parseImageUrls(repairDetail?.image_url).map(
-    (path: string) => BASE_UPLOAD_PATH + path.replace(/\\/g, "/")
-  );
 
   const renderRepairDetail = () => {
     return (
-      <>
-        <VStack bg={colorTheme.colors.card} rounded="xl" p={4} shadow={1}>
-          <Text
-            color={colorTheme.colors.primary}
-            fontSize="lg"
-            fontWeight="bold"
-          >
-            {t("FORM.REPAIR.REPORT_INFO")}
-          </Text>
-          <VStack
-            mt={3}
-            pt={3}
-            borderTopWidth={1}
-            borderTopColor={colorTheme.colors.border}
-            space={3}
-          >
-            <HStack space={3}>
-              <Icon
-                as={FontAwesome}
-                name="user"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.NAME")}
-                </Text>
-                <Text color={colorTheme.colors.text}>{repairDetail.name}</Text>
-              </VStack>
-            </HStack>
+      <VStack bg={colorTheme.colors.card} rounded="xl" p={4} shadow={1}>
+        <Text color={colorTheme.colors.primary} fontSize="lg" fontWeight="bold">
+          {t("FORM.REPAIR.REPORT_INFO")}
+        </Text>
+        <VStack
+          mt={3}
+          pt={3}
+          borderTopWidth={1}
+          borderTopColor={colorTheme.colors.border}
+          space={3}
+        >
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="user"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.NAME")}
+              </Text>
+              <Text color={colorTheme.colors.text}>{repairDetail.name}</Text>
+            </VStack>
+          </HStack>
 
-            <HStack space={3}>
-              <Icon
-                as={FontAwesome}
-                name="phone"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.PHONE")}
-                </Text>
-                <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
-              </VStack>
-            </HStack>
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="phone"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.PHONE")}
+              </Text>
+              <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+            </VStack>
+          </HStack>
 
-            <HStack space={3}>
-              <Icon
-                as={FontAwesome}
-                name="file-text"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.PROBLEM_DETAILS")}
-                </Text>
-                <Text color={colorTheme.colors.text} flex={1}>
-                  {repairDetail.problem_detail}
-                </Text>
-              </VStack>
-            </HStack>
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="file-text"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.PROBLEM_DETAILS")}
+              </Text>
+              <Text color={colorTheme.colors.text} flex={1}>
+                {repairDetail.problem_detail}
+              </Text>
+            </VStack>
+          </HStack>
 
-            <HStack space={3}>
-              <Icon
-                as={FontAwesome}
-                name="map-marker"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.LOCATION_INFO")}
-                </Text>
-                <HStack space={2}>
-                  <Text color={colorTheme.colors.text}>
-                    {t("BUILDING")} {repairDetail.building}
-                  </Text>
-                  <Text color={colorTheme.colors.text}>
-                    {t("FLOOR")} {repairDetail.floor}
-                  </Text>
-                  <Text color={colorTheme.colors.text}>
-                    {t("ROOM")} {repairDetail.room}
-                  </Text>
-                </HStack>
-              </VStack>
-            </HStack>
-
-            <HStack space={3}>
-              <Icon
-                as={Ionicons}
-                name="calendar"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.REPORT_DATE")}
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="map-marker"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.LOCATION_INFO")}
+              </Text>
+              <HStack space={2}>
+                <Text color={colorTheme.colors.text}>
+                  {t("BUILDING")} {repairDetail.building}
                 </Text>
                 <Text color={colorTheme.colors.text}>
-                  {dayJs(
-                    `${repairDetail.report_date} ${repairDetail.report_time}`
-                  ).format("DD MMM YYYY, HH:mm ")}
+                  {t("FLOOR")} {repairDetail.floor}
                 </Text>
-              </VStack>
-            </HStack>
+                <Text color={colorTheme.colors.text}>
+                  {t("ROOM")} {repairDetail.room}
+                </Text>
+              </HStack>
+            </VStack>
+          </HStack>
 
-            {imagesForPreview.length > 0 && (
-              <ImagePreview
-                images={imagesForPreview}
-                showRemoveButton={false}
-              />
-            )}
-          </VStack>
+          <HStack space={3}>
+            <Icon
+              as={Ionicons}
+              name="calendar"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.REPORT_DATE")}
+              </Text>
+              <Text color={colorTheme.colors.text}>
+                {dayJs(
+                  `${repairDetail.report_date} ${repairDetail.report_time}`
+                ).format("DD MMM YYYY, HH:mm ")}
+              </Text>
+            </VStack>
+          </HStack>
+
+          {imagesForPreview.length > 0 && (
+            <ImagePreview images={imagesForPreview} showRemoveButton={false} />
+          )}
         </VStack>
-      </>
+      </VStack>
     );
   };
 
   const renderDetailTechnician = () => {
     return (
-      <>
-        <VStack bg={colorTheme.colors.card} rounded="xl" p={4} shadow={1}>
-          <Text
-            color={colorTheme.colors.primary}
-            fontSize="lg"
-            fontWeight="bold"
-          >
-            {t("RES_PERSON")}
-          </Text>
-          <VStack
-            mt={3}
-            pt={3}
-            borderTopWidth={1}
-            borderTopColor={colorTheme.colors.border}
-            space={3}
-          >
-            <HStack space={3}>
-              <Icon
-                as={FontAwesome}
-                name="user"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.TECHNICIAN_NAME")}
-                </Text>
-                <Text color={colorTheme.colors.text}>
-                  {repairDetail.received_by}
-                </Text>
-              </VStack>
-            </HStack>
+      <VStack bg={colorTheme.colors.card} rounded="xl" p={4} shadow={1}>
+        <Text color={colorTheme.colors.primary} fontSize="lg" fontWeight="bold">
+          {t("RES_PERSON")}
+        </Text>
+        <VStack
+          mt={3}
+          pt={3}
+          borderTopWidth={1}
+          borderTopColor={colorTheme.colors.border}
+          space={3}
+        >
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="user"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.TECHNICIAN_NAME")}
+              </Text>
+              <Text color={colorTheme.colors.text}>
+                {repairDetail.received_by}
+              </Text>
+            </VStack>
+          </HStack>
 
-            <HStack space={3}>
-              <Icon
-                as={FontAwesome}
-                name="phone"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("FORM.REPAIR.PHONE")}
-                </Text>
-                <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
-              </VStack>
-            </HStack>
+          <HStack space={3}>
+            <Icon
+              as={FontAwesome}
+              name="phone"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("FORM.REPAIR.PHONE")}
+              </Text>
+              <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+            </VStack>
+          </HStack>
 
-            <HStack space={3}>
-              <Icon
-                as={Ionicons}
-                name="calendar"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("RECEIVED_DATE")}
-                </Text>
-                <Text color={colorTheme.colors.text}>
-                  {dayJs(repairDetail.received_date).format(
-                    "DD MMM YYYY, HH:mm"
-                  )}
-                </Text>
-              </VStack>
-            </HStack>
+          <HStack space={3}>
+            <Icon
+              as={Ionicons}
+              name="calendar"
+              size="sm"
+              color={colorTheme.colors.text}
+            />
+            <VStack>
+              <Text fontSize="xs" color="gray.500">
+                {t("RECEIVED_DATE")}
+              </Text>
+              <Text color={colorTheme.colors.text}>
+                {dayJs(repairDetail.received_date).format(
+                  "DD MMM YYYY, HH:mm"
+                )}
+              </Text>
+            </VStack>
+          </HStack>
 
-            <HStack space={3}>
+          <HStack space={3}>
               <Icon
                 as={Ionicons}
                 name="calendar"
@@ -360,55 +349,51 @@ const RepairDetailScreen: React.FC = () => {
               </VStack>
             </HStack>
 
-            {statusItem.text === "COMPLETED" && (
-              <>
-                <HStack space={3}>
-                  <Icon
-                    as={Ionicons}
-                    name="calendar"
-                    size="sm"
-                    color={colorTheme.colors.text}
-                  />
-                  <VStack>
-                    <Text fontSize="xs" color="gray.500">
-                      {t("COMPLETION_DATE")}
-                    </Text>
-                    <Text color={colorTheme.colors.text}>
-                      {dayJs(
-                        `${repairDetail.report_date} ${repairDetail.report_time}`
-                      ).format("DD MMM YYYY, HH:mm ")}
-                    </Text>
-                  </VStack>
-                </HStack>
+          {statusItem.text === "COMPLETED" && (
+            <>
+              <HStack space={3}>
+                <Icon
+                  as={Ionicons}
+                  name="calendar"
+                  size="sm"
+                  color={colorTheme.colors.text}
+                />
+                <VStack>
+                  <Text fontSize="xs" color="gray.500">
+                    {t("COMPLETION_DATE")}
+                  </Text>
+                  <Text color={colorTheme.colors.text}>
+                    {dayJs(
+                      `${repairDetail.report_date} ${repairDetail.report_time}`
+                    ).format("DD MMM YYYY, HH:mm ")}
+                  </Text>
+                </VStack>
+              </HStack>
 
-                <HStack space={3}>
-                  <Icon
-                    as={Ionicons}
-                    name="calendar"
-                    size="sm"
-                    color={colorTheme.colors.text}
-                  />
-                  <VStack>
-                    <Text fontSize="xs" color="gray.500">
-                      {t("DETAIL_OF_SOLUTION")}
-                    </Text>
-                    <Text color={colorTheme.colors.text}>
-                      DETAIL_OF_SOLUTION
-                    </Text>
-                  </VStack>
-                </HStack>
+              <HStack space={3}>
+                <Icon
+                  as={Ionicons}
+                  name="calendar"
+                  size="sm"
+                  color={colorTheme.colors.text}
+                />
+                <VStack>
+                  <Text fontSize="xs" color="gray.500">
+                    {t("DETAIL_OF_SOLUTION")}
+                  </Text>
+                  <Text color={colorTheme.colors.text}>
+                    DETAIL_OF_SOLUTION
+                  </Text>
+                </VStack>
+              </HStack>
 
-                {imagesForPreview.length > 0 && (
-                  <ImagePreview
-                    images={imagesForPreview}
-                    showRemoveButton={false}
-                  />
-                )}
-              </>
-            )}
-          </VStack>
+              {imagesForPreview.length > 0 && (
+                <ImagePreview images={imagesForPreview} showRemoveButton={false} />
+              )}
+            </>
+          )}
         </VStack>
-      </>
+      </VStack>
     );
   };
 

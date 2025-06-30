@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Alert, Pressable } from "react-native";
+import React, { useState, useEffect, useMemo } from "react";
+import { Alert, Pressable, FlatList } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -47,15 +47,6 @@ type RepairItem = {
   phone: string;
 };
 
-type RepairHistoryCardProps = {
-  item: RepairItem;
-  colorTheme: any;
-  statusText: string;
-  statusIcon: string;
-  statusColor: string;
-  t: any;
-};
-
 const RepairHistoryCard = ({
   item,
   colorTheme,
@@ -63,7 +54,14 @@ const RepairHistoryCard = ({
   statusIcon,
   statusColor,
   t,
-}: RepairHistoryCardProps) => {
+}: {
+  item: RepairItem;
+  colorTheme: any;
+  statusText: string;
+  statusIcon: string;
+  statusColor: string;
+  t: any;
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigateWithLoading = useNavigateWithLoading();
   const [isOpen, setIsOpen] = useState(false);
@@ -74,27 +72,20 @@ const RepairHistoryCard = ({
     try {
       setAccepting(true);
       const res = await dispatch(updateRepairStatus(id));
-      if (res.status === "success") {
+      const toastId = `accept-toast-${id}`;
+
       toast.show({
-        render: () => {
-          return (
-            <Box bg="emerald.500" px="2" py="1" rounded="full" mb={5}>
-              <Text color="white"> {t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #{id}</Text>
-            </Box>
-          );
-        },
+        id: toastId,
+        render: () => (
+          <Box bg={res.status === "success" ? "emerald.500" : "red.500"} px="2" py="1" rounded="full" mb={5}>
+            <Text color="white">
+              {res.status === "success"
+                ? `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`
+                : t("WORK_ACCEPTANCE.ERROR_MESSAGE")}
+            </Text>
+          </Box>
+        ),
       });
-      } else {
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="red.500" px="2" py="1" rounded="full" mb={5}>
-              <Text color="white">{t("WORK_ACCEPTANCE.ERROR_MESSAGE")}</Text>
-            </Box>
-          );
-        },
-      });
-    }
     } catch (error) {
       console.error("Error updating repair status:", error);
     } finally {
@@ -103,31 +94,14 @@ const RepairHistoryCard = ({
   };
 
   return (
-    <VStack
-      bg={colorTheme.colors.card}
-      p={4}
-      mb={3}
-      borderRadius="md"
-      shadow={1}
-    >
+    <VStack bg={colorTheme.colors.card} p={4} mb={3} borderRadius="md" shadow={1}>
       <Pressable onPress={() => setIsOpen(!isOpen)}>
         <HStack space={3} justifyContent="space-between" alignItems="center">
           <Center bg={getBackgroundColor(statusColor)} rounded="full" size="10">
-            <Icon
-              as={Ionicons}
-              name={statusIcon}
-              size="5"
-              color={statusColor}
-            />
+            <Icon as={Ionicons} name={statusIcon} size="5" color={statusColor} />
           </Center>
           <VStack flex={1}>
-            <Text
-              w="80%"
-              bold
-              fontSize="md"
-              color={colorTheme.colors.text}
-              numberOfLines={1}
-            >
+            <Text w="80%" bold fontSize="md" color={colorTheme.colors.text} numberOfLines={1}>
               #{item.id}
             </Text>
           </VStack>
@@ -141,87 +115,41 @@ const RepairHistoryCard = ({
       </Pressable>
 
       <Collapse isOpen={isOpen}>
-        <VStack
-          mt={3}
-          pt={3}
-          borderTopWidth={1}
-          borderTopColor={colorTheme.colors.border}
-          space={3}
-        >
-          <HStack space={2} alignItems="center">
-            <Badge
-              bgColor={statusColor}
-              variant="solid"
-              px={2}
-              py={0.5}
-              rounded="full"
-              _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
-            >
+        <VStack mt={3} pt={3} borderTopWidth={1} borderTopColor={colorTheme.colors.border} space={3}>
+          <HStack space={2}>
+            <Badge bgColor={statusColor} rounded="full" px={2} py={0.5} _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}>
               {t(`PROCESS.${statusText}`)}
             </Badge>
           </HStack>
 
           <HStack space={3}>
-            <Icon
-              as={FontAwesome}
-              name="user"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={FontAwesome} name="user" size="sm" color={colorTheme.colors.text} />
             <Text color={colorTheme.colors.text}>{item.name}</Text>
           </HStack>
 
           <HStack space={3}>
-            <Icon
-              as={FontAwesome}
-              name="phone"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={FontAwesome} name="phone" size="sm" color={colorTheme.colors.text} />
             <Text color={colorTheme.colors.text}>{item.phone}</Text>
           </HStack>
 
           <HStack space={3}>
-            <Icon
-              as={FontAwesome}
-              name="file-text"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={FontAwesome} name="file-text" size="sm" color={colorTheme.colors.text} />
             <Text color={colorTheme.colors.text}>{item.problem_detail}</Text>
           </HStack>
 
           <HStack space={3}>
-            <Icon
-              as={FontAwesome}
-              name="map-marker"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={FontAwesome} name="map-marker" size="sm" color={colorTheme.colors.text} />
             <HStack space={2}>
-              <Text color={colorTheme.colors.text}>
-                {t("BUILDING")} {item.building}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("FLOOR")} {item.floor}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("ROOM")} {item.room}
-              </Text>
+              <Text color={colorTheme.colors.text}>{t("BUILDING")} {item.building}</Text>
+              <Text color={colorTheme.colors.text}>{t("FLOOR")} {item.floor}</Text>
+              <Text color={colorTheme.colors.text}>{t("ROOM")} {item.room}</Text>
             </HStack>
           </HStack>
 
           <HStack space={3}>
-            <Icon
-              as={Ionicons}
-              name="calendar"
-              size="sm"
-              color={colorTheme.colors.text}
-            />
+            <Icon as={Ionicons} name="calendar" size="sm" color={colorTheme.colors.text} />
             <Text color={colorTheme.colors.text}>
-              {dayJs(`${item.report_date} ${item.report_time}`).format(
-                "DD MMM YYYY, HH:mm "
-              )}
+              {dayJs(`${item.report_date} ${item.report_time}`).format("DD MMM YYYY, HH:mm")}
             </Text>
           </HStack>
 
@@ -232,11 +160,7 @@ const RepairHistoryCard = ({
               size="sm"
               borderColor={statusColor}
               _text={{ color: statusColor, fontWeight: "bold" }}
-              onPress={() =>
-                navigateWithLoading("RepairDetailScreen", {
-                  repairId: item.id,
-                })
-              }
+              onPress={() => navigateWithLoading("RepairDetailScreen", { repairId: item.id })}
             >
               {t("COMMON.MORE_DETAILS")}
             </Button>
@@ -278,14 +202,12 @@ const RepairHistoryScreen = () => {
   const { repairs } = useSelector((state: any) => state.repair);
   const route = useRoute<RepairHistoryScreenRouteProp>();
 
-  const [activeTab, setActiveTab] = useState<
-    "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED"
-  >("ALL");
+  const [activeTab, setActiveTab] = useState<"ALL" | "PENDING" | "INPROGRESS" | "COMPLETED">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     dispatch(fetchAllRepairs());
-  }, [repairs]);
+  }, []);
 
   useEffect(() => {
     if (route.params?.statusKey) {
@@ -299,25 +221,25 @@ const RepairHistoryScreen = () => {
     return tab === "ALL" ? "all" : (tab.toLowerCase() as any);
   };
 
-  const filteredRepairs = repairs.filter((item: RepairItem) => {
-    const statusMatch =
-      activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
+  const filteredRepairs = useMemo(() => {
+    return repairs.filter((item: RepairItem) => {
+      const statusMatch =
+        activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
 
-    const searchMatch =
-      searchQuery === ""
-        ? true
-        : item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.problem_detail
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.phone.toLowerCase().includes(searchQuery.toLowerCase());
+      const searchMatch =
+        searchQuery === ""
+          ? true
+          : item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.problem_detail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.phone.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return statusMatch && searchMatch;
-  });
+      return statusMatch && searchMatch;
+    });
+  }, [repairs, searchQuery, activeTab]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -327,12 +249,29 @@ const RepairHistoryScreen = () => {
     setSearchQuery("");
   };
 
-  return (
-    <>
-      <AppHeader
-        title={t("MENU.REPAIR_REQ_HISTORY")}
-        bgColor={colorTheme.colors.card}
+  const renderListHeader = () => (
+    <VStack bg={colorTheme.colors.background}>
+      <SearchBar
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        onClearSearch={handleClearSearch}
       />
+      <Box pb={4}>
+      <RepairStatusProgress statusKey={getStatusKey(activeTab)} /></Box>
+    </VStack>
+  );
+
+  const renderEmptyComponent = () => (
+    <Center flex={1} mt={10}>
+      <Text color={colorTheme.colors.text}>
+        {searchQuery ? t("NO_SEARCH_RESULTS") : t("NO_REPAIRS_FOUND")}
+      </Text>
+    </Center>
+  );
+
+  return (
+    <VStack flex={1} bg={colorTheme.colors.background}>
+      <AppHeader title={t("MENU.REPAIR_REQ_HISTORY")} bgColor={colorTheme.colors.card} />
 
       <HStack
         bg={colorTheme.colors.card}
@@ -342,15 +281,8 @@ const RepairHistoryScreen = () => {
         borderBottomColor={colorTheme.colors.border}
       >
         {["ALL", "PENDING", "INPROGRESS", "COMPLETED"].map((tab) => (
-          <Pressable
-            key={tab}
-            onPress={() => setActiveTab(tab as typeof activeTab)}
-            style={{ flex: 1 }}
-          >
-            <Center
-              py={2}
-              bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}
-            >
+          <Pressable key={tab} onPress={() => setActiveTab(tab as typeof activeTab)} style={{ flex: 1 }}>
+            <Center py={2} bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}>
               <Text
                 fontSize="sm"
                 fontWeight="bold"
@@ -363,44 +295,30 @@ const RepairHistoryScreen = () => {
         ))}
       </HStack>
 
-      <ScreenWrapper>
-        <VStack bg={colorTheme.colors.background} flex={1} pb={4}>
-          {/* Search Bar Component */}
-          <SearchBar
-            searchQuery={searchQuery}
-            onSearchChange={handleSearchChange}
-            onClearSearch={handleClearSearch}
-          />
-
-          <VStack pb={4}>
-            <RepairStatusProgress statusKey={getStatusKey(activeTab)} />
-          </VStack>
-
-          {filteredRepairs.length > 0 ? (
-            filteredRepairs.map((item: RepairItem) => {
-              const status = statusItems[item.status];
-              return (
-                <RepairHistoryCard
-                  key={item.id}
-                  item={item}
-                  colorTheme={colorTheme}
-                  statusText={status.text}
-                  statusIcon={status.icon}
-                  statusColor={status.color}
-                  t={t}
-                />
-              );
-            })
-          ) : (
-            <Center>
-              <Text color={colorTheme.colors.text}>
-                {searchQuery ? t("NO_SEARCH_RESULTS") : t("NO_REPAIRS_FOUND")}
-              </Text>
-            </Center>
-          )}
-        </VStack>
-      </ScreenWrapper>
-    </>
+      <FlatList
+        data={filteredRepairs}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={renderListHeader}
+        ListEmptyComponent={renderEmptyComponent}
+        contentContainerStyle={{
+          flexGrow: 1,
+          padding: 16,
+        }}
+        renderItem={({ item }) => {
+          const status = statusItems[item.status];
+          return (
+            <RepairHistoryCard
+              item={item}
+              colorTheme={colorTheme}
+              statusText={status.text}
+              statusIcon={status.icon}
+              statusColor={status.color}
+              t={t}
+            />
+          );
+        }}
+      />
+    </VStack>
   );
 };
 
