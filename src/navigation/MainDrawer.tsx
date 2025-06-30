@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
@@ -26,6 +26,9 @@ import MainBottomTab from "./MainBottomTab";
 import { useAuth } from "../hooks/useAuth";
 import { t } from "i18next";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store";
+import { fetchUserById } from "../service/userService";
 
 const Drawer = createDrawerNavigator<DrawerParamsList>();
 
@@ -48,9 +51,19 @@ export const drawerRoutes = [
 ];
 
 const MainDrawer: React.FC = () => {
-  const {t} = useTranslation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const { logoutUser } = useAuth();
+  const { user, logoutUser } = useAuth();
+  const { userDetail } = useSelector((state: any) => state.user);
+
+  console.log('userDetail', userDetail)
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(user.id));
+    }
+  }, []);
 
   const renderDrawerContent = (props: DrawerContentComponentProps) => {
     const handleLogout = async () => {
@@ -77,14 +90,11 @@ const MainDrawer: React.FC = () => {
             <HStack space={3} alignItems="center">
               <Avatar bgColor={colorTheme.colors.card}></Avatar>
               <VStack>
-                <Text color="white" fontSize="md">
-                  นายสมชาย สมบัติ
+                <Text color="white" fontSize="md" fontWeight='bold'>
+                  {userDetail?.user_name} {userDetail?.user_fname}
                 </Text>
                 <Text color="white" fontSize="xs">
-                  รหัสพนักงาน : 68000001
-                </Text>
-                <Text color="white" fontSize="xs">
-                  ตำแหน่ง : ช่างซ่อม
+                  ตำแหน่ง : {userDetail?.user_department_name}
                 </Text>
               </VStack>
             </HStack>
@@ -131,7 +141,7 @@ const MainDrawer: React.FC = () => {
         name={"MainBottomTab" as keyof DrawerParamsList}
         component={MainBottomTab}
         options={{
-          title: t('SCREENS.HOME'),
+          title: t("SCREENS.HOME"),
           drawerIcon: ({ focused, color }) => (
             <Icon
               as={Ionicons}

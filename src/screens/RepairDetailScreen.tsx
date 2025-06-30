@@ -12,6 +12,8 @@ import {
   Button,
   useToast,
   Box,
+  FormControl,
+  Input,
 } from "native-base";
 import { useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +26,7 @@ import ImagePreview, {
   BASE_UPLOAD_PATH,
   parseImageUrls,
 } from "../components/ImagePreview";
+import { Controller } from "react-hook-form";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -302,11 +305,58 @@ const RepairDetailScreen: React.FC = () => {
                 <Text fontSize="xs" color="gray.500">
                   {t("PROCESSING_DATE")}
                 </Text>
-                <Text color={colorTheme.colors.text}>
+                {/* <Text color={colorTheme.colors.text}>
                   {dayJs(repairDetail.processing_date).format(
                     "DD MMM YYYY, HH:mm"
                   )}
-                </Text>
+                </Text> */}
+                {/* <FormControl isRequired isInvalid={!!errors.report_date}>
+                <FormControl.Label>
+                  <Text>{t("FORM.REPAIR.REPORT_DATE")}</Text>
+                </FormControl.Label>
+                <Controller
+                  control={control}
+                  name="report_date"
+                  render={({ field: { value }, fieldState: { error } }) => (
+                    <>
+                      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                        <Input
+                          isReadOnly
+                          value={
+                            value ? dayJs(value).format("DD MMM YYYY") : ""
+                          }
+                          placeholder={t("FORM.REPAIR.SELECT_DATE")}
+                          isInvalid={!!error}
+                          borderColor={error ? "#ef4444" : "#d1d5db"}
+                          pointerEvents="none"
+                        />
+                      </TouchableOpacity>
+
+                      {showDatePicker && (
+                        <DateTimePicker
+                          value={date}
+                          mode="date"
+                          display="default"
+                          locale={i18n.language === "th" ? "th-TH" : "en-US"}
+                          onChange={(event, selectedDate) => {
+                            setShowDatePicker(false);
+                            if (selectedDate) {
+                              setDate(selectedDate);
+                              setValue(
+                                "report_date",
+                                dayJs(selectedDate).format("YYYY-MM-DD")
+                              );
+                            }
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                />
+                <FormControl.ErrorMessage>
+                  {errors.report_date?.message}
+                </FormControl.ErrorMessage>
+              </FormControl> */}
               </VStack>
             </HStack>
 
