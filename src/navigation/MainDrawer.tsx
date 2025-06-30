@@ -57,8 +57,6 @@ const MainDrawer: React.FC = () => {
   const { user, logoutUser } = useAuth();
   const { userDetail } = useSelector((state: any) => state.user);
 
-  console.log('userDetail', userDetail)
-
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserById(user.id));
