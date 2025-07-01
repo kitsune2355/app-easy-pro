@@ -16,10 +16,11 @@ const AppBarHeader: React.FC = () => {
     <HStack
       bg={colorTheme.colors.card}
       py={2}
-      px={8}
+      px={4}
       borderBottomWidth={1}
       borderBottomColor={colorTheme.colors.border}
-      rounded="3xl"
+      borderBottomRightRadius='3xl'
+      borderBottomLeftRadius='3xl'
       space={3}
       justifyContent="space-between"
       alignItems="center"

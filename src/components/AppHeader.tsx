@@ -29,7 +29,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
       <HStack
         bg={headerBgColor}
         py={2}
-        px={8}
+        px={4}
         borderBottomWidth={1}
         borderBottomColor={colorTheme.colors.border}
         space={3}

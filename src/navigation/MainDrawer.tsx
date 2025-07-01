@@ -84,11 +84,11 @@ const MainDrawer: React.FC = () => {
           {...props}
           contentContainerStyle={{ flexGrow: 1 }}
         >
-          <VStack py={4} space={4}>
+          <VStack p={4} space={4}>
             <HStack space={3} alignItems="center">
               <Avatar bgColor={colorTheme.colors.card}></Avatar>
               <VStack>
-                <Text color="white" fontSize="md" fontWeight='bold'>
+                <Text color="white" fontSize="md" fontWeight="bold">
                   {userDetail?.user_name} {userDetail?.user_fname}
                 </Text>
                 <Text color="white" fontSize="xs">
@@ -101,19 +101,21 @@ const MainDrawer: React.FC = () => {
           </VStack>
           <DrawerItemList {...props} />
           <Spacer />
-          <Button
-            bg={colorTheme.colors.card}
-            rounded="full"
-            _text={{ color: "red.500", fontWeight: "bold" }}
-            onPress={handleLogout}
-          >
-            {t("LOGOUT")}
-          </Button>
-          <Center pt={4}>
-            <Text color="white" fontSize="xs">
-              {t("PROACTIVE")}
-            </Text>
-          </Center>
+          <VStack p={4} space={4} safeAreaBottom>
+            <Button
+              bg={colorTheme.colors.card}
+              rounded="full"
+              _text={{ color: "red.500", fontWeight: "bold" }}
+              onPress={handleLogout}
+            >
+              {t("LOGOUT")}
+            </Button>
+            <Center>
+              <Text color="white" fontSize="xs">
+                {t("PROACTIVE")}
+              </Text>
+            </Center>
+          </VStack>
         </DrawerContentScrollView>
       </VStack>
     );

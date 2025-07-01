@@ -26,6 +26,11 @@ import ImagePreview, {
   BASE_UPLOAD_PATH,
   parseImageUrls,
 } from "../components/ImagePreview";
+import { Controller } from "react-hook-form";
+import { TouchableOpacity } from "react-native";
+import i18n from "../config/il8n";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useRepairProcessForm } from "../hooks/useRepairProcessForm";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +39,13 @@ const RepairDetailScreen: React.FC = () => {
   const { colorTheme } = useTheme();
   const toast = useToast();
   const { repairId } = route.params as { repairId: string };
+  const {
+    control,
+    formState: { errors },
+    setValue,
+  } = useRepairProcessForm();
   const [accepting, setAccepting] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { repairDetail, loading, error } = useSelector(
     (state: RootState) => state.repair
@@ -48,7 +59,8 @@ const RepairDetailScreen: React.FC = () => {
 
   const statusItem = useMemo(() => {
     return repairDetail?.status
-      ? statusItems[repairDetail.status as keyof typeof statusItems] || defaultStatus
+      ? statusItems[repairDetail.status as keyof typeof statusItems] ||
+          defaultStatus
       : defaultStatus;
   }, [repairDetail]);
 
@@ -76,7 +88,6 @@ const RepairDetailScreen: React.FC = () => {
             return (
               <Box bg="emerald.500" px="2" py="1" rounded="full" mb={5}>
                 <Text color="white">
-                  {" "}
                   {t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #{id}
                 </Text>
               </Box>
@@ -232,6 +243,7 @@ const RepairDetailScreen: React.FC = () => {
           borderTopColor={colorTheme.colors.border}
           space={3}
         >
+          {/* ข้อมูลช่าง */}
           <HStack space={3}>
             <Icon
               as={FontAwesome}
@@ -260,10 +272,13 @@ const RepairDetailScreen: React.FC = () => {
               <Text fontSize="xs" color="gray.500">
                 {t("FORM.REPAIR.PHONE")}
               </Text>
-              <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+              <Text color={colorTheme.colors.text}>
+                {repairDetail.received_by_tel}
+              </Text>
             </VStack>
           </HStack>
 
+          {/* วันที่รับงาน */}
           <HStack space={3}>
             <Icon
               as={Ionicons}
@@ -276,39 +291,37 @@ const RepairDetailScreen: React.FC = () => {
                 {t("RECEIVED_DATE")}
               </Text>
               <Text color={colorTheme.colors.text}>
-                {dayJs(repairDetail.received_date).format(
-                  "DD MMM YYYY, HH:mm"
-                )}
+                {dayJs(repairDetail.received_date).format("DD MMM YYYY, HH:mm")}
               </Text>
             </VStack>
           </HStack>
 
-          <HStack space={3}>
-              <Icon
-                as={Ionicons}
-                name="calendar"
-                size="sm"
-                color={colorTheme.colors.text}
-              />
-              <VStack>
-                <Text fontSize="xs" color="gray.500">
-                  {t("PROCESSING_DATE")}
-                </Text>
-                {/* <Text color={colorTheme.colors.text}>
-                  {dayJs(repairDetail.processing_date).format(
-                    "DD MMM YYYY, HH:mm"
-                  )}
-                </Text> */}
-                {/* <FormControl isRequired isInvalid={!!errors.report_date}>
-                <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.REPORT_DATE")}</Text>
-                </FormControl.Label>
+          {/* เลือกวันดำเนินการ */}
+          <HStack space={3} alignItems="flex-start">
+            <Icon
+              as={Ionicons}
+              name="calendar"
+              size="sm"
+              color={colorTheme.colors.text}
+              mt={2}
+            />
+            <VStack flex={1}>
+              <Text fontSize="xs" color="gray.500">
+                {t("PROCESSING_DATE")}
+              </Text>
+              <FormControl isRequired isInvalid={!!errors.process_date}>
                 <Controller
                   control={control}
-                  name="report_date"
-                  render={({ field: { value }, fieldState: { error } }) => (
+                  name="process_date"
+                  render={({
+                    field: { value },
+                    fieldState: { error },
+                  }) => (
                     <>
-                      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                      <TouchableOpacity
+                        onPress={() => setShowDatePicker(true)}
+                        style={{ width: "100%" }}
+                      >
                         <Input
                           isReadOnly
                           value={
@@ -317,22 +330,21 @@ const RepairDetailScreen: React.FC = () => {
                           placeholder={t("FORM.REPAIR.SELECT_DATE")}
                           isInvalid={!!error}
                           borderColor={error ? "#ef4444" : "#d1d5db"}
-                          pointerEvents="none"
+                          width="100%"
                         />
                       </TouchableOpacity>
 
                       {showDatePicker && (
                         <DateTimePicker
-                          value={date}
+                          value={value ? new Date(value) : new Date()}
                           mode="date"
                           display="default"
                           locale={i18n.language === "th" ? "th-TH" : "en-US"}
                           onChange={(event, selectedDate) => {
                             setShowDatePicker(false);
                             if (selectedDate) {
-                              setDate(selectedDate);
                               setValue(
-                                "report_date",
+                                "process_date",
                                 dayJs(selectedDate).format("YYYY-MM-DD")
                               );
                             }
@@ -343,12 +355,13 @@ const RepairDetailScreen: React.FC = () => {
                   )}
                 />
                 <FormControl.ErrorMessage>
-                  {errors.report_date?.message}
+                  {errors.process_date?.message}
                 </FormControl.ErrorMessage>
-              </FormControl> */}
-              </VStack>
-            </HStack>
+              </FormControl>
+            </VStack>
+          </HStack>
 
+          {/* ถ้าสถานะคือ COMPLETED */}
           {statusItem.text === "COMPLETED" && (
             <>
               <HStack space={3}>
@@ -381,14 +394,15 @@ const RepairDetailScreen: React.FC = () => {
                   <Text fontSize="xs" color="gray.500">
                     {t("DETAIL_OF_SOLUTION")}
                   </Text>
-                  <Text color={colorTheme.colors.text}>
-                    DETAIL_OF_SOLUTION
-                  </Text>
+                  <Text color={colorTheme.colors.text}>DETAIL_OF_SOLUTION</Text>
                 </VStack>
               </HStack>
 
               {imagesForPreview.length > 0 && (
-                <ImagePreview images={imagesForPreview} showRemoveButton={false} />
+                <ImagePreview
+                  images={imagesForPreview}
+                  showRemoveButton={false}
+                />
               )}
             </>
           )}
