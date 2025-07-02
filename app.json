@@ -20,13 +20,19 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.pe3ka.appeasypro"
     },
     "web": {
       "favicon": "./assets/images/logo.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "76784e15-a953-4b7c-85c0-a66e330033e8"
+      }
+    }
   }
 }
