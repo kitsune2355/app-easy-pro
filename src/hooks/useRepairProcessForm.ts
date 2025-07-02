@@ -3,10 +3,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { dayJs } from '../config/dayJs';
-
-interface IRepairProcessForm {
-  process_date: string;
-}
+import { IRepairProcessForm } from '../interfaces/form/repairForm';
 
 export const useRepairProcessForm = () => {
   const { t } = useTranslation();

@@ -9,3 +9,7 @@ export interface IRepairForm {
   desc: string;
   imgUrl?:File[] | string[];
 }
+
+export interface IRepairProcessForm {
+  process_date: string;
+}

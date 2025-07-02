@@ -16,7 +16,6 @@ import {
   Icon,
   Spinner,
   Center,
-  ChevronDownIcon,
 } from "native-base";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -241,7 +240,7 @@ const RepairScreen = () => {
                           value={date}
                           mode="date"
                           display="default"
-                          locale={i18n.language === "th" ? "th-TH" : "en-US"}
+                          locale={currentLanguage}
                           onChange={(event, selectedDate) => {
                             setShowDatePicker(false);
                             if (selectedDate) {

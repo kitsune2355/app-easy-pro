@@ -100,7 +100,9 @@
   "COMMON": {
     "CANCEL": "Cancel",
     "OK": "OK",
-    "MORE_DETAILS": "More Details"
+    "MORE_DETAILS": "More Details",
+    "SAVE": "Save",
+    "SAVE_ERROR": "Save failed. Please try again."
   },
   "ACCEPT_WORK": "Accept Work",
   "SUBMIT_WORK": "Submit Work",

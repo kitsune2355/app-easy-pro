@@ -35,4 +35,3 @@ const repairSlice = createSlice({
 
 export const { setRepairs, setRepairDetail, setLoading, setError } = repairSlice.actions;
 export default repairSlice.reducer;
-

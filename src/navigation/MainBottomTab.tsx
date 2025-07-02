@@ -30,6 +30,15 @@ const MainBottomTab: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
 
+  // Create stable wrapper components
+  const createWrappedComponent = (Component: React.ComponentType) => {
+    return React.memo(() => (
+      <ScreenWrapper>
+        <Component />
+      </ScreenWrapper>
+    ));
+  };
+
   return (
     <Tab.Navigator
       {...({ id: "TabNavigator" } as any)}
@@ -41,12 +50,10 @@ const MainBottomTab: React.FC = () => {
         tabBarStyle: {
           backgroundColor: colorTheme.colors.primary,
           borderRadius: 20,
-          // height: 55,
         },
         tabBarShowLabel: false,
         tabBarItemStyle: {
           borderRadius: 20,
-          // height: 55,
         }
       }}
     >
@@ -54,6 +61,7 @@ const MainBottomTab: React.FC = () => {
         <Tab.Screen
           key={route.name}
           name={route.name as keyof BottomTabParamsList}
+          component={createWrappedComponent(route.component)}
           options={{
             title: t(`SCREENS.${route.name}`),
             tabBarIcon: ({ focused, color, size }) => {
@@ -68,13 +76,7 @@ const MainBottomTab: React.FC = () => {
               );
             },
           }}
-        >
-          {() => (
-            <ScreenWrapper>
-              {React.createElement(route.component)}
-            </ScreenWrapper>
-          )}
-        </Tab.Screen>
+        />
       ))}
     </Tab.Navigator>
   );
