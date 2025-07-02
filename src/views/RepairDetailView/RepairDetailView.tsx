@@ -1,11 +1,11 @@
 import { VStack, Text, HStack, Icon } from "native-base";
 import React from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { Ionicons, FontAwesome } from "react-native-vector-icons";
-import { dayJs } from "../config/dayJs";
-import ImagePreview from "../components/ImagePreview";
-import { IRepair } from "../interfaces/repair.interface";
+import { dayJs } from "../../config/dayJs";
+import ImagePreview from "../../components/ImagePreview";
+import { IRepair } from "../../interfaces/repair.interface";
 
 interface RepairDetailViewProps {
   repairDetail: IRepair;

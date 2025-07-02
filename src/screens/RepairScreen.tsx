@@ -86,8 +86,8 @@ const RepairScreen = () => {
     if (!getValues("report_time")) {
       setValue("report_time", dayJs().format("HH:mm"));
     }
-    if (!getValues("imgUrl")) {
-      setValue("imgUrl", []);
+    if (!getValues("image_url")) {
+      setValue("image_url", []);
     }
   }, [setValue, getValues, currentLanguage]);
 
@@ -108,7 +108,7 @@ const RepairScreen = () => {
       const uri = result.assets[0].uri;
       const newImages = [...images, uri];
       setImages(newImages);
-      setValue("imgUrl", newImages);
+      setValue("image_url", newImages);
     }
     setShowImagePickerSheet(false);
   };
@@ -131,7 +131,7 @@ const RepairScreen = () => {
       const uris = result.assets.map((asset) => asset.uri);
       const newImages = [...images, ...uris];
       setImages(newImages);
-      setValue("imgUrl", newImages);
+      setValue("image_url", newImages);
     }
     setShowImagePickerSheet(false);
   };
@@ -157,7 +157,7 @@ const RepairScreen = () => {
                 setValue("floor", "");
                 setValue("room", "");
                 setValue("desc", "");
-                setValue("imgUrl", []);
+                setValue("image_url", []);
                 setImages([]);
               },
             },
@@ -432,7 +432,9 @@ const RepairScreen = () => {
                       }}
                       onValueChange={onChange}
                       borderColor={error ? "#ef4444" : "#d1d5db"}
-                      isDisabled={!selectedBuildingId || floorOptions.length === 0}
+                      isDisabled={
+                        !selectedBuildingId || floorOptions.length === 0
+                      }
                     >
                       {floorOptions.map((floor) => (
                         <Select.Item
@@ -527,7 +529,7 @@ const RepairScreen = () => {
                 </FormControl.ErrorMessage>
               </FormControl>
 
-              <FormControl isInvalid={!!errors.imgUrl}>
+              <FormControl isInvalid={!!errors.image_url}>
                 <FormControl.Label>
                   <Text>{t("FORM.REPAIR.IMAGE_URL")}</Text>
                 </FormControl.Label>
@@ -581,7 +583,7 @@ const RepairScreen = () => {
                 </Actionsheet>
                 {images.length > 0 && renderPreviewImages()}
                 <FormControl.ErrorMessage>
-                  {errors.imgUrl?.message}
+                  {errors.image_url?.message}
                 </FormControl.ErrorMessage>
               </FormControl>
             </VStack>

@@ -8,7 +8,7 @@ export interface IRepair {
   floor: string;
   room: string;
   problem_detail: string;
-  imgUrl?: File[] | string[];
+  image_url?: File[] | string[];
   created_at?: string;
   created_by?: string;
   status: string;

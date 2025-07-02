@@ -1,27 +1,20 @@
-import {
-  VStack,
-  Text,
-  HStack,
-  Icon,
-  FormControl,
-  Input,
-} from "native-base";
+import { VStack, Text, HStack, Icon, FormControl, Input } from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { Ionicons, FontAwesome } from "react-native-vector-icons";
-import { dayJs, setDayJsLocale } from "../config/dayJs";
+import { dayJs, setDayJsLocale } from "../../config/dayJs";
 import { Controller } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
-import { IRepair } from "../interfaces/repair.interface";
-import { useRepairProcessForm } from "../hooks/useRepairProcessForm";
-import i18n from "../config/il8n";
+import { IRepair } from "../../interfaces/repair.interface";
+import { useRepairProcessForm } from "../../hooks/useRepairProcessForm";
+import i18n from "../../config/il8n";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { updateRepairProcessDate } from "../service/repairService";
+import { updateRepairProcessDate } from "../../service/repairService";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store";
-import { useToastMessage } from "../components/ToastMessage";
-import { IRepairProcessForm } from "../interfaces/form/repairForm";
+import { AppDispatch } from "../../store";
+import { useToastMessage } from "../../components/ToastMessage";
+import { IRepairProcessForm } from "../../interfaces/form/repairForm";
 
 type StatusItem = {
   icon: string;
@@ -55,30 +48,33 @@ const RepairDetailTechnicianView: React.FC<
 
   useEffect(() => {
     setDayJsLocale(currentLanguage);
-    
+
     if (repairDetail.process_date) {
       setValue("process_date", repairDetail.process_date);
     } else if (!getValues("process_date")) {
       setValue("process_date", dayJs().format("YYYY-MM-DD HH:mm:ss"));
     }
-  }, [currentLanguage, getValues, setValue, repairDetail.process_date]); 
+  }, [currentLanguage, getValues, setValue, repairDetail.process_date]);
 
-  const onProcessDateSubmit = useCallback(async (data: IRepairProcessForm) => {
-    try {
-      const res = await dispatch(
-        updateRepairProcessDate(repairDetail.id, data.process_date)
-      );
+  const onProcessDateSubmit = useCallback(
+    async (data: IRepairProcessForm) => {
+      try {
+        const res = await dispatch(
+          updateRepairProcessDate(repairDetail.id, data.process_date)
+        );
 
-      if (res.status === "success") {
-        showToast("success", t("COMMON.SAVE"));
-      } else {
-        showToast("error", res.message || t("COMMON.SAVE_ERROR"));
+        if (res.status === "success") {
+          showToast("success", t("COMMON.SAVE"));
+        } else {
+          showToast("error", res.message || t("COMMON.SAVE_ERROR"));
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        showToast("error", t("COMMON.SAVE_ERROR"));
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      showToast("error", t("COMMON.SAVE_ERROR"));
-    }
-  }, [dispatch, repairDetail.id, showToast, t]);
+    },
+    [dispatch, repairDetail.id, showToast, t]
+  );
 
   return (
     <VStack bg={colorTheme.colors.card} rounded="xl" p={4} shadow={1}>
@@ -214,7 +210,6 @@ const RepairDetailTechnicianView: React.FC<
             </FormControl>
           </VStack>
         </HStack>
-
       </VStack>
     </VStack>
   );

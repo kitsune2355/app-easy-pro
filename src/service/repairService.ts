@@ -85,13 +85,13 @@ export const submitRepairForm =
       formData.append("problemDetail", form.desc);
       formData.append("createdBy", user.id);
 
-      const imgUrlsArray = Array.isArray(form.imgUrl)
-        ? form.imgUrl
-        : form.imgUrl
-        ? [form.imgUrl]
+      const image_urlsArray = Array.isArray(form.image_url)
+        ? form.image_url
+        : form.image_url
+        ? [form.image_url]
         : [];
 
-      for (const uri of imgUrlsArray) {
+      for (const uri of image_urlsArray) {
         if (typeof uri === "string") {
           const filename = uri.split("/").pop();
           const match = /\.(\w+)$/.exec(filename || "");
@@ -186,23 +186,27 @@ export const updateRepairProcessDate =
         {
           id,
           process_date: processDate,
-        },
+        }
       );
 
-      if (response.data.status === 'success') {
+      if (response.data.status === "success") {
         dispatch(fetchRepairById(id));
         return response.data;
       } else {
         dispatch(
           setError(
-            response.data.message || 'Failed to update repair process date',
-          ),
+            response.data.message || "Failed to update repair process date"
+          )
         );
-        return { status: 'error', message: response.data.message || 'Failed to update repair process date' };
+        return {
+          status: "error",
+          message:
+            response.data.message || "Failed to update repair process date",
+        };
       }
     } catch (error: any) {
-      dispatch(setError(error.message || 'เกิดข้อผิดพลาด'));
-      return { status: 'error', message: error.message || 'เกิดข้อผิดพลาด' };
+      dispatch(setError(error.message || "เกิดข้อผิดพลาด"));
+      return { status: "error", message: error.message || "เกิดข้อผิดพลาด" };
     } finally {
       dispatch(setLoading(false));
     }

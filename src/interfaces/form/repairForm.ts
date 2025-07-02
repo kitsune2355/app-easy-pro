@@ -7,9 +7,13 @@ export interface IRepairForm {
   floor: string;
   room: string;
   desc: string;
-  imgUrl?:File[] | string[];
+  image_url?: File[] | string[];
 }
 
 export interface IRepairProcessForm {
   process_date: string;
+}
+
+export interface IRepairSubmitForm {
+  id: string;
 }

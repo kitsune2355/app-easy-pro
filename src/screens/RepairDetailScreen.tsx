@@ -14,10 +14,10 @@ import ImagePreview, {
   parseImageUrls,
 } from "../components/ImagePreview";
 import { Ionicons } from "react-native-vector-icons";
-import RepairInfoView from "../views/RepairDetailView";
-import RepairDetailTechnicianView from "../views/RepairDetailTechnicianView";
+import RepairInfoView from "../views/RepairDetailView/RepairDetailView";
+import RepairDetailTechnicianView from "../views/RepairDetailView/RepairDetailTechnicianView";
 import { useToastMessage } from "../components/ToastMessage";
-import RepairDetailSummaryView from "../views/RepairDetailSummaryView";
+import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSummaryView";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -147,7 +147,7 @@ const RepairDetailScreen: React.FC = () => {
               />
             )}
 
-            {statusItem.text !== "COMPLETED" && (
+            {statusItem.text === "COMPLETED" && (
               <RepairDetailSummaryView
                 imagesForPreview={imagesForPreview}
                 repairDetail={repairDetail}
