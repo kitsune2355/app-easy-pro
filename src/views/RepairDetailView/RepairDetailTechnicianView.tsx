@@ -95,8 +95,6 @@ const RepairDetailTechnicianView: React.FC<
           )
         );
 
-        console.log('res', res)
-
         if (res.status === "success") {
           showToast("success", t("COMMON.SAVE"));
         } else if (res.status === "warning") {
@@ -245,7 +243,7 @@ const RepairDetailTechnicianView: React.FC<
                     <TouchableOpacity onPress={() => setShowTimePicker(true)}>
                       <Input
                         isReadOnly
-                        value={value}
+                        value={value ? dayJs(`2000-01-01T${value}`).format("HH:mm") : ""}
                         placeholder={t("FORM.REPAIR.SELECT_TIME")}
                         isInvalid={!!error}
                         borderColor={error ? "#ef4444" : "#d1d5db"}

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
 import ScreenWrapper from "../components/ScreenWrapper";
 import { VStack, Text, Center, Icon, Button } from "native-base";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRepairById, updateRepairStatus } from "../service/repairService";
 import { AppDispatch, RootState } from "../store";
@@ -18,10 +18,12 @@ import RepairInfoView from "../views/RepairDetailView/RepairDetailView";
 import RepairDetailTechnicianView from "../views/RepairDetailView/RepairDetailTechnicianView";
 import { useToastMessage } from "../components/ToastMessage";
 import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSummaryView";
+import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const route = useRoute();
+  const navigateWithLoading = useNavigateWithLoading();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { showToast } = useToastMessage();
@@ -154,7 +156,7 @@ const RepairDetailScreen: React.FC = () => {
               />
             )}
 
-            {repairDetail.status === "inprogress" && (
+            {repairDetail.process_date && repairDetail.process_time && (
               <Button
                 variant="solid"
                 rounded="xl"
@@ -163,6 +165,11 @@ const RepairDetailScreen: React.FC = () => {
                 bg={statusItem.color}
                 _text={{ color: "white", fontWeight: "bold" }}
                 isDisabled={repairDetail.status === "completed"}
+                onPress={() =>
+                  navigateWithLoading("RepairSubmitScreen", {
+                    repairId: repairDetail.id,
+                  })
+                }
               >
                 {t("SUBMIT_WORK")}
               </Button>

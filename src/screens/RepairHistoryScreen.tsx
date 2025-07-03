@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Pressable, FlatList } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   VStack,
@@ -25,24 +25,8 @@ import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { fetchAllRepairs, updateRepairStatus } from "../service/repairService";
 import { AppDispatch } from "../store";
 import { useToastMessage } from "../components/ToastMessage";
-
-type RepairHistoryScreenRouteProp = RouteProp<
-  { RepairHistoryScreen: { statusKey?: string } },
-  "RepairHistoryScreen"
->;
-
-type RepairItem = {
-  id: string;
-  problem_detail: string;
-  building: string;
-  floor: string;
-  room: string;
-  report_date: string;
-  report_time: string;
-  status: "pending" | "inprogress" | "completed";
-  name: string;
-  phone: string;
-};
+import { RepairHistoryScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
+import { IRepair } from "../interfaces/repair.interface";
 
 const RepairHistoryCard = ({
   item,
@@ -52,7 +36,7 @@ const RepairHistoryCard = ({
   statusColor,
   t,
 }: {
-  item: RepairItem;
+  item: IRepair;
   colorTheme: any;
   statusText: string;
   statusIcon: string;
@@ -228,7 +212,7 @@ const RepairHistoryCard = ({
             >
               {t("ACCEPT_WORK")}
             </Button>
-            {item.status !== "pending" && (
+            {item.process_date && item.process_time && (
               <Button
                 variant="solid"
                 rounded="3xl"
@@ -236,6 +220,9 @@ const RepairHistoryCard = ({
                 bg={statusColor}
                 _text={{ color: "white", fontWeight: "bold" }}
                 isDisabled={item.status === "completed"}
+                onPress={() =>
+                navigateWithLoading("RepairSubmitScreen", { repairId: item.id })
+              }
               >
                 {t("SUBMIT_WORK")}
               </Button>
@@ -276,7 +263,7 @@ const RepairHistoryScreen = () => {
   };
 
   const filteredRepairs = useMemo(() => {
-    return repairs.filter((item: RepairItem) => {
+    return repairs.filter((item: IRepair) => {
       const statusMatch =
         activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
 
