@@ -6,12 +6,12 @@ import { useTranslation } from "react-i18next";
 import ImageViewing from "react-native-image-viewing";
 import { env } from "../config/environment";
 
-
 interface ImagePreviewProps {
   images: string[];
   onRemoveImage?: (index: number) => void;
   imageSize?: number;
   showRemoveButton?: boolean;
+  noScroll?: boolean;
 }
 
 export const BASE_UPLOAD_PATH = `${env.API_ENDPOINT}/uploads/`;
@@ -35,6 +35,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   onRemoveImage,
   imageSize = 100,
   showRemoveButton = true,
+  noScroll = false,
 }) => {
   const { t } = useTranslation();
 
@@ -51,59 +52,70 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
 
   const imageSources = images.map((uri) => ({ uri }));
 
+  const ImageContent = (
+    <>
+      {images.map((uri, index) => (
+        <Box key={index}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedIndex(index);
+              setViewerVisible(true);
+            }}
+          >
+            <Box
+              shadow={3}
+              borderRadius="lg"
+              overflow="hidden"
+              width={imageSize}
+              height={imageSize}
+              position="relative"
+            >
+              <Image
+                source={{ uri: uri.toString() }}
+                alt={`Selected ${index}`}
+                style={{ width: "100%", height: "100%" }}
+              />
+            </Box>
+          </TouchableOpacity>
+          {showRemoveButton && onRemoveImage && (
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                top: -5,
+                right: -5,
+                backgroundColor: "black",
+                borderRadius: 100,
+                padding: 5,
+              }}
+              onPress={() => onRemoveImage(index)}
+            >
+              <Icon
+                as={MaterialIcons}
+                name="close"
+                size="4"
+                color="white"
+              />
+            </TouchableOpacity>
+          )}
+        </Box>
+      ))}
+    </>
+  );
+
   return (
     <Box mt="3">
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <HStack space={3} my={2}>
-          {images.map((uri, index) => (
-            <Box key={index}>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedIndex(index);
-                  setViewerVisible(true);
-                }}
-              >
-                <Box
-                  shadow={3}
-                  borderRadius="lg"
-                  overflow="hidden"
-                  width={imageSize}
-                  height={imageSize}
-                  position="relative"
-                >
-                  <Image
-                    source={{ uri: uri.toString() }}
-                    alt={`Selected ${index}`}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </Box>
-              </TouchableOpacity>
-              {showRemoveButton && onRemoveImage && (
-                <TouchableOpacity
-                  style={{
-                    position: "absolute",
-                    top: -5,
-                    right: -5,
-                    backgroundColor: "black",
-                    borderRadius: 100,
-                    padding: 5,
-                  }}
-                  onPress={() => onRemoveImage(index)}
-                >
-                  <Icon
-                    as={MaterialIcons}
-                    name="close"
-                    size="4"
-                    color="white"
-                  />
-                </TouchableOpacity>
-              )}
-            </Box>
-          ))}
+      {noScroll ? (
+        <HStack space={3} my={2} flexWrap="wrap">
+          {ImageContent}
         </HStack>
-      </ScrollView>
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HStack space={3} my={2}>
+            {ImageContent}
+          </HStack>
+        </ScrollView>
+      )}
 
-      {/* Fullscreen image viewer */}
       <ImageViewing
         images={imageSources}
         imageIndex={selectedIndex}
