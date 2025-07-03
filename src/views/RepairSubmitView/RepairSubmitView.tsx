@@ -1,9 +1,10 @@
-import { Box, Text, VStack } from "native-base";
+import { Box, HStack, Text, VStack } from "native-base";
 import React from "react";
 import ImagePreview from "../../components/ImagePreview";
 import { IRepair } from "../../interfaces/repair.interface";
 import { useTheme } from "../../context/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { dayJs } from "../../config/dayJs";
 
 interface RepairSubmitViewProps {
   images: string[];
@@ -22,21 +23,35 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
   return (
     <VStack space={4}>
       <Text bold fontSize="md">
-        🔍 ตรวจสอบข้อมูล
+        🔍 {t("FORM.REPAIR_SUBMIT.VERIFY_INFO")}
       </Text>
       <Text bold color={colorTheme.colors.primary}>
         #{jobDetails?.id || "N/A"}
       </Text>
-      <Text>วิธีแก้ไข:</Text>
+      <HStack justifyContent="space-between">
+        <Text fontSize="xs" color="gray.500">
+          {t("RECEIVED_DATE")}
+        </Text>
+        <Text color={colorTheme.colors.text}>
+          {dayJs(`${jobDetails.received_date}`).format("DD MMM YYYY, HH:mm ")}
+        </Text>
+      </HStack>
+      <HStack justifyContent="space-between">
+        <Text fontSize="xs" color="gray.500">
+          {t("PROCESSING_DATE")}
+        </Text>
+        <Text color={colorTheme.colors.text}>
+          {dayJs(`${jobDetails.process_date}`).format("DD MMM YYYY, HH:mm ")}
+        </Text>
+      </HStack>
+      <Text bold color={colorTheme.colors.text}>
+        {t("FORM.REPAIR_SUBMIT.SOLUTION")}
+      </Text>
       <Box bg="gray.100" p={2} borderRadius="md">
-        <Text>{solution || "ไม่มีรายละเอียดการแก้ไข"}</Text>
+        <Text>{solution || t("FORM.REPAIR_SUBMIT.NO_SOLUTION")}</Text>
       </Box>
-      <Text mt={2}>รูปภาพที่แนบ:</Text>
-      {images.length > 0 ? (
-        <ImagePreview images={images} />
-      ) : (
-        <Text italic>ไม่มีรูปภาพที่แนบ</Text>
-      )}
+
+      {images.length > 0 && <ImagePreview images={images} />}
     </VStack>
   );
 };

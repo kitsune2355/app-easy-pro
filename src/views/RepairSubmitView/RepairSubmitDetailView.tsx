@@ -1,11 +1,9 @@
 import React, { useMemo } from "react";
 import {
-  Box,
   CheckIcon,
   Divider,
   FormControl,
   HStack,
-  Icon,
   Select,
   Text,
   VStack,
@@ -23,7 +21,7 @@ interface RepairSubmitDetailViewProps {
   repairs: IRepair[];
   selectedJobId: string | null;
   onSelectJobId: (jobId: string) => void;
-  jobDetails: IRepair | null; // Now expecting full details, not just a string
+  jobDetails: IRepair | null;
 }
 
 const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
@@ -43,14 +41,14 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
 
   return (
     <VStack space={4}>
-      <FormControl>
-        <FormControl.Label>เลือก ID งาน</FormControl.Label>
+      <FormControl isRequired>
+        <FormControl.Label>{t('FORM.REPAIR_SUBMIT.STEP_LABELS.1')}</FormControl.Label>
         <Select
-          selectedValue={selectedJobId || undefined} // Ensure it's undefined if null for placeholder to show
+          selectedValue={selectedJobId || undefined}
           onValueChange={(value) => {
             onSelectJobId(value);
           }}
-          placeholder="เลือก ID งาน"
+          placeholder={t("FORM.REPAIR_SUBMIT.SELECT_JOB_ID")}
           _selectedItem={{ bg: "blue.100", endIcon: <CheckIcon size={5} /> }}
         >
           {repairs

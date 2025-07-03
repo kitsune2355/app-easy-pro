@@ -15,7 +15,11 @@ import { AppDispatch } from "../store";
 import { fetchAllRepairs } from "../service/repairService";
 import { IRepair } from "../interfaces/repair.interface";
 
-const labels = ["เลือกงาน", "รายละเอียด", "ยืนยัน"];
+const labels = [
+  "FORM.REPAIR_SUBMIT.STEP_LABELS.1",
+  "FORM.REPAIR_SUBMIT.STEP_LABELS.2",
+  "FORM.REPAIR_SUBMIT.STEP_LABELS.3",
+];
 
 const stepStyles = {
   stepIndicatorSize: 25,
@@ -50,7 +54,8 @@ const RepairSubmitScreen: React.FC = () => {
   const [step, setStep] = useState(1);
   const [images, setImages] = useState<string[]>([]);
   const [selectedRepairId, setSelectedRepairId] = useState<string | null>(null);
-  const [selectedRepairDetails, setSelectedRepairDetails] = useState<IRepair | null>(null);
+  const [selectedRepairDetails, setSelectedRepairDetails] =
+    useState<IRepair | null>(null);
   const [solution, setSolution] = useState<string>("");
 
   useEffect(() => {
@@ -59,7 +64,9 @@ const RepairSubmitScreen: React.FC = () => {
 
   useEffect(() => {
     if (selectedRepairId) {
-      const foundRepair = repairs.find((repair: IRepair) => repair.id === selectedRepairId);
+      const foundRepair = repairs.find(
+        (repair: IRepair) => repair.id === selectedRepairId
+      );
       if (foundRepair) {
         setSelectedRepairDetails(foundRepair);
       }
@@ -132,15 +139,18 @@ const RepairSubmitScreen: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!selectedRepairId || !selectedRepairDetails) {
-      Alert.alert("Error", "Missing repair details. Please go back and select a repair job.");
+      Alert.alert(
+        `${t('ALERT.ERROR')}`,
+        `${t('ALERT.MISSING_REPAIR_DESC')}`
+      );
       return;
     }
     if (!solution.trim()) {
-      Alert.alert("Required", "Please provide details of the repair solution.");
+      Alert.alert(`${t('ALERT.REQ_TXT')}`, `${t('ALERT.PLS_DESC_SOLUTION')}`);
       return;
     }
     if (images.length === 0) {
-      Alert.alert("Required", "Please upload at least one image.");
+      Alert.alert(`${t('ALERT.REQ_TXT')}`, `${t('ALERT.PLS_UPLOAD_AT_LEAST_ONE_IMG')}`);
       return;
     }
 
@@ -151,7 +161,7 @@ const RepairSubmitScreen: React.FC = () => {
         images: images,
       });
 
-      Alert.alert("Success", "🎉 ส่งงานเรียบร้อยแล้ว!");
+      Alert.alert(`${t('SUBMIT_WORK')}`, `${t('WORK_SUBMISSION.SUCCESS_MESSAGE')}`);
       setStep(1);
       setImages([]);
       setSelectedRepairId(null);
@@ -174,7 +184,7 @@ const RepairSubmitScreen: React.FC = () => {
         <StepIndicator
           customStyles={stepStyles}
           currentPosition={step - 1}
-          labels={labels}
+          labels={labels.map(label => t(label))}
           stepCount={3}
         />
         <VStack
@@ -214,7 +224,7 @@ const RepairSubmitScreen: React.FC = () => {
           <VStack space={2} p={4}>
             {step > 1 && (
               <Button variant="outline" onPress={handleBack}>
-                ย้อนกลับ
+                {t('BTN_CONTROL.PREVIOUS')}
               </Button>
             )}
             {step < 3 ? (
@@ -223,9 +233,8 @@ const RepairSubmitScreen: React.FC = () => {
                 bg={colorTheme.colors.primary}
                 _text={{ color: "white", fontWeight: "bold" }}
                 onPress={handleNext}
-                disabled={step === 1 && !selectedRepairId} // ปุ่ม Next จะถูกปิดการใช้งานถ้ายังไม่ได้เลือกงานใน Step 1
               >
-                ถัดไป
+                {t('BTN_CONTROL.NEXT')}
               </Button>
             ) : (
               <Button
@@ -233,7 +242,7 @@ const RepairSubmitScreen: React.FC = () => {
                 _text={{ color: "white", fontWeight: "bold" }}
                 onPress={handleSubmit}
               >
-                ✅ ส่งงาน
+                {t('SUBMIT_WORK')}
               </Button>
             )}
           </VStack>

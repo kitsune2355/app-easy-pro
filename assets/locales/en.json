@@ -88,6 +88,19 @@
         "ROOM": "Room is required",
         "DESCRIPTION": "Description is required"
       }
+    },
+    "REPAIR_SUBMIT": {
+      "STEP_LABELS": {
+        "1": "Job ID",
+        "2": "Solution",
+        "3": "Confirm"
+      },
+      "SELECT_JOB_ID": "Select Job ID",
+      "SOLUTION_DESC": "Solution Description",
+      "SOLUTION_DESC_PLACEHOLDER": "Describe the solution in detail",
+      "VERIFY_INFO": "Verify information",
+      "SOLUTION":"Solution",
+      "NO_SOLUTION": "No solution"
     }
   },
   "RES_PERSON": "Responsible Person",
@@ -116,5 +129,16 @@
     "SUCCESS_MESSAGE": "Work #{id} has been submitted successfully",
     "ERROR_MESSAGE": "Failed to submit work. Please try again.",
     "SUBMITTING": "Submitting work..."
+  },
+  "ALERT": {
+    "REQ_TXT": "Required",
+    "PLS_UPLOAD_AT_LEAST_ONE_IMG": "Please upload at least one image.",
+    "PLS_DESC_SOLUTION": "Please provide details of the repair solution.",
+    "ERROR":"Error",
+    "MISSING_REPAIR_DESC":"Missing repair details. Please go back and select a repair job."
+  },
+  "BTN_CONTROL": {
+    "NEXT": "Next",
+    "PREVIOUS": "Previous"
   }
 }

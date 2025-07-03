@@ -36,11 +36,11 @@ const RepairSubmitEditDetailView: React.FC<RepairSubmitEditDetailViewProps> = ({
   return (
     <VStack space={4}>
       <FormControl isRequired>
-        <FormControl.Label>รายละเอียดการแก้ไข</FormControl.Label>
+        <FormControl.Label>{t('FORM.REPAIR_SUBMIT.SOLUTION_DESC')}</FormControl.Label>
         <TextArea
-          value={solution} // ผูกค่ากับ prop solution
-          onChangeText={onSolutionChange} // ผูก onChangeText กับ prop onSolutionChange
-          placeholder="อธิบายวิธีแก้ไขปัญหา"
+          value={solution}
+          onChangeText={onSolutionChange}
+          placeholder={t('FORM.REPAIR_SUBMIT.SOLUTION_PLACEHOLDER')}
           autoCompleteType={undefined}
           tvParallaxProperties={undefined}
           onTextInput={undefined}
