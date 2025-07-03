@@ -11,6 +11,7 @@ import { AppDispatch, RootState } from "../store";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
 import ImagePreview, {
   BASE_UPLOAD_PATH,
+  BASE_UPLOAD_PATH_COMPLETED,
   parseImageUrls,
 } from "../components/ImagePreview";
 import { Ionicons } from "react-native-vector-icons";
@@ -50,6 +51,12 @@ const RepairDetailScreen: React.FC = () => {
   const imagesForPreview = useMemo(() => {
     return parseImageUrls(repairDetail?.image_url).map(
       (path: string) => BASE_UPLOAD_PATH + path.replace(/\\/g, "/")
+    );
+  }, [repairDetail?.image_url]);
+
+  const imagesCompleteForPreview = useMemo(() => {
+    return parseImageUrls(repairDetail?.completed_image_urls).map(
+      (path: string) => BASE_UPLOAD_PATH_COMPLETED + path.replace(/\\/g, "/")
     );
   }, [repairDetail?.image_url]);
 
@@ -151,12 +158,12 @@ const RepairDetailScreen: React.FC = () => {
 
             {statusItem.text === "COMPLETED" && (
               <RepairDetailSummaryView
-                imagesForPreview={imagesForPreview}
+                imagesForPreview={imagesCompleteForPreview}
                 repairDetail={repairDetail}
               />
             )}
 
-            {repairDetail.process_date && repairDetail.process_time && (
+            {repairDetail.status === "inprogress" && repairDetail.process_date && repairDetail.process_time && (
               <Button
                 variant="solid"
                 rounded="xl"
@@ -164,7 +171,6 @@ const RepairDetailScreen: React.FC = () => {
                 shadow={1}
                 bg={statusItem.color}
                 _text={{ color: "white", fontWeight: "bold" }}
-                isDisabled={repairDetail.status === "completed"}
                 onPress={() =>
                   navigateWithLoading("RepairSubmitScreen", {
                     repairId: repairDetail.id,

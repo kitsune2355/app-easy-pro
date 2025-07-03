@@ -185,111 +185,131 @@ const RepairDetailTechnicianView: React.FC<
             <Text fontSize="xs" color="gray.500">
               {t("PROCESSING_DATE")}
             </Text>
-            <FormControl isInvalid={!!errors.process_date}>
-              <Controller
-                control={control}
-                name="process_date"
-                render={({ field: { value }, fieldState: { error } }) => (
-                  <>
-                    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                      <Input
-                        isReadOnly
-                        value={value ? dayJs(value).format("DD MMM YYYY") : ""}
-                        placeholder={t("FORM.REPAIR.SELECT_DATE")}
-                        isInvalid={!!error}
-                        borderColor={error ? "#ef4444" : "#d1d5db"}
-                        pointerEvents="none"
-                        width="100%"
-                      />
-                    </TouchableOpacity>
+            {repairDetail.status === "completed" ? (
+              <Text color={colorTheme.colors.text}>
+                {dayJs(
+                  `${repairDetail.process_date} ${repairDetail.process_time}`
+                ).format("DD MMM YYYY, HH:mm")}
+              </Text>
+            ) : (
+              <>
+                <FormControl isInvalid={!!errors.process_date}>
+                  <Controller
+                    control={control}
+                    name="process_date"
+                    render={({ field: { value }, fieldState: { error } }) => (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => setShowDatePicker(true)}
+                        >
+                          <Input
+                            isReadOnly
+                            value={
+                              value ? dayJs(value).format("DD MMM YYYY") : ""
+                            }
+                            placeholder={t("FORM.REPAIR.SELECT_DATE")}
+                            isInvalid={!!error}
+                            borderColor={error ? "#ef4444" : "#d1d5db"}
+                            pointerEvents="none"
+                            width="100%"
+                          />
+                        </TouchableOpacity>
 
-                    {showDatePicker && (
-                      <DateTimePicker
-                        value={value ? dayJs(value).toDate() : new Date()}
-                        mode="date"
-                        display="default"
-                        locale={currentLanguage}
-                        minimumDate={dayJs(repairDetail.received_date)
-                          .startOf("day")
-                          .toDate()}
-                        onChange={(event, selectedDate) => {
-                          setShowDatePicker(false);
-                          if (selectedDate) {
-                            setValue(
-                              "process_date",
-                              dayJs(selectedDate).format("YYYY-MM-DD")
-                            );
-                          }
-                        }}
-                      />
+                        {showDatePicker && (
+                          <DateTimePicker
+                            value={value ? dayJs(value).toDate() : new Date()}
+                            mode="date"
+                            display="default"
+                            locale={currentLanguage}
+                            minimumDate={dayJs(repairDetail.received_date)
+                              .startOf("day")
+                              .toDate()}
+                            onChange={(event, selectedDate) => {
+                              setShowDatePicker(false);
+                              if (selectedDate) {
+                                setValue(
+                                  "process_date",
+                                  dayJs(selectedDate).format("YYYY-MM-DD")
+                                );
+                              }
+                            }}
+                          />
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              />
-              <FormControl.ErrorMessage>
-                {errors.process_date?.message}
-              </FormControl.ErrorMessage>
-            </FormControl>
+                  />
+                  <FormControl.ErrorMessage>
+                    {errors.process_date?.message}
+                  </FormControl.ErrorMessage>
+                </FormControl>
 
-            <Text fontSize="xs" color="gray.500">
-              {t("PROCESSING_TIME")}
-            </Text>
-            <FormControl isInvalid={!!errors.process_time}>
-              <Controller
-                control={control}
-                name="process_time"
-                render={({ field: { value }, fieldState: { error } }) => (
-                  <>
-                    <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-                      <Input
-                        isReadOnly
-                        value={value ? dayJs(`2000-01-01T${value}`).format("HH:mm") : ""}
-                        placeholder={t("FORM.REPAIR.SELECT_TIME")}
-                        isInvalid={!!error}
-                        borderColor={error ? "#ef4444" : "#d1d5db"}
-                        pointerEvents="none"
-                        width="100%"
-                      />
-                    </TouchableOpacity>
+                <Text fontSize="xs" color="gray.500">
+                  {t("PROCESSING_TIME")}
+                </Text>
+                <FormControl isInvalid={!!errors.process_time}>
+                  <Controller
+                    control={control}
+                    name="process_time"
+                    render={({ field: { value }, fieldState: { error } }) => (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => setShowTimePicker(true)}
+                        >
+                          <Input
+                            isReadOnly
+                            value={
+                              value
+                                ? dayJs(`2000-01-01T${value}`).format("HH:mm")
+                                : ""
+                            }
+                            placeholder={t("FORM.REPAIR.SELECT_TIME")}
+                            isInvalid={!!error}
+                            borderColor={error ? "#ef4444" : "#d1d5db"}
+                            pointerEvents="none"
+                            width="100%"
+                          />
+                        </TouchableOpacity>
 
-                    {showTimePicker && (
-                      <DateTimePicker
-                        value={
-                          value
-                            ? dayJs(`2000-01-01T${value}`).toDate()
-                            : new Date()
-                        }
-                        mode="time"
-                        display="default"
-                        locale={currentLanguage}
-                        onChange={(event, selectedTime) => {
-                          setShowTimePicker(false);
-                          if (selectedTime) {
-                            setValue(
-                              "process_time",
-                              dayJs(selectedTime).format("HH:mm")
-                            );
-                          }
-                        }}
-                      />
+                        {showTimePicker && (
+                          <DateTimePicker
+                            value={
+                              value
+                                ? dayJs(`2000-01-01T${value}`).toDate()
+                                : new Date()
+                            }
+                            mode="time"
+                            display="default"
+                            locale={currentLanguage}
+                            onChange={(event, selectedTime) => {
+                              setShowTimePicker(false);
+                              if (selectedTime) {
+                                setValue(
+                                  "process_time",
+                                  dayJs(selectedTime).format("HH:mm")
+                                );
+                              }
+                            }}
+                          />
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              />
-              <FormControl.ErrorMessage>
-                {errors.process_time?.message}
-              </FormControl.ErrorMessage>
-            </FormControl>
+                  />
+                  <FormControl.ErrorMessage>
+                    {errors.process_time?.message}
+                  </FormControl.ErrorMessage>
+                </FormControl>
 
-            {isRequired && (
-              <Button
-                variant="outline"
-                colorScheme="emerald"
-                size={"sm"}
-                onPress={handleSubmit(onProcessDateSubmit)}
-              >
-                {t("COMMON.SAVE")}
-              </Button>
+                {isRequired && (
+                  <Button
+                    variant="outline"
+                    colorScheme="emerald"
+                    size={"sm"}
+                    onPress={handleSubmit(onProcessDateSubmit)}
+                  >
+                    {t("COMMON.SAVE")}
+                  </Button>
+                )}
+              </>
             )}
           </VStack>
         </HStack>

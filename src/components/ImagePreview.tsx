@@ -15,6 +15,7 @@ interface ImagePreviewProps {
 }
 
 export const BASE_UPLOAD_PATH = `${env.API_ENDPOINT}/uploads/`;
+export const BASE_UPLOAD_PATH_COMPLETED = `${env.API_ENDPOINT}/uploads/completed/`;
 
 export const parseImageUrls = (raw: any) => {
   try {

@@ -19,4 +19,8 @@ export interface IRepair {
   received_by_tel?: string;
   process_date?: string;
   process_time?: string;
+  completed_date?: string;
+  completed_time?: string;
+  completed_solution?: string;
+  completed_image_urls?: File[] | string[];
 }
