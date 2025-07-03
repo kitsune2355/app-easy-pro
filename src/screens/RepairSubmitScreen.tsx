@@ -12,10 +12,11 @@ import RepairSubmitView from "../views/RepairSubmitView/RepairSubmitView";
 import { Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store";
-import { fetchAllRepairs } from "../service/repairService";
+import { fetchAllRepairs, completeRepair } from "../service/repairService"; // Import completeRepair
 import { IRepair } from "../interfaces/repair.interface";
 import { useRoute } from "@react-navigation/native";
 import { RepairSubmitScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
 const labels = [
   "FORM.REPAIR_SUBMIT.STEP_LABELS.1",
@@ -56,8 +57,8 @@ const RepairSubmitScreen: React.FC = () => {
 
   const [step, setStep] = useState(1);
   const [images, setImages] = useState<string[]>([]);
-  const [selectedRepairId, setSelectedRepairId] = useState<string | null>(
-    route ? route.params.repairId : null
+  const [selectedRepairId, setSelectedRepairId] = useState<string | undefined | null>(
+    route ? route.params?.repairId : null
   );
   const [selectedRepairDetails, setSelectedRepairDetails] =
     useState<IRepair | null>(null);
@@ -160,24 +161,40 @@ const RepairSubmitScreen: React.FC = () => {
     }
 
     try {
-      console.log("Submitting:", {
-        repairId: selectedRepairId,
-        solution: solution,
-        images: images,
-      });
+      const userInfoString = await AsyncStorage.getItem("userInfo");
+      const user = userInfoString ? JSON.parse(userInfoString) : null;
 
-      Alert.alert(
-        `${t("SUBMIT_WORK")}`,
-        `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`
-      );
-      setStep(1);
-      setImages([]);
-      setSelectedRepairId(null);
-      setSelectedRepairDetails(null);
-      setSolution("");
-    } catch (error) {
+      if (!user || !user.id) {
+        Alert.alert("Error", "User information not found. Please log in again.");
+        return;
+      }
+
+      const result = await dispatch(completeRepair({
+        repair_request_id: selectedRepairId,
+        completed_solution: solution,
+        completed_by: user.id,
+        completed_image_urls: images,
+      }));
+
+      // Check the result of the dispatched action
+      if (result.status === "success") {
+        Alert.alert(
+          `${t("SUBMIT_WORK")}`,
+          `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`
+        );
+        // Reset form state on success
+        setStep(1);
+        setImages([]);
+        setSelectedRepairId(null);
+        setSelectedRepairDetails(null);
+        setSolution("");
+      } else {
+        // Handle error from the completeRepair action
+        Alert.alert("Error", result.message);
+      }
+    } catch (error: any) {
       console.error("Submission error:", error);
-      Alert.alert("Error", "Failed to submit repair. Please try again.");
+      Alert.alert("Error", error.message);
     }
   };
 

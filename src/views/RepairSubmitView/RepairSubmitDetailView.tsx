@@ -42,7 +42,9 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
   return (
     <VStack space={4}>
       <FormControl isRequired>
-        <FormControl.Label>{t('FORM.REPAIR_SUBMIT.STEP_LABELS.1')}</FormControl.Label>
+        <FormControl.Label>
+          {t("FORM.REPAIR_SUBMIT.STEP_LABELS.1")}
+        </FormControl.Label>
         <Select
           selectedValue={selectedJobId || undefined}
           onValueChange={(value) => {
@@ -52,7 +54,12 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
           _selectedItem={{ bg: "blue.100", endIcon: <CheckIcon size={5} /> }}
         >
           {repairs
-            .filter((item) => item.status === "inprogress")
+            .filter(
+              (item) =>
+                item.status === "inprogress" &&
+                item.process_date &&
+                item.process_time
+            )
             .map((repair) => (
               <Select.Item
                 key={repair.id}

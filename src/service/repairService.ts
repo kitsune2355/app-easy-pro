@@ -7,7 +7,7 @@ import {
 } from "../redux/repairSlice";
 import { AppDispatch } from "../store";
 import { env } from "../config/environment";
-import { IRepairForm } from "../interfaces/form/repairForm";
+import { ICompleteRepairForm, IRepairForm } from "../interfaces/form/repairForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAreaStructure } from "../redux/areaSlice";
 
@@ -123,8 +123,8 @@ export const submitRepairForm =
         dispatch(fetchAllRepairs());
         return res;
       } else {
-        dispatch(setError(res.message || "Failed to submit repair"));
-        throw new Error(res.message || "Failed to submit repair");
+        dispatch(setError(res.message));
+        throw new Error(res.message);
       }
     } catch (err: any) {
       const errorMessage =
@@ -208,6 +208,70 @@ export const updateRepairProcessDate =
     } catch (error: any) {
       dispatch(setError(error.message || "เกิดข้อผิดพลาด"));
       return { status: "error", message: error.message || "เกิดข้อผิดพลาด" };
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+
+export const completeRepair =
+  (form: ICompleteRepairForm) => async (dispatch: AppDispatch) => {
+    dispatch(setLoading(true));
+    try {
+      const formData = new FormData();
+      formData.append("repair_request_id", form.repair_request_id);
+      formData.append("completed_solution", form.completed_solution);
+      formData.append("completed_by", form.completed_by);
+
+      // Append completed images
+      const completed_image_urlsArray = Array.isArray(form.completed_image_urls)
+        ? form.completed_image_urls
+        : form.completed_image_urls
+        ? [form.completed_image_urls]
+        : [];
+
+      for (const uri of completed_image_urlsArray) {
+        if (typeof uri === "string") {
+          const filename = uri.split("/").pop();
+          const match = /\.(\w+)$/.exec(filename || "");
+          const type = match ? `image/${match[1]}` : `image/jpeg`;
+
+          formData.append("completed_image[]", {
+            uri: uri,
+            name: filename,
+            type: type,
+          } as any);
+        } else {
+          formData.append("completed_image[]", uri);
+        }
+      }
+
+      const response = await axios.post(
+        `${env.API_ENDPOINT}/submit_repair_completed.php`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const res = response.data;
+
+      if (res.status === "success") {
+        dispatch(fetchRepairById(form.repair_request_id));
+        return res;
+      } else {
+        dispatch(setError(res.message || "Failed to complete repair"));
+        throw new Error(res.message || "Failed to complete repair");
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong during repair completion.";
+      dispatch(setError(errorMessage));
+      throw err;
     } finally {
       dispatch(setLoading(false));
     }

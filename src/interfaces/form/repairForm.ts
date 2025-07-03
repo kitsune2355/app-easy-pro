@@ -18,3 +18,10 @@ export interface IRepairProcessForm {
 export interface IRepairSubmitForm {
   id: string;
 }
+
+export interface ICompleteRepairForm {
+  repair_request_id: string;
+  completed_solution: string;
+  completed_by: string;
+  completed_image_urls?: string[];
+}
