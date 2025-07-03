@@ -1,18 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-export interface User {
-  id: string;
-  user_name: string;
-  user_fname?: string;
-  user_tel: string;
-  user_level: string;
-  user_department_name: string;
-}
+import { IUser } from '../interfaces/user.interface';
 
 interface UserState {
-  user: User | null;
-  userDetail: User | null;
-  users: User[];
+  user: IUser | null;
+  userDetail: IUser | null;
+  users: IUser[];
   loading: boolean;
   error: string | null;
 }
@@ -35,15 +27,15 @@ const userSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    setUser: (state, action: PayloadAction<User>) => {
+    setUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
       state.error = null;
     },
-    setUserDetail: (state, action: PayloadAction<User>) => {
+    setUserDetail: (state, action: PayloadAction<IUser>) => {
       state.userDetail = action.payload;
       state.error = null;
     },
-    setUsers: (state, action: PayloadAction<User[]>) => {
+    setUsers: (state, action: PayloadAction<IUser[]>) => {
       state.users = action.payload;
       state.error = null;
     },
@@ -55,7 +47,7 @@ const userSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    updateUser: (state, action: PayloadAction<Partial<User>>) => {
+    updateUser: (state, action: PayloadAction<Partial<IUser>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
       }
@@ -63,7 +55,7 @@ const userSlice = createSlice({
         state.userDetail = { ...state.userDetail, ...action.payload };
       }
     },
-    restoreUser: (state, action: PayloadAction<User>) => {
+    restoreUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
       state.error = null;
       state.loading = false;

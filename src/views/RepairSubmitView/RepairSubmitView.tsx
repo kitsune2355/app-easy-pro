@@ -28,6 +28,16 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
       <Text bold color={colorTheme.colors.primary}>
         #{jobDetails?.id || "N/A"}
       </Text>
+
+      <HStack justifyContent="space-between">
+        <Text fontSize="xs" color="gray.500">
+          {t("FORM.REPAIR.TECHNICIAN_NAME")}
+        </Text>
+        <Text color={colorTheme.colors.text}>
+          {jobDetails.received_by.user_name} {jobDetails.received_by.user_fname}
+        </Text>
+      </HStack>
+
       <HStack justifyContent="space-between">
         <Text fontSize="xs" color="gray.500">
           {t("RECEIVED_DATE")}
@@ -36,12 +46,13 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
           {dayJs(`${jobDetails.received_date}`).format("DD MMM YYYY, HH:mm ")}
         </Text>
       </HStack>
+
       <HStack justifyContent="space-between">
         <Text fontSize="xs" color="gray.500">
           {t("PROCESSING_DATE")}
         </Text>
         <Text color={colorTheme.colors.text}>
-          {dayJs(`${jobDetails.process_date}`).format("DD MMM YYYY, HH:mm ")}
+          {dayJs(`${jobDetails.process_date} ${jobDetails.process_time}`).format("DD MMM YYYY, HH:mm ")}
         </Text>
       </HStack>
       <Text bold color={colorTheme.colors.text}>

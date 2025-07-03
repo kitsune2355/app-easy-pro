@@ -36,11 +36,13 @@ const RepairSubmitEditDetailView: React.FC<RepairSubmitEditDetailViewProps> = ({
   return (
     <VStack space={4}>
       <FormControl isRequired>
-        <FormControl.Label>{t('FORM.REPAIR_SUBMIT.SOLUTION_DESC')}</FormControl.Label>
+        <FormControl.Label>
+          {t("FORM.REPAIR_SUBMIT.SOLUTION_DESC")}
+        </FormControl.Label>
         <TextArea
           value={solution}
           onChangeText={onSolutionChange}
-          placeholder={t('FORM.REPAIR_SUBMIT.SOLUTION_DESC_PLACEHOLDER')}
+          placeholder={t("FORM.REPAIR_SUBMIT.SOLUTION_DESC_PLACEHOLDER")}
           autoCompleteType={undefined}
           tvParallaxProperties={undefined}
           onTextInput={undefined}
@@ -97,7 +99,7 @@ const RepairSubmitEditDetailView: React.FC<RepairSubmitEditDetailViewProps> = ({
 
       {images.length > 0 && (
         <ImagePreview
-        noScroll
+          noScroll
           images={images}
           onRemoveImage={(index) => onRemoveImage(index)}
         />

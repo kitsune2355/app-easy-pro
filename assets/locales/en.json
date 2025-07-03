@@ -106,6 +106,7 @@
   "RES_PERSON": "Responsible Person",
   "RECEIVED_DATE": "Received Date",
   "PROCESSING_DATE": "Processing Date",
+  "PROCESSING_TIME": "Processing Time",
   "COMPLETION_DATE": "Completion Date",
   "DETAIL_OF_SOLUTION": "Details of the solution method",
   "SEARCH_PLACEHOLDER": "Search",

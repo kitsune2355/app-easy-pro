@@ -1,4 +1,12 @@
-import { VStack, Text, HStack, Icon, FormControl, Input } from "native-base";
+import {
+  VStack,
+  Text,
+  HStack,
+  Icon,
+  FormControl,
+  Input,
+  Button,
+} from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
@@ -39,37 +47,64 @@ const RepairDetailTechnicianView: React.FC<
     control,
     formState: { errors },
     setValue,
-    getValues,
+    watch,
     handleSubmit,
   } = useRepairProcessForm();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const currentLanguage = i18n.language;
+  const isRequired = watch("process_date") && watch("process_time");
 
-  useEffect(() => {
+  const onStart = useCallback(() => {
     setDayJsLocale(currentLanguage);
 
-    if (repairDetail.process_date) {
+    if (
+      repairDetail.process_date &&
+      repairDetail.process_date !== "0000-00-00"
+    ) {
       setValue("process_date", repairDetail.process_date);
-    } else if (!getValues("process_date")) {
-      setValue("process_date", dayJs().format("YYYY-MM-DD HH:mm:ss"));
+    } else {
+      setValue("process_date", "");
     }
-  }, [currentLanguage, getValues, setValue, repairDetail.process_date]);
+
+    if (repairDetail.process_time && repairDetail.process_time !== "00:00:00") {
+      setValue("process_time", repairDetail.process_time);
+    } else {
+      setValue("process_time", "");
+    }
+  }, [
+    currentLanguage,
+    repairDetail.process_date,
+    repairDetail.process_time,
+    setValue,
+  ]);
+
+  useEffect(() => {
+    onStart();
+  }, [onStart]);
 
   const onProcessDateSubmit = useCallback(
     async (data: IRepairProcessForm) => {
       try {
         const res = await dispatch(
-          updateRepairProcessDate(repairDetail.id, data.process_date)
+          updateRepairProcessDate(
+            repairDetail.id,
+            data.process_date,
+            data.process_time
+          )
         );
+
+        console.log('res', res)
 
         if (res.status === "success") {
           showToast("success", t("COMMON.SAVE"));
+        } else if (res.status === "warning") {
+          showToast("warning", res.message);
         } else {
           showToast("error", res.message || t("COMMON.SAVE_ERROR"));
         }
       } catch (error) {
-        console.error("Error submitting form:", error);
         showToast("error", t("COMMON.SAVE_ERROR"));
       }
     },
@@ -100,7 +135,8 @@ const RepairDetailTechnicianView: React.FC<
               {t("FORM.REPAIR.TECHNICIAN_NAME")}
             </Text>
             <Text color={colorTheme.colors.text}>
-              {repairDetail.received_by}
+              {repairDetail.received_by.user_name}{" "}
+              {repairDetail.received_by.user_fname}
             </Text>
           </VStack>
         </HStack>
@@ -147,7 +183,7 @@ const RepairDetailTechnicianView: React.FC<
             color={colorTheme.colors.text}
             mt={2}
           />
-          <VStack flex={1}>
+          <VStack flex={1} space={1}>
             <Text fontSize="xs" color="gray.500">
               {t("PROCESSING_DATE")}
             </Text>
@@ -158,30 +194,15 @@ const RepairDetailTechnicianView: React.FC<
                 render={({ field: { value }, fieldState: { error } }) => (
                   <>
                     <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                      <HStack space={2} alignItems="center">
-                        <Input
-                          isReadOnly
-                          value={
-                            value ? dayJs(value).format("DD MMM YYYY") : ""
-                          }
-                          placeholder={t("FORM.REPAIR.SELECT_DATE")}
-                          isInvalid={!!error}
-                          borderColor={error ? "#ef4444" : "#d1d5db"}
-                          pointerEvents="none"
-                          width="90%"
-                        />
-                        <TouchableOpacity
-                          onPress={handleSubmit(onProcessDateSubmit)}
-                        >
-                          <Icon
-                            as={Ionicons}
-                            name="checkmark-circle"
-                            size="md"
-                            color="green.500"
-                            fontWeight="bold"
-                          />
-                        </TouchableOpacity>
-                      </HStack>
+                      <Input
+                        isReadOnly
+                        value={value ? dayJs(value).format("DD MMM YYYY") : ""}
+                        placeholder={t("FORM.REPAIR.SELECT_DATE")}
+                        isInvalid={!!error}
+                        borderColor={error ? "#ef4444" : "#d1d5db"}
+                        pointerEvents="none"
+                        width="100%"
+                      />
                     </TouchableOpacity>
 
                     {showDatePicker && (
@@ -190,12 +211,15 @@ const RepairDetailTechnicianView: React.FC<
                         mode="date"
                         display="default"
                         locale={currentLanguage}
+                        minimumDate={dayJs(repairDetail.received_date)
+                          .startOf("day")
+                          .toDate()}
                         onChange={(event, selectedDate) => {
                           setShowDatePicker(false);
                           if (selectedDate) {
                             setValue(
                               "process_date",
-                              dayJs(selectedDate).format("YYYY-MM-DD HH:mm:ss")
+                              dayJs(selectedDate).format("YYYY-MM-DD")
                             );
                           }
                         }}
@@ -208,6 +232,67 @@ const RepairDetailTechnicianView: React.FC<
                 {errors.process_date?.message}
               </FormControl.ErrorMessage>
             </FormControl>
+
+            <Text fontSize="xs" color="gray.500">
+              {t("PROCESSING_TIME")}
+            </Text>
+            <FormControl isInvalid={!!errors.process_time}>
+              <Controller
+                control={control}
+                name="process_time"
+                render={({ field: { value }, fieldState: { error } }) => (
+                  <>
+                    <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+                      <Input
+                        isReadOnly
+                        value={value}
+                        placeholder={t("FORM.REPAIR.SELECT_TIME")}
+                        isInvalid={!!error}
+                        borderColor={error ? "#ef4444" : "#d1d5db"}
+                        pointerEvents="none"
+                        width="100%"
+                      />
+                    </TouchableOpacity>
+
+                    {showTimePicker && (
+                      <DateTimePicker
+                        value={
+                          value
+                            ? dayJs(`2000-01-01T${value}`).toDate()
+                            : new Date()
+                        }
+                        mode="time"
+                        display="default"
+                        locale={currentLanguage}
+                        onChange={(event, selectedTime) => {
+                          setShowTimePicker(false);
+                          if (selectedTime) {
+                            setValue(
+                              "process_time",
+                              dayJs(selectedTime).format("HH:mm")
+                            );
+                          }
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+              />
+              <FormControl.ErrorMessage>
+                {errors.process_time?.message}
+              </FormControl.ErrorMessage>
+            </FormControl>
+
+            {isRequired && (
+              <Button
+                variant="outline"
+                colorScheme="emerald"
+                size={"sm"}
+                onPress={handleSubmit(onProcessDateSubmit)}
+              >
+                {t("COMMON.SAVE")}
+              </Button>
+            )}
           </VStack>
         </HStack>
       </VStack>

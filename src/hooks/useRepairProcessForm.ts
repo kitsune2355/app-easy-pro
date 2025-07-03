@@ -10,7 +10,8 @@ export const useRepairProcessForm = () => {
   const invalid = 'FORM.REPAIR.RECIVED.VALIDATION'
 
   const schema: yup.ObjectSchema<IRepairProcessForm> = yup.object().shape({
-    process_date:  yup.string().notRequired().default(dayJs().format('YYYY-MM-DD')),
+    process_date:  yup.string().required().default(dayJs().format('YYYY-MM-DD')),
+    process_time: yup.string().required().default(dayJs().format('HH:mm')),
   });
 
   return useForm({

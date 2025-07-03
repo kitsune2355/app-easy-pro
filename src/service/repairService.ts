@@ -177,7 +177,7 @@ export const updateRepairStatus =
   };
 
 export const updateRepairProcessDate =
-  (id: string, processDate: string) => async (dispatch: AppDispatch) => {
+  (id: string, processDate: string, processTime: string) => async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
 
     try {
@@ -186,6 +186,7 @@ export const updateRepairProcessDate =
         {
           id,
           process_date: processDate,
+          process_time: processTime,
         }
       );
 

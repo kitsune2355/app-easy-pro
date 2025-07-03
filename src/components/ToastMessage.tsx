@@ -1,15 +1,33 @@
 import React from "react";
 import { Box, Text, useToast } from "native-base";
 
+type toastStatus = "success" | "error" | "warning" | "info";
+type toastPlacement = "top" | "bottom" | "top-right" | "top-left" | "bottom-left" | "bottom-right";
+
 interface ToastMessageProps {
-  status: "success" | "error" | "warning" | "info";
+  status: toastStatus;
   message: string;
 }
+
+const getStatusColor = (status: toastStatus): string => {
+  switch (status) {
+    case "success":
+      return "emerald.500";
+    case "error":
+      return "red.500";
+    case "warning":
+      return "amber.500";
+    case "info":
+      return "blue.500";
+    default:
+      return "gray.500";
+  }
+};
 
 const ToastMessage: React.FC<ToastMessageProps> = ({ status, message }) => {
   return (
     <Box
-      bg={status === "success" ? "emerald.500" : "red.500"}
+      bg={getStatusColor(status)}
       px="2"
       py="1"
       rounded="full"
@@ -23,11 +41,15 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ status, message }) => {
 export const useToastMessage = () => {
   const toast = useToast();
 
-  const showToast = (status: "success" | "error" | "warning" | "info", message: string) => {
+  const showToast = (
+    status: toastStatus,
+    message: string,
+    placement: toastPlacement = 'bottom'
+  ) => {
     toast.show({
       render: () => <ToastMessage status={status} message={message} />,
       duration: 3000,
-      placement: "top"
+      placement: placement,
     });
   };
 

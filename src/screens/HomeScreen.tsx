@@ -42,7 +42,7 @@ const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAllRepairs());
-  }, [dispatch]);
+  }, [fetchAllRepairs]);
 
   const renderDashboardItem = () => (
     <>

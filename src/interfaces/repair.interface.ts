@@ -1,3 +1,5 @@
+import { IUser } from "./user.interface";
+
 export interface IRepair {
   id?: string;
   report_date: string;
@@ -13,7 +15,8 @@ export interface IRepair {
   created_by?: string;
   status: string;
   received_date?: string;
-  received_by?: string;
+  received_by?: IUser;
   received_by_tel?: string;
   process_date?: string;
+  process_time?: string;
 }

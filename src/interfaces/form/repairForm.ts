@@ -12,6 +12,7 @@ export interface IRepairForm {
 
 export interface IRepairProcessForm {
   process_date: string;
+  process_time: string;
 }
 
 export interface IRepairSubmitForm {
