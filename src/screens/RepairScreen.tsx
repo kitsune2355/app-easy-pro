@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Alert } from "react-native";
+import { TouchableOpacity } from "react-native";
 import ScreenWrapper from "../components/ScreenWrapper";
 import AppHeader from "../components/AppHeader";
 import {
@@ -35,10 +35,12 @@ import {
   getFloorOptions,
   getRoomOptions,
 } from "../constant/ConstantItem";
+import { useAlertDialog } from "../components/AlertDialogComponent";
 
 const RepairScreen = () => {
   const { t, i18n } = useTranslation();
   const { colorTheme } = useTheme();
+  const { showAlertDialog, AlertDialogComponent } = useAlertDialog();
   const dispatch = useDispatch<AppDispatch>();
   const { buildings, loading, error } = useSelector(
     (state: RootState) => state.area
@@ -94,7 +96,10 @@ const RepairScreen = () => {
   const handleCamera = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
     if (!granted) {
-      Alert.alert("Permission required", "Camera access is needed");
+      showAlertDialog(
+        `${t("ALERT.REQ_PERMISSION_CAMERA")}`,
+        `${t("ALERT.CAMERA_NEED")}`
+      );
       setShowImagePickerSheet(false);
       return;
     }
@@ -115,7 +120,10 @@ const RepairScreen = () => {
   const handleGallery = async () => {
     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!granted) {
-      Alert.alert("Permission required", "Gallery access is needed");
+      showAlertDialog(
+        `${t("ALERT.REQ_PERMISSION_CAMERA")}`,
+        `${t("ALERT.GALLERY_NEED")}`
+      );
       setShowImagePickerSheet(false);
       return;
     }
@@ -142,9 +150,10 @@ const RepairScreen = () => {
     try {
       const result = await dispatch(submitRepairForm(data) as any);
       if (result && result.status === "success") {
-        Alert.alert(
+        showAlertDialog(
           t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
           t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
+          'success',
           [
             {
               text: t("COMMON.OK"),
@@ -164,18 +173,18 @@ const RepairScreen = () => {
           ]
         );
       } else {
-        Alert.alert(
+        showAlertDialog(
           t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
           t("FORM.REPAIR.SUBMIT_GENERIC_ERROR"),
-          [{ text: t("COMMON.OK") }]
+          "error"
         );
       }
     } catch (error: any) {
       console.error("Error submitting repair form:", error);
-      Alert.alert(
+      showAlertDialog(
         t("FORM.REPAIR.SUBMIT_ERROR_TITLE"),
         t("FORM.REPAIR.SUBMIT_NETWORK_ERROR"),
-        [{ text: t("COMMON.OK") }]
+        "error"
       );
     } finally {
       setIsSubmitting(false);
@@ -623,6 +632,8 @@ const RepairScreen = () => {
           </Center>
         </Box>
       )}
+
+      <AlertDialogComponent />
     </React.Fragment>
   );
 };

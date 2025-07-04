@@ -9,14 +9,14 @@ import { useTheme } from "../context/ThemeContext";
 import RepairSubmitDetailView from "../views/RepairSubmitView/RepairSubmitDetailView";
 import RepairSubmitEditDetailView from "../views/RepairSubmitView/RepairSubmitEditDetailView";
 import RepairSubmitView from "../views/RepairSubmitView/RepairSubmitView";
-import { Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store";
-import { fetchAllRepairs, completeRepair } from "../service/repairService"; // Import completeRepair
+import { fetchAllRepairs, completeRepair } from "../service/repairService";
 import { IRepair } from "../interfaces/repair.interface";
 import { useRoute } from "@react-navigation/native";
 import { RepairSubmitScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAlertDialog } from "../components/AlertDialogComponent";
 
 const labels = [
   "FORM.REPAIR_SUBMIT.STEP_LABELS.1",
@@ -54,12 +54,12 @@ const RepairSubmitScreen: React.FC = () => {
   const { colorTheme } = useTheme();
   const route = useRoute<RepairSubmitScreenRouteProp>();
   const { repairs } = useSelector((state: any) => state.repair);
-
+  const { showAlertDialog, AlertDialogComponent } = useAlertDialog();
   const [step, setStep] = useState(1);
   const [images, setImages] = useState<string[]>([]);
-  const [selectedRepairId, setSelectedRepairId] = useState<string | undefined | null>(
-    route ? route.params?.repairId : null
-  );
+  const [selectedRepairId, setSelectedRepairId] = useState<
+    string | undefined | null
+  >(route ? route.params?.repairId : null);
   const [selectedRepairDetails, setSelectedRepairDetails] =
     useState<IRepair | null>(null);
   const [solution, setSolution] = useState<string>("");
@@ -84,7 +84,10 @@ const RepairSubmitScreen: React.FC = () => {
   const handleCamera = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
     if (!granted) {
-      Alert.alert(`${t('ALERT.REQ_PERMISSION_CAMERA')}`, `${t('ALERT.CAMERA_NEED')}`);
+      showAlertDialog(
+        `${t("ALERT.REQ_PERMISSION_CAMERA")}`,
+        `${t("ALERT.CAMERA_NEED")}`
+      );
       return;
     }
 
@@ -103,7 +106,10 @@ const RepairSubmitScreen: React.FC = () => {
   const handleGallery = async () => {
     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!granted) {
-      Alert.alert(`${t('ALERT.REQ_PERMISSION_CAMERA')}`, `${t('ALERT.GALLERY_NEED')}`);
+      showAlertDialog(
+        `${t("ALERT.REQ_PERMISSION_CAMERA")}`,
+        `${t("ALERT.GALLERY_NEED")}`
+      );
       return;
     }
 
@@ -129,11 +135,19 @@ const RepairSubmitScreen: React.FC = () => {
 
   const handleNext = () => {
     if (step === 1 && !selectedRepairId) {
-      Alert.alert(`${t("ALERT.REQ_TXT")}`, `${t("ALERT.PLS_SELECT_ID_TO_PROCEED")}`);
+      showAlertDialog(
+        `${t("ALERT.REQ_TXT")}`,
+        `${t("ALERT.PLS_SELECT_ID_TO_PROCEED")}`,
+        "warning"
+      );
       return;
     }
     if (step === 2 && !solution.trim()) {
-      Alert.alert(`${t("ALERT.REQ_TXT")}`, `${t("ALERT.PLS_PROVIDE_DETAILS")}`);
+      showAlertDialog(
+        `${t("ALERT.REQ_TXT")}`,
+        `${t("ALERT.PLS_PROVIDE_DETAILS")}`,
+        "warning"
+      );
       return;
     }
     if (step < 3) setStep(step + 1);
@@ -145,11 +159,19 @@ const RepairSubmitScreen: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!selectedRepairId || !selectedRepairDetails) {
-      Alert.alert(`${t("ALERT.ERROR")}`, `${t("ALERT.MISSING_REPAIR_DESC")}`);
+      showAlertDialog(
+        `${t("ALERT.ERROR")}`,
+        `${t("ALERT.MISSING_REPAIR_DESC")}`,
+        "warning"
+      );
       return;
     }
     if (!solution.trim()) {
-      Alert.alert(`${t("ALERT.REQ_TXT")}`, `${t("ALERT.PLS_DESC_SOLUTION")}`);
+      showAlertDialog(
+        `${t("ALERT.REQ_TXT")}`,
+        `${t("ALERT.PLS_DESC_SOLUTION")}`,
+        "warning"
+      );
       return;
     }
 
@@ -158,20 +180,25 @@ const RepairSubmitScreen: React.FC = () => {
       const user = userInfoString ? JSON.parse(userInfoString) : null;
 
       if (!user || !user.id) {
-        Alert.alert("Error", "User information not found. Please log in again.");
+        showAlertDialog(
+          "Error",
+          "User information not found. Please log in again."
+        );
         return;
       }
 
-      const result = await dispatch(completeRepair({
-        repair_request_id: selectedRepairId,
-        completed_solution: solution,
-        completed_by: user.id,
-        completed_image_urls: images,
-      }));
+      const result = await dispatch(
+        completeRepair({
+          repair_request_id: selectedRepairId,
+          completed_solution: solution,
+          completed_by: user.id,
+          completed_image_urls: images,
+        })
+      );
 
       // Check the result of the dispatched action
       if (result.status === "success") {
-        Alert.alert(
+        showAlertDialog(
           `${t("SUBMIT_WORK")}`,
           `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`
         );
@@ -183,11 +210,11 @@ const RepairSubmitScreen: React.FC = () => {
         setSolution("");
       } else {
         // Handle error from the completeRepair action
-        Alert.alert("Error", result.message);
+        showAlertDialog("Error", result.message, "error");
       }
     } catch (error: any) {
       console.error("Submission error:", error);
-      Alert.alert("Error", error.message);
+      showAlertDialog("Error", error.message, "error");
     }
   };
 
@@ -266,6 +293,8 @@ const RepairSubmitScreen: React.FC = () => {
           </VStack>
         </VStack>
       </VStack>
+
+      <AlertDialogComponent />
     </>
   );
 };
