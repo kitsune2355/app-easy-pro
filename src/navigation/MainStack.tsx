@@ -15,7 +15,6 @@ const Stack = createStackNavigator<StackParamsList>();
 const MainStack: React.FC = () => {
   return (
     <Stack.Navigator
-      {...({ id: "StackNavigator" } as any)}
       screenOptions={{ headerShown: false }}
       initialRouteName="SplashScreen"
     >

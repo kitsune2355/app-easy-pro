@@ -123,7 +123,6 @@ const MainDrawer: React.FC = () => {
 
   return (
     <Drawer.Navigator
-      {...({ id: "DrawerNavigator" } as any)}
       screenOptions={{
         headerShown: false,
         drawerStyle: {

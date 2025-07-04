@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/logo_full.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,10 +17,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.pe3ka.appeasypro"
     },
     "web": {
@@ -33,6 +32,7 @@
       "eas": {
         "projectId": "76784e15-a953-4b7c-85c0-a66e330033e8"
       }
-    }
+    },
+    "owner": "pe3ka"
   }
 }

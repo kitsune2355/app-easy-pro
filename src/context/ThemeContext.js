@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
-import { extendTheme, Input, NativeBaseProvider, TextArea } from "native-base";
+import { extendTheme, NativeBaseProvider } from "native-base";
+import { View, ActivityIndicator, Text } from "react-native";
 import {
   useFonts,
   Prompt_400Regular,
@@ -124,8 +125,14 @@ export const ThemeProvider = ({ children }) => {
   const colorTheme = isDark ? darkTheme : lightTheme;
 
   if (!fontsLoaded) {
-    return null; // or a loading component
-  }
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff" }}>
+      <ActivityIndicator size="large" color="#006B9F" />
+      <Text style={{ marginTop: 10 }}>กำลังโหลด...</Text>
+    </View>
+  );
+}
+
 
   return (
     <ThemeContext.Provider value={{ colorTheme, toggleTheme }}>

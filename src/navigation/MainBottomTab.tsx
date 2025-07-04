@@ -41,7 +41,6 @@ const MainBottomTab: React.FC = () => {
 
   return (
     <Tab.Navigator
-      {...({ id: "TabNavigator" } as any)}
       screenOptions={{
         header: () => <AppBarHeader />,
         tabBarHideOnKeyboard: true,
