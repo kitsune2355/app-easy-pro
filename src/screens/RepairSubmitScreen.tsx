@@ -84,7 +84,7 @@ const RepairSubmitScreen: React.FC = () => {
   const handleCamera = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
     if (!granted) {
-      Alert.alert("Permission required", "Camera access is needed");
+      Alert.alert(`${t('ALERT.REQ_PERMISSION_CAMERA')}`, `${t('ALERT.CAMERA_NEED')}`);
       return;
     }
 
@@ -103,7 +103,7 @@ const RepairSubmitScreen: React.FC = () => {
   const handleGallery = async () => {
     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!granted) {
-      Alert.alert("Permission required", "Gallery access is needed");
+      Alert.alert(`${t('ALERT.REQ_PERMISSION_CAMERA')}`, `${t('ALERT.GALLERY_NEED')}`);
       return;
     }
 
@@ -129,11 +129,11 @@ const RepairSubmitScreen: React.FC = () => {
 
   const handleNext = () => {
     if (step === 1 && !selectedRepairId) {
-      Alert.alert("Required", "Please select a repair job ID to proceed.");
+      Alert.alert(`${t("ALERT.REQ_TXT")}`, `${t("ALERT.PLS_SELECT_ID_TO_PROCEED")}`);
       return;
     }
     if (step === 2 && !solution.trim()) {
-      Alert.alert("Required", "Please provide details of the repair solution.");
+      Alert.alert(`${t("ALERT.REQ_TXT")}`, `${t("ALERT.PLS_PROVIDE_DETAILS")}`);
       return;
     }
     if (step < 3) setStep(step + 1);
@@ -150,13 +150,6 @@ const RepairSubmitScreen: React.FC = () => {
     }
     if (!solution.trim()) {
       Alert.alert(`${t("ALERT.REQ_TXT")}`, `${t("ALERT.PLS_DESC_SOLUTION")}`);
-      return;
-    }
-    if (images.length === 0) {
-      Alert.alert(
-        `${t("ALERT.REQ_TXT")}`,
-        `${t("ALERT.PLS_UPLOAD_AT_LEAST_ONE_IMG")}`
-      );
       return;
     }
 

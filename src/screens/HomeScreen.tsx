@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   VStack,
   Text,
@@ -29,6 +29,7 @@ import RepairStatusProgress, {
   getStatusSummary,
 } from "../components/RepairStatusProgress";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
+import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -40,9 +41,11 @@ const HomeScreen: React.FC = () => {
 
   useDoubleBackExit();
 
-  useEffect(() => {
-    dispatch(fetchAllRepairs());
-  }, [fetchAllRepairs]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchAllRepairs());
+    }, [dispatch])
+  );
 
   const renderDashboardItem = () => (
     <>
@@ -266,7 +269,7 @@ const HomeScreen: React.FC = () => {
 
       <HStack space={4} justifyContent="space-between" alignItems="center">
         <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-          {t("MAIN.RECENT_ACTIVITY")}
+          {t("MAIN.RECENT_JOBS")}
         </Text>
       </HStack>
 

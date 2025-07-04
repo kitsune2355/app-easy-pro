@@ -20,7 +20,7 @@
   "MAIN": {
     "REPAIR_SUMMARY": "Repair Summary",
     "URGENT_ACTION": "Urgent Action",
-    "RECENT_ACTIVITY": "Recent Activity"
+    "RECENT_JOBS": "Recent Jobs"
   },
   "PROCESS": {
     "ALL": "all",
@@ -99,7 +99,7 @@
       "SOLUTION_DESC": "Solution Description",
       "SOLUTION_DESC_PLACEHOLDER": "Describe the solution in detail",
       "VERIFY_INFO": "Verify information",
-      "SOLUTION":"Solution",
+      "SOLUTION": "Solution",
       "NO_SOLUTION": "No solution"
     }
   },
@@ -133,10 +133,15 @@
   },
   "ALERT": {
     "REQ_TXT": "Required",
+    "REQ_PERMISSION_CAMERA": "Permission required",
+    "CAMERA_NEED": "Camera access is needed",
+    "GALLERY_NEED": "Gallery access is needed",
     "PLS_UPLOAD_AT_LEAST_ONE_IMG": "Please upload at least one image.",
     "PLS_DESC_SOLUTION": "Please provide details of the repair solution.",
-    "ERROR":"Error",
-    "MISSING_REPAIR_DESC":"Missing repair details. Please go back and select a repair job."
+    "ERROR": "Error",
+    "MISSING_REPAIR_DESC": "Missing repair details. Please go back and select a repair job.",
+    "PLS_SELECT_ID_TO_PROCEED": "Please select a repair job ID to proceed.",
+    "PLS_PROVIDE_DETAILS": "Please provide details of the repair solution."
   },
   "BTN_CONTROL": {
     "NEXT": "Next",
