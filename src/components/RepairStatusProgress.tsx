@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, HStack, Icon, Progress, Text, VStack } from "native-base";
+import { Box, HStack, Icon, Text, VStack } from "native-base";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FontAwesome } from "react-native-vector-icons";
@@ -8,6 +8,7 @@ import { statusItems } from "../constant/ConstantItem";
 interface RepairStatusProgressProps {
   statusKey: "all" | "pending" | "inprogress" | "completed";
 }
+
 type StatusKey = "pending" | "inprogress" | "completed";
 
 export const getStatusSummary = (repairs: any[]) => {
@@ -57,9 +58,9 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
   const renderSingleProgress = (
     key: "pending" | "inprogress" | "completed"
   ) => {
-    const percent = getValue(key);
+    const percent = rounded(getValue(key));
     return (
-      <Box bg={"white"} p={4} borderRadius="md" shadow={2}>
+      <Box bg="white" p={4} borderRadius="md" shadow={2}>
         <HStack alignItems="center" justifyContent="space-between">
           <HStack space={1} alignItems="center">
             <Icon
@@ -73,23 +74,25 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
             </Text>
           </HStack>
           <Text mb="1" fontSize="xs" color="coolGray.700">
-            {Math.round(percent)} %
+            {percent} %
           </Text>
         </HStack>
-        <Progress
-          value={Math.round(percent)}
-          size="lg"
-          bg="gray.200"
-          _filledTrack={{ bg: statusItem[key].color }}
-        />
+        <Box mt={2} h={3} bg="gray.200" borderRadius="full" overflow="hidden">
+          <Box
+            h="full"
+            w={`${percent}%`}
+            bg={statusItem[key].color}
+            borderRadius="full"
+          />
+        </Box>
       </Box>
     );
   };
 
   const renderAllStatus = () => {
-    const pending = getValue("pending");
-    const inprogress = getValue("inprogress");
-    const completed = getValue("completed");
+    const pending = rounded(getValue("pending"));
+    const inprogress = rounded(getValue("inprogress"));
+    const completed = rounded(getValue("completed"));
 
     const barLayers = [
       { value: pending + inprogress + completed, color: "amber.500" },
@@ -111,7 +114,7 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
           </Text>
         </HStack>
         <Text fontSize="xs" color="coolGray.700">
-          {Math.round(getValue(key))} %
+          {rounded(getValue(key))} %
         </Text>
       </HStack>
     );
@@ -124,24 +127,17 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
           )}
         </VStack>
 
-        <Box position="relative" mt={2}>
-          <Progress
-            value={100}
-            size="lg"
-            bg="gray.200"
-            _filledTrack={{ bg: "gray.200" }}
-          />
+        <Box position="relative" mt={2} h={3} bg="gray.200" borderRadius="full" overflow="hidden">
           {barLayers.map((layer, index) => (
-            <Progress
+            <Box
               key={index}
               position="absolute"
-              top="0"
-              left="0"
-              right="0"
-              value={Math.round(layer.value)}
-              size="lg"
-              bg="transparent"
-              _filledTrack={{ bg: layer.color }}
+              left={0}
+              h="full"
+              w={`${Math.min(layer.value, 100)}%`}
+              bg={layer.color}
+              borderRadius="full"
+              zIndex={index}
             />
           ))}
         </Box>
