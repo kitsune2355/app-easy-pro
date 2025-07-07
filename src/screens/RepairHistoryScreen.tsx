@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Pressable, FlatList } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   VStack,
@@ -30,6 +30,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type mainTabType = "ALL" | "MINE";
 type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
+
+interface RepairHistoryParams {
+    statusKey?: string;
+  }
 
 const RepairHistoryCard = ({
   item,
@@ -247,6 +251,9 @@ const RepairHistoryScreen = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { repairs } = useSelector((state: RootState) => state.repair);
+  
+  const route = useRoute<RouteProp<Record<string, RepairHistoryParams>, string>>();
+  const { statusKey } = route.params || {};
 
   const [mainTab, setMainTab] = useState<mainTabType>("ALL");
   const [subTab, setSubTab] = useState<subTabType>("ALL");
@@ -263,32 +270,35 @@ const RepairHistoryScreen = () => {
   }, []);
 
   useEffect(() => {
+    if (statusKey) {
+      setSubTab(statusKey.toUpperCase() as subTabType);
+    }
     dispatch(fetchAllRepairs());
-  }, [dispatch]);
+  }, [dispatch, statusKey]);
 
   const filteredRepairs = useMemo(() => {
-    return repairs.filter((item: IRepair) => {
-      const statusMatch =
-        subTab === "ALL" ? true : item.status === subTab.toLowerCase();
-      const mineMatch =
-        mainTab === "ALL" ? true : item.received_by?.user_id === user?.id;
-      const searchLower = searchQuery.toLowerCase();
+  return repairs.filter((item: IRepair) => {
+    const statusMatch =
+      subTab === "ALL" ? true : item.status === subTab.toLowerCase();
+    const mineMatch =
+      mainTab === "ALL" ? true : item.received_by?.user_id === user?.id;
+    const searchLower = searchQuery.toLowerCase();
 
-      const searchMatch =
-        searchQuery === ""
-          ? true
-          : item.id.toLowerCase().includes(searchLower) ||
-            (item.problem_detail?.toLowerCase()?.includes(searchLower) ??
-              false) ||
-            (item.building?.toLowerCase()?.includes(searchLower) ?? false) ||
-            (item.floor?.toLowerCase()?.includes(searchLower) ?? false) ||
-            (item.room?.toLowerCase()?.includes(searchLower) ?? false) ||
-            (item.name?.toLowerCase()?.includes(searchLower) ?? false) ||
-            (item.phone?.toLowerCase()?.includes(searchLower) ?? false);
+    const searchMatch =
+      searchQuery === ""
+        ? true
+        : item.id.toLowerCase().includes(searchLower) ||
+          (item.problem_detail?.toLowerCase()?.includes(searchLower) ??
+            false) ||
+          (item.building?.toLowerCase()?.includes(searchLower) ?? false) ||
+          (item.floor?.toLowerCase()?.includes(searchLower) ?? false) ||
+          (item.room?.toLowerCase()?.includes(searchLower) ?? false) ||
+          (item.name?.toLowerCase()?.includes(searchLower) ?? false) ||
+          (item.phone?.toLowerCase()?.includes(searchLower) ?? false);
 
-      return statusMatch && mineMatch && searchMatch;
-    });
-  }, [repairs, searchQuery, subTab, mainTab, user]);
+    return statusMatch && mineMatch && searchMatch;
+  });
+}, [repairs, searchQuery, subTab, mainTab, user]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -319,9 +329,7 @@ const RepairHistoryScreen = () => {
       />
 
       <>
-        <HStack
-          bg={colorTheme.colors.card}
-        >
+        <HStack bg={colorTheme.colors.card}>
           {["ALL", "MINE"].map((tab) => (
             <Pressable
               key={tab}
@@ -386,7 +394,10 @@ const RepairHistoryScreen = () => {
             />
 
             <Box pb={4}>
-              <RepairStatusProgress statusKey={subTab.toLowerCase() as any} repairs={filteredRepairs} />
+              <RepairStatusProgress
+                statusKey={subTab.toLowerCase() as any}
+                repairs={filteredRepairs}
+              />
             </Box>
           </>
         }
