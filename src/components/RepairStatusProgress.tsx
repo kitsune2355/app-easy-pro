@@ -4,32 +4,32 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FontAwesome } from "react-native-vector-icons";
 import { statusItems } from "../constant/ConstantItem";
+import { IRepair } from "../interfaces/repair.interface";
+
+type StatusKey = "all" | "pending" | "inprogress" | "completed";
 
 interface RepairStatusProgressProps {
-  statusKey: "all" | "pending" | "inprogress" | "completed";
+  statusKey: StatusKey;
+  repairs: IRepair[];
 }
 
-type StatusKey = "pending" | "inprogress" | "completed";
+export const getStatusSummary = (repairs: IRepair[]) => {
+  const statusKeys: StatusKey[] = ["pending", "inprogress", "completed"];
+  const summary = {} as Record<StatusKey | "total", {
+    count: number;
+    color: string;
+    text: string;
+    icon: string;
+  }>;
 
-export const getStatusSummary = (repairs: any[]) => {
-  const statusKeys = ["pending", "inprogress", "completed"];
-
-  const summary = statusKeys.reduce((acc, key) => {
-    const count = repairs.filter((r) => r.status === key).length;
-    const color =
-      key === "pending"
-        ? "amber.500"
-        : key === "inprogress"
-        ? "blue.500"
-        : key === "completed"
-        ? "green.500"
-        : "gray.200";
-    const text = statusItems[key].text;
-    const icon = statusItems[key].icon;
-
-    acc[key] = { count, color, text, icon };
-    return acc;
-  }, {} as Record<string, { count: number; color: string; text: string; icon: string }>);
+  statusKeys.forEach((key) => {
+    summary[key] = {
+      count: repairs.filter((r) => r.status === key).length,
+      color: statusItems[key].color,
+      text: statusItems[key].text,
+      icon: statusItems[key].icon,
+    };
+  });
 
   summary.total = {
     count: repairs.length,
@@ -43,9 +43,9 @@ export const getStatusSummary = (repairs: any[]) => {
 
 const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
   statusKey,
+  repairs
 }) => {
   const { t } = useTranslation();
-  const { repairs } = useSelector((state: any) => state.repair);
   const statusItem = getStatusSummary(repairs);
 
   const getValue = (key: keyof typeof statusItem) => {

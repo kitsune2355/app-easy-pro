@@ -51,6 +51,7 @@ const lightTheme = extendTheme({
     border: "#e0e0e0",
     notification: "#006B9F",
     secondary: "#9fd7f3",
+    dark: '#194066'
   },
   fontConfig: fontConfig,
   fonts: fonts,

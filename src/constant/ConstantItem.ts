@@ -14,6 +14,11 @@ export const statusItems = {
     color: "#1E90FF",
     icon: "construct",
   },
+  my_job: {
+    text: "MY_JOB",
+    color: "#FFD700",
+    icon: "briefcase",
+  },
 };
 
 export const getBackgroundColor = (color: string) => {
@@ -88,7 +93,11 @@ export const getFloorOptions = (buildings: any[], buildingId: string) => {
   );
 };
 
-export const getRoomOptions = (buildings: any[], buildingId: string, floorId: string) => {
+export const getRoomOptions = (
+  buildings: any[],
+  buildingId: string,
+  floorId: string
+) => {
   return (
     buildings
       .find((b) => String(b.area_id) === buildingId)

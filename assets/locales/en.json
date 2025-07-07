@@ -23,6 +23,8 @@
     "RECENT_JOBS": "Recent Jobs"
   },
   "PROCESS": {
+    "ALL_TASKS": "All Tasks",
+    "MY_TASKS": "My Tasks",
     "ALL": "all",
     "PENDING": "pending",
     "INPROGRESS": "in progress",

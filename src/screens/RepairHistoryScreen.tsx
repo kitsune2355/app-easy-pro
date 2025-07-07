@@ -23,10 +23,13 @@ import { dayJs } from "../config/dayJs";
 import SearchBar from "../components/SearchBar";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { fetchAllRepairs, updateRepairStatus } from "../service/repairService";
-import { AppDispatch } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { useToastMessage } from "../components/ToastMessage";
-import { RepairHistoryScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
 import { IRepair } from "../interfaces/repair.interface";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+type mainTabType = "ALL" | "MINE";
+type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
 
 const RepairHistoryCard = ({
   item,
@@ -42,6 +45,8 @@ const RepairHistoryCard = ({
   statusIcon: string;
   statusColor: string;
   t: any;
+  mainTab: mainTabType;
+  subTab: subTabType;
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigateWithLoading = useNavigateWithLoading();
@@ -53,13 +58,14 @@ const RepairHistoryCard = ({
     try {
       setAccepting(true);
       const res = await dispatch(updateRepairStatus(id, "inprogress"));
-      if (res.status === "success") {
+      if (res?.status === "success") {
         showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`);
       } else {
         showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
       }
     } catch (error) {
       console.error("Error updating repair status:", error);
+      showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
     } finally {
       setAccepting(false);
     }
@@ -221,8 +227,10 @@ const RepairHistoryCard = ({
                 _text={{ color: "white", fontWeight: "bold" }}
                 isDisabled={item.status === "completed"}
                 onPress={() =>
-                navigateWithLoading("RepairSubmitScreen", { repairId: item.id })
-              }
+                  navigateWithLoading("RepairSubmitScreen", {
+                    repairId: item.id,
+                  })
+                }
               >
                 {t("SUBMIT_WORK")}
               </Button>
@@ -238,51 +246,49 @@ const RepairHistoryScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const { repairs } = useSelector((state: any) => state.repair);
-  const route = useRoute<RepairHistoryScreenRouteProp>();
+  const { repairs } = useSelector((state: RootState) => state.repair);
 
-  const [activeTab, setActiveTab] = useState<
-    "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED"
-  >("ALL");
+  const [mainTab, setMainTab] = useState<mainTabType>("ALL");
+  const [subTab, setSubTab] = useState<subTabType>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const userInfoString = await AsyncStorage.getItem("userInfo");
+      const parsedUser = userInfoString ? JSON.parse(userInfoString) : null;
+      setUser(parsedUser);
+    };
+    loadUser();
+  }, []);
 
   useEffect(() => {
     dispatch(fetchAllRepairs());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (route.params?.statusKey) {
-      setActiveTab(route.params.statusKey.toUpperCase() as typeof activeTab);
-    }
-  }, [route.params?.statusKey]);
-
-  const getStatusKey = (
-    tab: typeof activeTab
-  ): "all" | "pending" | "inprogress" | "completed" => {
-    return tab === "ALL" ? "all" : (tab.toLowerCase() as any);
-  };
-
   const filteredRepairs = useMemo(() => {
     return repairs.filter((item: IRepair) => {
       const statusMatch =
-        activeTab === "ALL" ? true : item.status === activeTab.toLowerCase();
+        subTab === "ALL" ? true : item.status === subTab.toLowerCase();
+      const mineMatch =
+        mainTab === "ALL" ? true : item.received_by?.user_id === user?.id;
+      const searchLower = searchQuery.toLowerCase();
 
       const searchMatch =
         searchQuery === ""
           ? true
-          : item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.problem_detail
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            item.building.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.floor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.phone.toLowerCase().includes(searchQuery.toLowerCase());
+          : item.id.toLowerCase().includes(searchLower) ||
+            (item.problem_detail?.toLowerCase()?.includes(searchLower) ??
+              false) ||
+            (item.building?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.floor?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.room?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.name?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.phone?.toLowerCase()?.includes(searchLower) ?? false);
 
-      return statusMatch && searchMatch;
+      return statusMatch && mineMatch && searchMatch;
     });
-  }, [repairs, searchQuery, activeTab]);
+  }, [repairs, searchQuery, subTab, mainTab, user]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -292,19 +298,6 @@ const RepairHistoryScreen = () => {
     setSearchQuery("");
   };
 
-  const renderListHeader = () => (
-    <VStack bg={colorTheme.colors.background}>
-      <SearchBar
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-        onClearSearch={handleClearSearch}
-      />
-      <Box pb={4}>
-        <RepairStatusProgress statusKey={getStatusKey(activeTab)} />
-      </Box>
-    </VStack>
-  );
-
   const renderEmptyComponent = () => (
     <Center flex={1} mt={10}>
       <Text color={colorTheme.colors.text}>
@@ -313,6 +306,11 @@ const RepairHistoryScreen = () => {
     </Center>
   );
 
+  const tabOptions =
+    mainTab === "ALL"
+      ? ["ALL", "PENDING", "INPROGRESS", "COMPLETED"]
+      : ["ALL", "INPROGRESS", "COMPLETED"];
+
   return (
     <VStack flex={1} bg={colorTheme.colors.background}>
       <AppHeader
@@ -320,46 +318,87 @@ const RepairHistoryScreen = () => {
         bgColor={colorTheme.colors.card}
       />
 
-      <HStack
-        bg={colorTheme.colors.card}
-        justifyContent="space-around"
-        alignItems="center"
-        borderBottomWidth={1}
-        borderBottomColor={colorTheme.colors.border}
-      >
-        {["ALL", "PENDING", "INPROGRESS", "COMPLETED"].map((tab) => (
-          <Pressable
-            key={tab}
-            onPress={() => setActiveTab(tab as typeof activeTab)}
-            style={{ flex: 1 }}
-          >
-            <Center
-              py={2}
-              bg={activeTab === tab ? colorTheme.colors.primary : "transparent"}
+      <>
+        <HStack
+          bg={colorTheme.colors.card}
+        >
+          {["ALL", "MINE"].map((tab) => (
+            <Pressable
+              key={tab}
+              onPress={() => setMainTab(tab as typeof mainTab)}
+              style={{ flex: 1 }}
             >
-              <Text
-                fontSize="sm"
-                fontWeight="bold"
-                color={activeTab === tab ? "white" : colorTheme.colors.text}
+              <Center
+                py={2}
+                bg={mainTab === tab ? colorTheme.colors.dark : "transparent"}
               >
-                {t(`PROCESS.${tab}`)}
-              </Text>
-            </Center>
-          </Pressable>
-        ))}
-      </HStack>
+                <Text
+                  fontSize="sm"
+                  fontWeight="bold"
+                  color={mainTab === tab ? "white" : colorTheme.colors.text}
+                >
+                  {tab === "ALL"
+                    ? t("PROCESS.ALL_TASKS")
+                    : t("PROCESS.MY_TASKS")}
+                </Text>
+              </Center>
+            </Pressable>
+          ))}
+        </HStack>
+
+        <HStack
+          bg={colorTheme.colors.card}
+          borderBottomWidth={1}
+          borderBottomColor={colorTheme.colors.border}
+        >
+          {tabOptions.map((tab) => (
+            <Pressable
+              key={tab}
+              onPress={() => setSubTab(tab as typeof subTab)}
+              style={{ flex: 1 }}
+            >
+              <Center
+                py={2}
+                bg={subTab === tab ? colorTheme.colors.primary : "transparent"}
+              >
+                <Text
+                  fontSize="sm"
+                  fontWeight="bold"
+                  color={subTab === tab ? "white" : colorTheme.colors.text}
+                >
+                  {t(`PROCESS.${tab}`)}
+                </Text>
+              </Center>
+            </Pressable>
+          ))}
+        </HStack>
+      </>
 
       <FlatList
         data={filteredRepairs}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={renderListHeader}
+        ListHeaderComponent={
+          <>
+            <SearchBar
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              onClearSearch={handleClearSearch}
+            />
+
+            <Box pb={4}>
+              <RepairStatusProgress statusKey={subTab.toLowerCase() as any} repairs={filteredRepairs} />
+            </Box>
+          </>
+        }
         ListEmptyComponent={renderEmptyComponent}
-        contentContainerStyle={{
-          flexGrow: 1,
-          padding: 16,
-        }}
+        contentContainerStyle={{ flexGrow: 1, padding: 16 }}
+        keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => {
-          const status = statusItems[item.status];
+          const status = statusItems[item.status] ?? {
+            text: item.status,
+            icon: "alert-circle",
+            color: "gray.400",
+          };
           return (
             <RepairHistoryCard
               item={item}
@@ -368,6 +407,8 @@ const RepairHistoryScreen = () => {
               statusIcon={status.icon}
               statusColor={status.color}
               t={t}
+              mainTab={mainTab}
+              subTab={subTab}
             />
           );
         }}
