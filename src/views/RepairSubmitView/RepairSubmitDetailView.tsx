@@ -1,13 +1,5 @@
 import React, { useMemo } from "react";
-import {
-  CheckIcon,
-  Divider,
-  FormControl,
-  HStack,
-  Select,
-  Text,
-  VStack,
-} from "native-base";
+import { Divider, HStack, Text, VStack } from "native-base";
 import { IRepair } from "../../interfaces/repair.interface";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
@@ -16,6 +8,9 @@ import ImagePreview, {
   BASE_UPLOAD_PATH,
   parseImageUrls,
 } from "../../components/ImagePreview";
+import { Controller } from "react-hook-form";
+import { useRepairSubmitForm } from "../../hooks/useRepairSubmitForm";
+import Select from "../../components/Select";
 
 interface RepairSubmitDetailViewProps {
   repairs: IRepair[];
@@ -32,6 +27,7 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
+  const { control } = useRepairSubmitForm();
 
   const imagesForPreview = useMemo(() => {
     return parseImageUrls(jobDetails?.image_url).map(
@@ -41,19 +37,18 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
 
   return (
     <VStack space={4}>
-      <FormControl isRequired>
-        <FormControl.Label>
-          {t("FORM.REPAIR_SUBMIT.STEP_LABELS.1")}
-        </FormControl.Label>
-        <Select
-          selectedValue={selectedJobId || undefined}
-          onValueChange={(value) => {
+      <Controller
+        control={control}
+        name="id"
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <Select
+            label={t("FORM.REPAIR_SUBMIT.STEP_LABELS.1")}
+            placeholder={t("FORM.REPAIR_SUBMIT.SELECT_JOB_ID")}
+            value={selectedJobId}
+            onChange={(value) => {
             onSelectJobId(value);
           }}
-          placeholder={t("FORM.REPAIR_SUBMIT.SELECT_JOB_ID")}
-          _selectedItem={{ bg: "blue.100", endIcon: <CheckIcon size={5} /> }}
-        >
-          {repairs
+            options={repairs
             .filter(
               (item) =>
                 item.status === "inprogress" &&
@@ -61,14 +56,15 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
                 item.process_time
             )
             .map((repair) => (
-              <Select.Item
-                key={repair.id}
-                label={repair.id}
-                value={repair.id}
-              />
+              {
+                label: `${repair.id}`,
+                value: repair.id,
+              }
             ))}
-        </Select>
-      </FormControl>
+            error={error?.message}
+          />
+        )}
+      />
       {jobDetails ? (
         <VStack space={4}>
           <VStack

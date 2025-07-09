@@ -10,7 +10,11 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
-import { Ionicons, FontAwesome } from "react-native-vector-icons";
+import {
+  Ionicons,
+  FontAwesome,
+  MaterialIcons,
+} from "react-native-vector-icons";
 import { dayJs, setDayJsLocale } from "../../config/dayJs";
 import { Controller } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
@@ -212,6 +216,14 @@ const RepairDetailTechnicianView: React.FC<
                             borderColor={error ? "#ef4444" : "#d1d5db"}
                             pointerEvents="none"
                             width="100%"
+                            InputLeftElement={
+                              <Icon
+                                as={<MaterialIcons name="calendar-today" />}
+                                size={5}
+                                ml="2"
+                                color="muted.400"
+                              />
+                            }
                           />
                         </TouchableOpacity>
 
@@ -267,6 +279,14 @@ const RepairDetailTechnicianView: React.FC<
                             borderColor={error ? "#ef4444" : "#d1d5db"}
                             pointerEvents="none"
                             width="100%"
+                            InputLeftElement={
+                              <Icon
+                                as={<MaterialIcons name="schedule" />}
+                                size={5}
+                                ml="2"
+                                color="muted.400"
+                              />
+                            }
                           />
                         </TouchableOpacity>
 
@@ -301,7 +321,7 @@ const RepairDetailTechnicianView: React.FC<
 
                 {isRequired && (
                   <Button
-                    variant='subtle'
+                    variant="subtle"
                     colorScheme="emerald"
                     size={"sm"}
                     onPress={handleSubmit(onProcessDateSubmit)}

@@ -7,8 +7,6 @@ import {
   Text,
   FormControl,
   Button,
-  Select,
-  CheckIcon,
   Input,
   TextArea,
   Box,
@@ -36,6 +34,7 @@ import {
   getRoomOptions,
 } from "../constant/ConstantItem";
 import { useAlertDialog } from "../components/AlertDialogComponent";
+import Select from "../components/Select";
 
 const RepairScreen = () => {
   const { t, i18n } = useTranslation();
@@ -153,7 +152,7 @@ const RepairScreen = () => {
         showAlertDialog(
           t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
           t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
-          'success',
+          "success",
           [
             {
               text: t("COMMON.OK"),
@@ -241,6 +240,14 @@ const RepairScreen = () => {
                           isInvalid={!!error}
                           borderColor={error ? "#ef4444" : "#d1d5db"}
                           pointerEvents="none"
+                          InputLeftElement={
+                            <Icon
+                              as={<MaterialIcons name="calendar-today" />}
+                              size={5}
+                              ml="2"
+                              color="muted.400"
+                            />
+                          }
                         />
                       </TouchableOpacity>
 
@@ -287,6 +294,14 @@ const RepairScreen = () => {
                           isInvalid={!!error}
                           borderColor={error ? "#ef4444" : "#d1d5db"}
                           pointerEvents="none"
+                          InputLeftElement={
+                            <Icon
+                              as={<MaterialIcons name="schedule" />}
+                              size={5}
+                              ml="2"
+                              color="muted.400"
+                            />
+                          }
                         />
                       </TouchableOpacity>
 
@@ -377,126 +392,70 @@ const RepairScreen = () => {
             <Text fontSize="md" fontWeight="bold" mt="5">
               {t("FORM.REPAIR.LOCATION_INFO")}
             </Text>
+
             <VStack
               bg={colorTheme.colors.card}
               borderRadius="3xl"
               p="5"
               space={4}
             >
-              <FormControl isRequired isInvalid={!!errors.building}>
-                <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.BUILDING")}</Text>
-                </FormControl.Label>
-                <Controller
-                  control={control}
-                  name="building"
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <Select
-                      selectedValue={value}
-                      accessibilityLabel={t("FORM.REPAIR.BUILDING_PLACEHOLDER")}
-                      placeholder={t("FORM.REPAIR.BUILDING_PLACEHOLDER")}
-                      _selectedItem={{
-                        bg: colorTheme.colors.secondary,
-                        endIcon: <CheckIcon size="5" color="teal.600" />,
-                      }}
-                      onValueChange={onChange}
-                      borderColor={error ? "#ef4444" : "#d1d5db"}
-                    >
-                      {buildingOptions.map((building) => (
-                        <Select.Item
-                          key={building.value}
-                          label={building.label}
-                          value={building.value}
-                        />
-                      ))}
-                    </Select>
-                  )}
-                />
-                <FormControl.ErrorMessage>
-                  {errors.building?.message}
-                </FormControl.ErrorMessage>
-              </FormControl>
+              <Controller
+                control={control}
+                name="building"
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Select
+                    label={t("FORM.REPAIR.BUILDING")}
+                    placeholder={t("FORM.REPAIR.BUILDING_PLACEHOLDER")}
+                    value={value}
+                    onChange={onChange}
+                    options={buildingOptions}
+                    error={error?.message}
+                  />
+                )}
+              />
 
-              <FormControl isInvalid={!!errors.floor}>
-                <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.FLOOR")}</Text>
-                </FormControl.Label>
-                <Controller
-                  control={control}
-                  name="floor"
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <Select
-                      selectedValue={value}
-                      accessibilityLabel={t("FORM.REPAIR.FLOOR_PLACEHOLDER")}
-                      placeholder={t("FORM.REPAIR.FLOOR_PLACEHOLDER")}
-                      _selectedItem={{
-                        bg: colorTheme.colors.secondary,
-                        endIcon: <CheckIcon size="5" color="teal.600" />,
-                      }}
-                      onValueChange={onChange}
-                      borderColor={error ? "#ef4444" : "#d1d5db"}
-                      isDisabled={
-                        !selectedBuildingId || floorOptions.length === 0
-                      }
-                    >
-                      {floorOptions.map((floor) => (
-                        <Select.Item
-                          key={floor.value}
-                          label={floor.label}
-                          value={floor.value}
-                        />
-                      ))}
-                    </Select>
-                  )}
-                />
-                <FormControl.ErrorMessage>
-                  {errors.floor?.message}
-                </FormControl.ErrorMessage>
-              </FormControl>
+              <Controller
+                control={control}
+                name="floor"
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Select
+                    label={t("FORM.REPAIR.FLOOR")}
+                    placeholder={t("FORM.REPAIR.FLOOR_PLACEHOLDER")}
+                    value={value}
+                    onChange={onChange}
+                    options={floorOptions}
+                    error={error?.message}
+                    isDisabled={
+                      !selectedBuildingId || floorOptions.length === 0
+                    }
+                  />
+                )}
+              />
 
-              <FormControl isInvalid={!!errors.room}>
-                <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.ROOM")}</Text>
-                </FormControl.Label>
-                <Controller
-                  control={control}
-                  name="room"
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <Select
-                      selectedValue={value}
-                      accessibilityLabel={t("FORM.REPAIR.ROOM_PLACEHOLDER")}
-                      placeholder={t("FORM.REPAIR.ROOM_PLACEHOLDER")}
-                      _selectedItem={{
-                        bg: colorTheme.colors.secondary,
-                        endIcon: <CheckIcon size="5" color="teal.600" />,
-                      }}
-                      onValueChange={onChange}
-                      borderColor={error ? "#ef4444" : "#d1d5db"}
-                      isDisabled={!selectedFloorId || roomOptions.length === 0}
-                    >
-                      {roomOptions.map((room) => (
-                        <Select.Item
-                          key={room.value}
-                          label={room.label}
-                          value={room.value}
-                        />
-                      ))}
-                    </Select>
-                  )}
-                />
-                <FormControl.ErrorMessage>
-                  {errors.room?.message}
-                </FormControl.ErrorMessage>
-              </FormControl>
+              <Controller
+                control={control}
+                name="room"
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Select
+                    label={t("FORM.REPAIR.ROOM")}
+                    placeholder={t("FORM.REPAIR.ROOM_PLACEHOLDER")}
+                    value={value}
+                    onChange={onChange}
+                    options={roomOptions}
+                    error={error?.message}
+                    isDisabled={!selectedFloorId || roomOptions.length === 0}
+                  />
+                )}
+              />
             </VStack>
 
             <Text fontSize="md" fontWeight="bold" mt="5">
