@@ -301,7 +301,7 @@ const RepairDetailTechnicianView: React.FC<
 
                 {isRequired && (
                   <Button
-                    variant="outline"
+                    variant='subtle'
                     colorScheme="emerald"
                     size={"sm"}
                     onPress={handleSubmit(onProcessDateSubmit)}

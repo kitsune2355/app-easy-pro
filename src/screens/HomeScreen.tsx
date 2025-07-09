@@ -45,9 +45,7 @@ const HomeScreen: React.FC = () => {
     dispatch(fetchAllRepairs());
   }, [dispatch]);
 
-  useFocusEffect(
-    onFetchAllRepairs
-  );
+  useFocusEffect(onFetchAllRepairs);
 
   const renderDashboardItem = () => (
     <>
@@ -70,11 +68,6 @@ const HomeScreen: React.FC = () => {
             onPress={() =>
               navigateWithLoading("RepairHistoryScreen", { statusKey: st.key })
             }
-            _pressed={{
-              style: {
-                transform: [{ scale: 0.88 }],
-              },
-            }}
           >
             <Center bg={colorTheme.colors.card} rounded="2xl" shadow={2} h="32">
               <Icon
@@ -115,11 +108,6 @@ const HomeScreen: React.FC = () => {
         width="48%"
         mb="4"
         onPress={() => navigateWithLoading(item.screen as never)}
-        _pressed={{
-          style: {
-            transform: [{ scale: 0.88 }],
-          },
-        }}
       >
         <Box
           bg={{
@@ -169,11 +157,6 @@ const HomeScreen: React.FC = () => {
                   repairId: item.id,
                 })
               }
-              _pressed={{
-                style: {
-                  transform: [{ scale: 0.88 }],
-                },
-              }}
             >
               <HStack alignItems="flex-start" space={3}>
                 <Center
@@ -232,8 +215,7 @@ const HomeScreen: React.FC = () => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                   >
-                    {t("BUILDING")} {item.building}, {t("FLOOR")} {item.floor},{" "}
-                    {t("ROOM")} {item.room}
+                    {item.building},{" "} {item.floor},{" "} {item.room}
                   </Text>
                   <Text color="gray.500" fontSize="xs">
                     {dayJs(item.created_at).format("DD MMM YYYY, HH:mm ")}
@@ -257,6 +239,8 @@ const HomeScreen: React.FC = () => {
           ทั้งหมด: {statusItem.total.count}
         </Text>
       </HStack>
+
+       <RepairStatusProgress statusKey="all" repairs={repairs} />
 
       <Flex direction="row" wrap="wrap" justify="space-between">
         {renderDashboardItem()}

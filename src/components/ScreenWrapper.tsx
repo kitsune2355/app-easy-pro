@@ -14,7 +14,7 @@ const ScreenWrapper: React.FC<ScreenWrapperProps> = ({ children }) => {
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // ปรับให้เหมาะกับ iOS
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <VStack py="4" px="8">
+        <VStack py="4" px="8" safeAreaBottom>
           {children}
         </VStack>
       </ScrollView>

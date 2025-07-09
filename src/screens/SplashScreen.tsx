@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import { useTranslation } from "react-i18next";
+import { set } from "react-hook-form";
 
 type SplashScreenNavigationProp = StackNavigationProp<
   StackParamsList,
@@ -13,48 +14,30 @@ type SplashScreenNavigationProp = StackNavigationProp<
 
 const SplashScreen: React.FC = () => {
   const { t } = useTranslation();
-  const { checkLoginStatus, isLoggedIn, isLoading } = useAuth();
+  const { checkLoginStatus } = useAuth();
   const navigation = useNavigation<SplashScreenNavigationProp>();
 
   useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        // ตรวจสอบสถานะการเข้าสู่ระบบ
-        await checkLoginStatus();
+  const init = async () => {
+    const loggedIn = await checkLoginStatus();
+    setTimeout(() => {
+      navigation.replace(loggedIn ? "MainDrawer" : "LoginScreen");
+    }, 3000);
+  };
 
-        // รอสักครู่เพื่อให้ผู้ใช้เห็น Splash Screen
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        // นำทางไปยังหน้าที่เหมาะสม
-        if (isLoggedIn) {
-          navigation.replace("MainDrawer");
-        } else {
-          navigation.replace("LoginScreen");
-        }
-      } catch (error) {
-        console.error("Error during app initialization:", error);
-        // หากเกิดข้อผิดพลาด ให้ไปหน้า Login
-        navigation.replace("LoginScreen");
-      }
-    };
-
-    initializeApp();
-  }, []);
+  init();
+}, []);
 
   return (
-    <Box
-      flex={1}
-      bg={{
-        linearGradient: {
-          colors: ["#006B9F", "#00405f"],
-          start: [0, 0],
-          end: [1, 1],
-        },
-      }}
-    >
+    <Box flex={1} bg={{
+      linearGradient: {
+        colors: ["#006B9F", "#00405f"],
+        start: [0, 0],
+        end: [1, 1],
+      },
+    }}>
       <Center flex={1}>
         <VStack space={8} alignItems="center">
-          {/* Logo หรือไอคอนของแอป */}
           <Box bg="white" rounded="full" p={6} shadow={5}>
             <Image
               source={require("../../assets/images/logo.png")}
@@ -62,8 +45,6 @@ const SplashScreen: React.FC = () => {
               size={24}
             />
           </Box>
-
-          {/* ชื่อแอป */}
           <VStack space={2} alignItems="center">
             <Text fontSize="3xl" fontWeight="bold" color="white">
               EasyPro
@@ -72,8 +53,6 @@ const SplashScreen: React.FC = () => {
               {t("MAINTENANCE_SYSTEM")}
             </Text>
           </VStack>
-
-          {/* Loading Spinner */}
           <VStack space={3} alignItems="center">
             <Spinner size="lg" color="white" />
             <Text fontSize="sm" color="white" opacity={0.7}>
@@ -81,8 +60,6 @@ const SplashScreen: React.FC = () => {
             </Text>
           </VStack>
         </VStack>
-
-        {/* Version หรือ Copyright */}
         <Box position="absolute" bottom={10}>
           <Text fontSize="xs" color="white" opacity={0.6} textAlign="center">
             {t('VERSION')} 1.0.0

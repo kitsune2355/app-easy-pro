@@ -15,12 +15,15 @@ interface RepairStatusProgressProps {
 
 export const getStatusSummary = (repairs: IRepair[]) => {
   const statusKeys: StatusKey[] = ["pending", "inprogress", "completed"];
-  const summary = {} as Record<StatusKey | "total", {
-    count: number;
-    color: string;
-    text: string;
-    icon: string;
-  }>;
+  const summary = {} as Record<
+    StatusKey | "total",
+    {
+      count: number;
+      color: string;
+      text: string;
+      icon: string;
+    }
+  >;
 
   statusKeys.forEach((key) => {
     summary[key] = {
@@ -43,7 +46,7 @@ export const getStatusSummary = (repairs: IRepair[]) => {
 
 const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
   statusKey,
-  repairs
+  repairs,
 }) => {
   const { t } = useTranslation();
   const statusItem = getStatusSummary(repairs);
@@ -55,39 +58,39 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
 
   const rounded = (n: number) => Math.round(n);
 
-  const renderSingleProgress = (
-    key: "pending" | "inprogress" | "completed"
-  ) => {
-    const percent = rounded(getValue(key));
-    return (
-      <Box bg="white" p={4} borderRadius="md" shadow={2}>
-        <HStack alignItems="center" justifyContent="space-between">
-          <HStack space={1} alignItems="center">
-            <Icon
-              as={FontAwesome}
-              name="circle"
-              size="xs"
-              color={statusItem[key].color}
-            />
-            <Text mb="1" fontSize="xs" color="coolGray.700">
-              {t(`PROCESS.${key.toUpperCase()}`)}
-            </Text>
-          </HStack>
-          <Text mb="1" fontSize="xs" color="coolGray.700">
-            {percent} %
-          </Text>
-        </HStack>
-        <Box mt={2} h={3} bg="gray.200" borderRadius="full" overflow="hidden">
-          <Box
-            h="full"
-            w={`${percent}%`}
-            bg={statusItem[key].color}
-            borderRadius="full"
-          />
-        </Box>
-      </Box>
-    );
-  };
+  // const renderSingleProgress = (
+  //   key: "pending" | "inprogress" | "completed"
+  // ) => {
+  //   const percent = rounded(getValue(key));
+  //   return (
+  //     <Box bg="white" p={4} borderRadius="md" shadow={2}>
+  //       <HStack alignItems="center" justifyContent="space-between">
+  //         <HStack space={1} alignItems="center">
+  //           <Icon
+  //             as={FontAwesome}
+  //             name="circle"
+  //             size="xs"
+  //             color={statusItem[key].color}
+  //           />
+  //           <Text mb="1" fontSize="xs" color="coolGray.700">
+  //             {t(`PROCESS.${key.toUpperCase()}`)}
+  //           </Text>
+  //         </HStack>
+  //         <Text mb="1" fontSize="xs" color="coolGray.700">
+  //           {percent} %
+  //         </Text>
+  //       </HStack>
+  //       <Box mt={2} h={3} bg="gray.200" borderRadius="full" overflow="hidden">
+  //         <Box
+  //           h="full"
+  //           w={`${percent}%`}
+  //           bg={statusItem[key].color}
+  //           borderRadius="full"
+  //         />
+  //       </Box>
+  //     </Box>
+  //   );
+  // };
 
   const renderAllStatus = () => {
     const pending = rounded(getValue("pending"));
@@ -122,12 +125,19 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
     return (
       <Box bg="white" p={4} borderRadius="md" shadow={2}>
         <VStack space={1}>
-          {["completed", "inprogress", "pending"].map((key) =>
+          {["pending", "inprogress", "completed"].map((key) =>
             renderLegendItem(key as StatusKey)
           )}
         </VStack>
 
-        <Box position="relative" mt={2} h={3} bg="gray.200" borderRadius="full" overflow="hidden">
+        <Box
+          position="relative"
+          mt={2}
+          h={3}
+          bg="gray.200"
+          borderRadius="full"
+          overflow="hidden"
+        >
           {barLayers.map((layer, index) => (
             <Box
               key={index}
@@ -145,13 +155,7 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
     );
   };
 
-  return (
-    <Box>
-      {statusKey === "all"
-        ? renderAllStatus()
-        : renderSingleProgress(statusKey)}
-    </Box>
-  );
+  return <Box>{renderAllStatus()}</Box>;
 };
 
 export default RepairStatusProgress;

@@ -89,17 +89,13 @@ const RepairDetailView: React.FC<RepairDetailViewProps> = ({
             <Text fontSize="xs" color="gray.500">
               {t("FORM.REPAIR.LOCATION_INFO")}
             </Text>
-            <HStack space={2}>
-              <Text color={colorTheme.colors.text}>
-                {t("BUILDING")} {repairDetail.building}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("FLOOR")} {repairDetail.floor}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("ROOM")} {repairDetail.room}
-              </Text>
-            </HStack>
+            <Text color={colorTheme.colors.text}>
+              {repairDetail.building}
+              {" "}
+              {repairDetail.floor}
+              {" "}
+              {repairDetail.room}
+            </Text>
           </VStack>
         </HStack>
 

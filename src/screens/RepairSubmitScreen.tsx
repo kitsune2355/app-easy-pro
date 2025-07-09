@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, VStack } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import StepIndicator from "react-native-step-indicator";
@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store";
 import { fetchAllRepairs, completeRepair } from "../service/repairService";
 import { IRepair } from "../interfaces/repair.interface";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { RepairSubmitScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAlertDialog } from "../components/AlertDialogComponent";
@@ -64,9 +64,11 @@ const RepairSubmitScreen: React.FC = () => {
     useState<IRepair | null>(null);
   const [solution, setSolution] = useState<string>("");
 
-  useEffect(() => {
+  const onFetchAllRepairs = useCallback(() => {
     dispatch(fetchAllRepairs());
   }, [dispatch]);
+
+  useFocusEffect(onFetchAllRepairs);
 
   useEffect(() => {
     if (selectedRepairId) {
@@ -229,7 +231,7 @@ const RepairSubmitScreen: React.FC = () => {
         <StepIndicator
           customStyles={stepStyles}
           currentPosition={step - 1}
-          labels={labels.map((label) => t(label))}
+          // labels={labels.map((label) => t(label))}
           stepCount={3}
         />
         <VStack

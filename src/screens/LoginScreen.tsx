@@ -9,7 +9,12 @@ import {
   Box,
 } from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
-import { TextInput, StyleSheet } from "react-native";
+import {
+  TextInput,
+  StyleSheet,
+  Platform,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useLoginForm } from "../hooks/useLoginForm";
 import { ILoginForm } from "../interfaces/form/loginForm";
 import { Controller } from "react-hook-form";
@@ -91,108 +96,119 @@ const LoginScreen = () => {
         },
       }}
     >
-      <Box safeAreaTop>
-        <LanguageButtonGroup
-          langs={["th", "en"]}
-          value={lang}
-          onPress={handleLangChange}
-        />
-      </Box>
-      <VStack flex={1} justifyContent="center" alignItems="center">
-        <Image
-          source={require("../../assets/images/logo_full.png")}
-          alt="logo"
-          size={48}
-          mb={8}
-        />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+      >
+        <Box safeAreaTop>
+          <LanguageButtonGroup
+            langs={["th", "en"]}
+            value={lang}
+            onPress={handleLangChange}
+          />
+        </Box>
+        <VStack flex={1} justifyContent="center" alignItems="center">
+          <Image
+            source={require("../../assets/images/logo_full.png")}
+            alt="logo"
+            size={48}
+            mb={8}
+          />
 
-        <Controller
-          control={control}
-          name="username"
-          render={({
-            field: { value, onBlur, onChange },
-            fieldState: { error },
-          }) => (
-            <FormControl isInvalid={!!error} width="100%" maxWidth={500}>
-              <TextInput
-                placeholder={t("LOGIN.USERNAME")}
-                value={value}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                style={getInputStyle(!!error)}
-                placeholderTextColor="#9ca3af"
-              />
-              {error && (
-                <FormControl.ErrorMessage>
-                  {error.message}
-                </FormControl.ErrorMessage>
-              )}
-            </FormControl>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="password"
-          render={({
-            field: { value, onBlur, onChange },
-            fieldState: { error },
-          }) => (
-            <FormControl mt="4" isInvalid={!!error} width="100%" maxWidth={500}>
-              <VStack position="relative">
+          <Controller
+            control={control}
+            name="username"
+            render={({
+              field: { value, onBlur, onChange },
+              fieldState: { error },
+            }) => (
+              <FormControl isInvalid={!!error} width="100%" maxWidth={500}>
                 <TextInput
-                  placeholder={t("LOGIN.PASSWORD")}
-                  secureTextEntry={!showPassword}
+                  placeholder={t("LOGIN.USERNAME")}
                   value={value}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   style={getInputStyle(!!error)}
                   placeholderTextColor="#9ca3af"
                 />
-                <Pressable
-                  onPress={toggleShowPassword}
-                  position="absolute"
-                  right={3}
-                  top={3}
-                  zIndex={1}
-                >
-                  <Icons
-                    name={showPassword ? "visibility" : "visibility-off"}
-                    size={24}
-                    color={colorTheme.colors.text}
+                {error && (
+                  <FormControl.ErrorMessage>
+                    {error.message}
+                  </FormControl.ErrorMessage>
+                )}
+              </FormControl>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="password"
+            render={({
+              field: { value, onBlur, onChange },
+              fieldState: { error },
+            }) => (
+              <FormControl
+                mt="4"
+                isInvalid={!!error}
+                width="100%"
+                maxWidth={500}
+              >
+                <VStack position="relative">
+                  <TextInput
+                    placeholder={t("LOGIN.PASSWORD")}
+                    secureTextEntry={!showPassword}
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    style={getInputStyle(!!error)}
+                    placeholderTextColor="#9ca3af"
                   />
-                </Pressable>
-              </VStack>
-              {error && (
-                <FormControl.ErrorMessage>
-                  {error.message}
-                </FormControl.ErrorMessage>
-              )}
-            </FormControl>
+                  <Pressable
+                    onPress={toggleShowPassword}
+                    position="absolute"
+                    right={3}
+                    top={3}
+                    zIndex={1}
+                  >
+                    <Icons
+                      name={showPassword ? "visibility" : "visibility-off"}
+                      size={24}
+                      color={colorTheme.colors.text}
+                    />
+                  </Pressable>
+                </VStack>
+                {error && (
+                  <FormControl.ErrorMessage>
+                    {error.message}
+                  </FormControl.ErrorMessage>
+                )}
+              </FormControl>
+            )}
+          />
+
+          {error && (
+            <Center mt={2}>
+              <Text color="red.500" fontSize="sm">
+                {error}
+              </Text>
+            </Center>
           )}
-        />
 
-        {error && (
-          <Center mt={2}>
-            <Text color="red.500" fontSize="sm">
-              {error}
-            </Text>
-          </Center>
-        )}
+          <Button
+            mt="4"
+            w="full"
+            bg={colorTheme.colors.primary}
+            _text={{ color: "#fff", fontSize: "md", fontWeight: "bold" }}
+            isLoading={isLoading}
+            onPress={handleSubmit(onSubmit)}
+          >
+            {t("LOGIN.LOGIN_BTN")}
+          </Button>
+        </VStack>
+      </KeyboardAvoidingView>
 
-        <Button
-          mt="4"
-          w="full"
-          bg={colorTheme.colors.primary}
-          _text={{ color: "#fff", fontSize: "md", fontWeight: "bold" }}
-          isLoading={isLoading}
-          onPress={handleSubmit(onSubmit)}
-        >
-          {t("LOGIN.LOGIN_BTN")}
-        </Button>
-      </VStack>
-
-      <Center safeAreaBottom pb={2}>
+      <Center safeAreaBottom>
         <Text color="white" fontSize="xs">
           {t("PROACTIVE")}
         </Text>

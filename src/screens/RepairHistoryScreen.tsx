@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Pressable, FlatList } from "react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Pressable } from "react-native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   VStack,
@@ -11,11 +11,9 @@ import {
   Center,
   Badge,
   Button,
-  Box,
 } from "native-base";
 import { Ionicons, FontAwesome } from "react-native-vector-icons";
 import AppHeader from "../components/AppHeader";
-import RepairStatusProgress from "../components/RepairStatusProgress";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
@@ -27,13 +25,14 @@ import { AppDispatch, RootState } from "../store";
 import { useToastMessage } from "../components/ToastMessage";
 import { IRepair } from "../interfaces/repair.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ScreenWrapper from "../components/ScreenWrapper";
 
 type mainTabType = "ALL" | "MINE";
 type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
 
 interface RepairHistoryParams {
-    statusKey?: string;
-  }
+  statusKey?: string;
+}
 
 const RepairHistoryCard = ({
   item,
@@ -58,22 +57,22 @@ const RepairHistoryCard = ({
   const [accepting, setAccepting] = useState(false);
   const { showToast } = useToastMessage();
 
-  const handleAcceptWork = async (id: string) => {
-    try {
-      setAccepting(true);
-      const res = await dispatch(updateRepairStatus(id, "inprogress"));
-      if (res?.status === "success") {
-        showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`);
-      } else {
-        showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
-      }
-    } catch (error) {
-      console.error("Error updating repair status:", error);
-      showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
-    } finally {
-      setAccepting(false);
-    }
-  };
+  // const handleAcceptWork = useCallback(async (id: string) => {
+  //   try {
+  //     setAccepting(true);
+  //     const res = await dispatch(updateRepairStatus(id, "inprogress"));
+  //     if (res?.status === "success") {
+  //       showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`);
+  //     } else {
+  //       showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating repair status:", error);
+  //     showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
+  //   } finally {
+  //     setAccepting(false);
+  //   }
+  // },[dispatch, showToast, t]);
 
   return (
     <VStack
@@ -170,17 +169,9 @@ const RepairHistoryCard = ({
               size="sm"
               color={colorTheme.colors.text}
             />
-            <HStack space={2}>
-              <Text color={colorTheme.colors.text}>
-                {t("BUILDING")} {item.building}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("FLOOR")} {item.floor}
-              </Text>
-              <Text color={colorTheme.colors.text}>
-                {t("ROOM")} {item.room}
-              </Text>
-            </HStack>
+            <Text color={colorTheme.colors.text}>
+              {item.building} {item.floor} {item.room}
+            </Text>
           </HStack>
 
           <HStack space={3}>
@@ -210,7 +201,7 @@ const RepairHistoryCard = ({
             >
               {t("COMMON.MORE_DETAILS")}
             </Button>
-            <Button
+            {/* <Button
               variant="solid"
               rounded="3xl"
               size="sm"
@@ -238,7 +229,7 @@ const RepairHistoryCard = ({
               >
                 {t("SUBMIT_WORK")}
               </Button>
-            )}
+            )} */}
           </VStack>
         </VStack>
       </Collapse>
@@ -251,14 +242,21 @@ const RepairHistoryScreen = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { repairs } = useSelector((state: RootState) => state.repair);
-  
-  const route = useRoute<RouteProp<Record<string, RepairHistoryParams>, string>>();
+
+  const route =
+    useRoute<RouteProp<Record<string, RepairHistoryParams>, string>>();
   const { statusKey } = route.params || {};
 
   const [mainTab, setMainTab] = useState<mainTabType>("ALL");
   const [subTab, setSubTab] = useState<subTabType>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<any>(null);
+
+  const onFetchAllRepairs = useCallback(() => {
+    dispatch(fetchAllRepairs());
+  }, [dispatch]);
+
+  useFocusEffect(onFetchAllRepairs);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -277,28 +275,30 @@ const RepairHistoryScreen = () => {
   }, [dispatch, statusKey]);
 
   const filteredRepairs = useMemo(() => {
-  return repairs.filter((item: IRepair) => {
-    const statusMatch =
-      subTab === "ALL" ? true : item.status === subTab.toLowerCase();
-    const mineMatch =
-      mainTab === "ALL" ? true : item.received_by?.user_id === user?.id;
-    const searchLower = searchQuery.toLowerCase();
+    return repairs.filter((item: IRepair) => {
+      const statusMatch =
+        subTab === "ALL" ? true : item.status === subTab.toLowerCase();
+      const mineMatch =
+        mainTab === "ALL" ? true : item.received_by?.user_id === user?.id;
+      const searchLower = searchQuery.toLowerCase();
 
-    const searchMatch =
-      searchQuery === ""
-        ? true
-        : item.id.toLowerCase().includes(searchLower) ||
-          (item.problem_detail?.toLowerCase()?.includes(searchLower) ??
-            false) ||
-          (item.building?.toLowerCase()?.includes(searchLower) ?? false) ||
-          (item.floor?.toLowerCase()?.includes(searchLower) ?? false) ||
-          (item.room?.toLowerCase()?.includes(searchLower) ?? false) ||
-          (item.name?.toLowerCase()?.includes(searchLower) ?? false) ||
-          (item.phone?.toLowerCase()?.includes(searchLower) ?? false);
+      const searchMatch =
+        searchQuery === ""
+          ? true
+          : item.id.toLowerCase().includes(searchLower) ||
+            (searchLower.startsWith("#") &&
+              item.id.toLowerCase().includes(searchLower.substring(1))) ||
+            (item.problem_detail?.toLowerCase()?.includes(searchLower) ??
+              false) ||
+            (item.building?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.floor?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.room?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.name?.toLowerCase()?.includes(searchLower) ?? false) ||
+            (item.phone?.toLowerCase()?.includes(searchLower) ?? false);
 
-    return statusMatch && mineMatch && searchMatch;
-  });
-}, [repairs, searchQuery, subTab, mainTab, user]);
+      return statusMatch && mineMatch && searchMatch;
+    });
+  }, [repairs, searchQuery, subTab, mainTab, user]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -309,11 +309,11 @@ const RepairHistoryScreen = () => {
   };
 
   const renderEmptyComponent = () => (
-    <Center flex={1} mt={10}>
+    <VStack flexGrow={1} h="full" justifyContent="center" alignItems="center">
       <Text color={colorTheme.colors.text}>
         {searchQuery ? t("NO_SEARCH_RESULTS") : t("NO_REPAIRS_FOUND")}
       </Text>
-    </Center>
+    </VStack>
   );
 
   const tabOptions =
@@ -324,7 +324,19 @@ const RepairHistoryScreen = () => {
   return (
     <VStack flex={1} bg={colorTheme.colors.background}>
       <AppHeader
-        title={t("MENU.REPAIR_REQ_HISTORY")}
+        title={
+          <HStack justifyContent="space-between" alignItems="center">
+            <Text fontSize="lg" fontWeight="bold">
+              {t("MENU.REPAIR_REQ_HISTORY")}
+            </Text>
+            <SearchBar
+              containerStyle={{ width: "80%" }}
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              onClearSearch={handleClearSearch}
+            />
+          </HStack>
+        }
         bgColor={colorTheme.colors.card}
       />
 
@@ -339,6 +351,8 @@ const RepairHistoryScreen = () => {
               <Center
                 py={2}
                 bg={mainTab === tab ? colorTheme.colors.dark : "transparent"}
+                borderBottomWidth={1}
+                borderBottomColor={colorTheme.colors.border}
               >
                 <Text
                   fontSize="sm"
@@ -382,48 +396,30 @@ const RepairHistoryScreen = () => {
         </HStack>
       </>
 
-      <FlatList
-        data={filteredRepairs}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={
-          <>
-            <SearchBar
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-              onClearSearch={handleClearSearch}
-            />
-
-            <Box pb={4}>
-              <RepairStatusProgress
-                statusKey={subTab.toLowerCase() as any}
-                repairs={filteredRepairs}
-              />
-            </Box>
-          </>
-        }
-        ListEmptyComponent={renderEmptyComponent}
-        contentContainerStyle={{ flexGrow: 1, padding: 16 }}
-        keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) => {
-          const status = statusItems[item.status] ?? {
-            text: item.status,
-            icon: "alert-circle",
-            color: "gray.400",
-          };
-          return (
-            <RepairHistoryCard
-              item={item}
-              colorTheme={colorTheme}
-              statusText={status.text}
-              statusIcon={status.icon}
-              statusColor={status.color}
-              t={t}
-              mainTab={mainTab}
-              subTab={subTab}
-            />
-          );
-        }}
-      />
+      <ScreenWrapper>
+        {filteredRepairs.length === 0
+          ? renderEmptyComponent()
+          : filteredRepairs.map((item, key) => {
+              const status = statusItems[item.status] ?? {
+                text: item.status,
+                icon: "alert-circle",
+                color: "gray.400",
+              };
+              return (
+                <RepairHistoryCard
+                  key={key}
+                  item={item}
+                  colorTheme={colorTheme}
+                  statusText={status.text}
+                  statusIcon={status.icon}
+                  statusColor={status.color}
+                  t={t}
+                  mainTab={mainTab}
+                  subTab={subTab}
+                />
+              );
+            })}
+      </ScreenWrapper>
     </VStack>
   );
 };

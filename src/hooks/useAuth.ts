@@ -43,31 +43,34 @@ export const useAuth = () => {
     }
   };
 
-  const checkLoginStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      if (token) {
-        const isValid = await checkToken(token);
-        if (isValid) {
-          const userInfo = await AsyncStorage.getItem('userInfo');
-          if (userInfo) {
-            const userData = JSON.parse(userInfo);
-            // Use a different action or create a new one for restoring user session
-            dispatch({ type: 'auth/restoreUser', payload: userData });
-          }
-        } else {
-          await AsyncStorage.removeItem('userToken');
-          await AsyncStorage.removeItem('userInfo');
-          dispatch(logout());
+  const checkLoginStatus = async (): Promise<boolean> => {
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      const isValid = await checkToken(token);
+      if (isValid) {
+        const userInfo = await AsyncStorage.getItem('userInfo');
+        if (userInfo) {
+          const userData = JSON.parse(userInfo);
+          dispatch({ type: 'auth/restoreUser', payload: userData });
+          return true;
         }
       }
-    } catch (error) {
-      console.error('Error checking login status:', error);
-      await AsyncStorage.removeItem('userToken');
-      await AsyncStorage.removeItem('userInfo');
-      dispatch(logout());
     }
-  };
+
+    // Token invalid or no token
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userInfo');
+    dispatch(logout());
+    return false;
+  } catch (error) {
+    console.error('Error checking login status:', error);
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userInfo');
+    dispatch(logout());
+    return false;
+  }
+};
 
   const isLoggedIn = !!user;
 

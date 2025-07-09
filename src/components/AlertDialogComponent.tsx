@@ -135,11 +135,10 @@ export const useAlertDialog = () => {
             )}
           </AlertDialog.Body>
 
-          {alertProps?.buttons?.map((button, index) => (
-            <AlertDialog.Footer>
+          {alertProps?.buttons?.map((button, key) => (
+            <AlertDialog.Footer key={key}>
               <HStack space={2}>
                 <Button
-                  key={index}
                   colorScheme={currentStatusProps.colorScheme}
                   _text={{
                     fontWeight: "bold",

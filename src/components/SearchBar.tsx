@@ -22,7 +22,7 @@ const SearchBar = ({
   const { colorTheme } = useTheme();
 
   return (
-    <VStack pb={3} {...containerStyle}>
+    <VStack {...containerStyle}>
       <Input
         placeholder={t("SEARCH_PLACEHOLDER")}
         value={searchQuery}
@@ -31,7 +31,7 @@ const SearchBar = ({
         borderColor={colorTheme.colors.border}
         color={colorTheme.colors.text}
         placeholderTextColor={colorTheme.colors.text + "80"}
-        rounded='md'
+        rounded="md"
         shadow={1}
         fontSize="sm"
         InputLeftElement={
