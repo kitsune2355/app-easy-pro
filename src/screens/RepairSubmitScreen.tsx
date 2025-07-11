@@ -291,7 +291,7 @@ const RepairSubmitScreen: React.FC = () => {
             ) : (
               <Button
                 bg="emerald.500"
-                _text={{ color: colorTheme.colors.text, fontWeight: "bold" }}
+                _text={{ color: 'white', fontWeight: "bold" }}
                 onPress={handleSubmit}
               >
                 {t("SUBMIT_WORK")}
