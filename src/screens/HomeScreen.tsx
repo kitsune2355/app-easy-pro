@@ -215,7 +215,7 @@ const HomeScreen: React.FC = () => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                   >
-                    {item.building},{" "} {item.floor},{" "} {item.room}
+                    {item.building}, {item.floor}, {item.room}
                   </Text>
                   <Text color="gray.500" fontSize="xs">
                     {dayJs(item.created_at).format("DD MMM YYYY, HH:mm ")}
@@ -240,7 +240,13 @@ const HomeScreen: React.FC = () => {
         </Text>
       </HStack>
 
-       <RepairStatusProgress statusKey="all" repairs={repairs} />
+      <Pressable
+        onPress={() =>
+          navigateWithLoading("RepairHistoryScreen", { statusKey: 'all' })
+        }
+      >
+        <RepairStatusProgress statusKey="all" repairs={repairs} />
+      </Pressable>
 
       <Flex direction="row" wrap="wrap" justify="space-between">
         {renderDashboardItem()}
