@@ -114,7 +114,7 @@ const LoginScreen = () => {
             source={require("../../assets/images/logo_full.png")}
             alt="logo"
             size={48}
-            mb={8}
+            mb={4}
           />
 
           <Controller
@@ -209,7 +209,7 @@ const LoginScreen = () => {
         </VStack>
       </KeyboardAvoidingView>
 
-      <Center safeAreaBottom>
+      <Center pb={6} safeAreaBottom>
         <Text color="white" fontSize="xs">
           {t("PROACTIVE")}
         </Text>
