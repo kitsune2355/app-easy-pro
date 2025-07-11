@@ -4,6 +4,7 @@ import {
   FormControl,
   Icon,
   TextArea,
+  Text,
   VStack,
 } from "native-base";
 import React, { useState } from "react";
@@ -37,7 +38,9 @@ const RepairSubmitEditDetailView: React.FC<RepairSubmitEditDetailViewProps> = ({
     <VStack space={4}>
       <FormControl isRequired>
         <FormControl.Label>
-          {t("FORM.REPAIR_SUBMIT.SOLUTION_DESC")}
+          <Text color={colorTheme.colors.text}>
+            {t("FORM.REPAIR_SUBMIT.SOLUTION_DESC")}
+          </Text>
         </FormControl.Label>
         <TextArea
           value={solution}

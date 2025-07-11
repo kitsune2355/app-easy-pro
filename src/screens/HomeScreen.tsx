@@ -78,7 +78,7 @@ const HomeScreen: React.FC = () => {
                 color={st.color}
               />
               <Text
-                color="gray.500"
+                color={colorTheme.colors.text}
                 fontSize="sm"
                 fontWeight="medium"
                 mb="1"
@@ -87,7 +87,7 @@ const HomeScreen: React.FC = () => {
                 {t(`PROCESS.${st.key}`)}
               </Text>
               <Text
-                color="gray.800"
+                color={colorTheme.colors.text}
                 fontSize="2xl"
                 fontWeight="medium"
                 textAlign="center"

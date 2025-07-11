@@ -22,7 +22,7 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
 
   return (
     <VStack space={4}>
-      <Text bold fontSize="md">
+      <Text bold fontSize="md" color={colorTheme.colors.text}>
         🔍 {t("FORM.REPAIR_SUBMIT.VERIFY_INFO")}
       </Text>
       <Text bold color={colorTheme.colors.primary}>
@@ -52,14 +52,18 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
           {t("PROCESSING_DATE")}
         </Text>
         <Text color={colorTheme.colors.text}>
-          {dayJs(`${jobDetails.process_date} ${jobDetails.process_time}`).format("DD MMM YYYY, HH:mm ")}
+          {dayJs(
+            `${jobDetails.process_date} ${jobDetails.process_time}`
+          ).format("DD MMM YYYY, HH:mm ")}
         </Text>
       </HStack>
       <Text bold color={colorTheme.colors.text}>
         {t("FORM.REPAIR_SUBMIT.SOLUTION")}
       </Text>
-      <Box bg="gray.100" p={2} borderRadius="md">
-        <Text>{solution || t("FORM.REPAIR_SUBMIT.NO_SOLUTION")}</Text>
+      <Box bg={colorTheme.colors.border} p={2} borderRadius="md">
+        <Text color={colorTheme.colors.text}>
+          {solution || t("FORM.REPAIR_SUBMIT.NO_SOLUTION")}
+        </Text>
       </Box>
 
       {images.length > 0 && <ImagePreview images={images} />}

@@ -5,12 +5,13 @@ import { useTheme } from "../context/ThemeContext";
 interface ILanguageButtonGroupComponentProps {
   langs: string[];
   value: string;
+  color?: string;
   onPress?(lang: string): void;
 }
 
 export const LanguageButtonGroup: React.FC<
   ILanguageButtonGroupComponentProps
-> = ({ langs, value, onPress }) => {
+> = ({ langs, value, color, onPress }) => {
   const { colorTheme } = useTheme();
   const handlePress = useCallback(
     (lang: string) => {
@@ -26,7 +27,7 @@ export const LanguageButtonGroup: React.FC<
       borderWidth={1}
       borderRadius={4}
       overflow="hidden"
-      borderColor={colorTheme.colors.card}
+      borderColor={colorTheme.colors.border}
       alignItems="center"
     >
       {langs.map((lang, key) => (
@@ -35,15 +36,13 @@ export const LanguageButtonGroup: React.FC<
           flexGrow={1}
           justifyContent="center"
           alignItems="center"
-          backgroundColor={
-            value === lang ? colorTheme.colors.secondary : "transparent"
-          }
+          backgroundColor={value === lang ? color : "transparent"}
           onPress={() => handlePress(lang)}
         >
           <Text
             textTransform="uppercase"
             fontWeight="500"
-            color={value === lang ? "white" : colorTheme.colors.border}
+            color={value === lang ? colorTheme.colors.card : colorTheme.colors.border}
           >
             {lang}
           </Text>

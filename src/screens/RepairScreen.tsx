@@ -212,7 +212,7 @@ const RepairScreen = () => {
       <ScreenWrapper>
         <VStack bg={colorTheme.colors.background}>
           <VStack space={3}>
-            <Text fontSize="md" fontWeight="bold">
+            <Text fontSize="md" fontWeight="bold" color={colorTheme.colors.text}>
               {t("FORM.REPAIR.REPORT_INFO")}
             </Text>
             <VStack
@@ -223,7 +223,7 @@ const RepairScreen = () => {
             >
               <FormControl isRequired isInvalid={!!errors.report_date}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.REPORT_DATE")}</Text>
+                  <Text color={colorTheme.colors.text}>{t("FORM.REPAIR.REPORT_DATE")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -279,7 +279,7 @@ const RepairScreen = () => {
 
               <FormControl isRequired isInvalid={!!errors.report_time}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.REPORT_TIME")}</Text>
+                  <Text color={colorTheme.colors.text}>{t("FORM.REPAIR.REPORT_TIME")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -335,7 +335,7 @@ const RepairScreen = () => {
 
               <FormControl isRequired isInvalid={!!errors.name}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.NAME")}</Text>
+                  <Text color={colorTheme.colors.text}>{t("FORM.REPAIR.NAME")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -363,7 +363,7 @@ const RepairScreen = () => {
 
               <FormControl isRequired isInvalid={!!errors.phone}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.PHONE")}</Text>
+                  <Text color={colorTheme.colors.text}>{t("FORM.REPAIR.PHONE")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -389,7 +389,7 @@ const RepairScreen = () => {
               </FormControl>
             </VStack>
 
-            <Text fontSize="md" fontWeight="bold" mt="5">
+            <Text fontSize="md" fontWeight="bold" mt="5" color={colorTheme.colors.text}>
               {t("FORM.REPAIR.LOCATION_INFO")}
             </Text>
 
@@ -458,7 +458,7 @@ const RepairScreen = () => {
               />
             </VStack>
 
-            <Text fontSize="md" fontWeight="bold" mt="5">
+            <Text fontSize="md" fontWeight="bold" mt="5" color={colorTheme.colors.text}>
               {t("FORM.REPAIR.PROBLEM_DETAILS")}
             </Text>
             <VStack
@@ -469,7 +469,7 @@ const RepairScreen = () => {
             >
               <FormControl isRequired isInvalid={!!errors.desc}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.DESCRIPTION")}</Text>
+                  <Text color={colorTheme.colors.text}>{t("FORM.REPAIR.DESCRIPTION")}</Text>
                 </FormControl.Label>
                 <Controller
                   control={control}
@@ -499,7 +499,7 @@ const RepairScreen = () => {
 
               <FormControl isInvalid={!!errors.image_url}>
                 <FormControl.Label>
-                  <Text>{t("FORM.REPAIR.IMAGE_URL")}</Text>
+                  <Text color={colorTheme.colors.text}>{t("FORM.REPAIR.IMAGE_URL")}</Text>
                 </FormControl.Label>
                 <Button
                   variant="outline"
@@ -561,7 +561,7 @@ const RepairScreen = () => {
               mb="10"
               rounded="2xl"
               bg={colorTheme.colors.primary}
-              _text={{ color: "white" }}
+              _text={{ color: colorTheme.colors.card }}
               onPress={handleSubmit(onSubmit)}
               isDisabled={isSubmitting}
             >

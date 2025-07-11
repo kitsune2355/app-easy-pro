@@ -224,7 +224,7 @@ const RepairSubmitScreen: React.FC = () => {
     <>
       <AppHeader
         title={t("MENU.SUBMIT_REPAIR_REQ")}
-        bgColor={colorTheme.colors.primary}
+        bgColor={colorTheme.colors.main}
         textColor="white"
       />
       <VStack flex={1} p={4} space={2} safeAreaBottom>
@@ -270,15 +270,20 @@ const RepairSubmitScreen: React.FC = () => {
 
           <VStack space={2} p={4}>
             {step > 1 && (
-              <Button variant="outline" onPress={handleBack}>
+              <Button
+                variant="outline"
+                _text={{ color: colorTheme.colors.text, fontWeight: "bold" }}
+                onPress={handleBack}
+              >
                 {t("BTN_CONTROL.PREVIOUS")}
               </Button>
             )}
             {step < 3 ? (
               <Button
                 flexGrow={1}
-                bg={colorTheme.colors.primary}
-                _text={{ color: "white", fontWeight: "bold" }}
+                bg={colorTheme.colors.main}
+                _text={{ color: 'white', fontWeight: "bold" }}
+                isDisabled={!selectedRepairId || !selectedRepairDetails}
                 onPress={handleNext}
               >
                 {t("BTN_CONTROL.NEXT")}
@@ -286,7 +291,7 @@ const RepairSubmitScreen: React.FC = () => {
             ) : (
               <Button
                 bg="emerald.500"
-                _text={{ color: "white", fontWeight: "bold" }}
+                _text={{ color: colorTheme.colors.text, fontWeight: "bold" }}
                 onPress={handleSubmit}
               >
                 {t("SUBMIT_WORK")}

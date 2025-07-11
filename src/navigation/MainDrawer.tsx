@@ -88,10 +88,10 @@ const MainDrawer: React.FC = () => {
             <HStack space={3} alignItems="center">
               <Avatar bgColor={colorTheme.colors.card}></Avatar>
               <VStack>
-                <Text color="white" fontSize="md" fontWeight="bold">
+                <Text color={colorTheme.colors.card} fontSize="md" fontWeight="bold">
                   {userDetail?.user_name} {userDetail?.user_fname}
                 </Text>
-                <Text color="white" fontSize="xs">
+                <Text color={colorTheme.colors.card} fontSize="xs">
                   ตำแหน่ง : {userDetail?.user_department_name}
                 </Text>
               </VStack>
@@ -105,13 +105,13 @@ const MainDrawer: React.FC = () => {
             <Button
               bg={colorTheme.colors.card}
               rounded="full"
-              _text={{ color: "red.500", fontWeight: "bold" }}
+              _text={{ color: colorTheme.colors.primary, fontWeight: "bold" }}
               onPress={handleLogout}
             >
               {t("LOGOUT")}
             </Button>
             <Center>
-              <Text color="white" fontSize="xs">
+              <Text color={colorTheme.colors.card} fontSize="xs">
                 {t("PROACTIVE")}
               </Text>
             </Center>

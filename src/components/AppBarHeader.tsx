@@ -44,7 +44,7 @@ const AppBarHeader: React.FC = () => {
           p="2"
         />
         <Text fontSize="xl" fontWeight="bold" color={colorTheme.colors.text}>
-          {t('APP_BAR.WELCOME')} <Text color={colorTheme.colors.primary}>EasyPro</Text>
+          {t('APP_BAR.WELCOME')} <Text color={colorTheme.colors.main}>EasyPro</Text>
         </Text>
       </HStack>
 

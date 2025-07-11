@@ -231,7 +231,7 @@ const RepairDetailScreen: React.FC = () => {
                     <Button
                       variant="solid"
                       rounded="xl"
-                      size="sm"
+                      size="lg"
                       shadow={1}
                       bg={statusItem.color}
                       _text={{ color: "white", fontWeight: "bold" }}

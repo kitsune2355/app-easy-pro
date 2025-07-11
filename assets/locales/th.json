@@ -105,6 +105,10 @@
       "NO_SOLUTION": "ไม่มีรายละเอียดการแก้ไขปัญหา"
     }
   },
+   "SETTINGS":{
+    "THEME_COLOR": "ธีมสี",
+    "LANGUAGE": "ภาษา"
+  },
   "RES_PERSON": "ข้อมูลผู้ดูแล",
   "RECEIVED_DATE": "วันที่รับเรื่อง",
   "PROCESSING_DATE": "วันที่ดำเนินการ",

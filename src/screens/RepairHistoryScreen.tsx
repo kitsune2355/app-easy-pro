@@ -326,7 +326,7 @@ const RepairHistoryScreen = () => {
       <AppHeader
         title={
           <HStack justifyContent="space-between" alignItems="center">
-            <Text fontSize="lg" fontWeight="bold">
+            <Text fontSize="lg" fontWeight="bold" color={colorTheme.colors.text}>
               {t("MENU.REPAIR_REQ_HISTORY")}
             </Text>
             <SearchBar
@@ -381,7 +381,7 @@ const RepairHistoryScreen = () => {
             >
               <Center
                 py={2}
-                bg={subTab === tab ? colorTheme.colors.primary : "transparent"}
+                bg={subTab === tab ? colorTheme.colors.darkLight : "transparent"}
               >
                 <Text
                   fontSize="sm"

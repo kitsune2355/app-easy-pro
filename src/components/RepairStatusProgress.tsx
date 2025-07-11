@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { FontAwesome } from "react-native-vector-icons";
 import { statusItems } from "../constant/ConstantItem";
 import { IRepair } from "../interfaces/repair.interface";
+import { useTheme } from "../context/ThemeContext";
 
 type StatusKey = "all" | "pending" | "inprogress" | "completed";
 
@@ -49,6 +50,7 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
   repairs,
 }) => {
   const { t } = useTranslation();
+  const { colorTheme } = useTheme();
   const statusItem = getStatusSummary(repairs);
 
   const getValue = (key: keyof typeof statusItem) => {
@@ -112,18 +114,18 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
             size="xs"
             color={statusItem[key].color}
           />
-          <Text fontSize="xs" color="coolGray.700">
+          <Text fontSize="xs" color={colorTheme.colors.text}>
             {t(`PROCESS.${key.toUpperCase()}`)}
           </Text>
         </HStack>
-        <Text fontSize="xs" color="coolGray.700">
+        <Text fontSize="xs" color={colorTheme.colors.text}>
           {rounded(getValue(key))} %
         </Text>
       </HStack>
     );
 
     return (
-      <Box bg="white" p={4} borderRadius="md" shadow={2}>
+      <Box bg={colorTheme.colors.card} p={4} borderRadius="md" shadow={2}>
         <VStack space={1}>
           {["pending", "inprogress", "completed"].map((key) =>
             renderLegendItem(key as StatusKey)

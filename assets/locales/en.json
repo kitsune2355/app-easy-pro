@@ -105,6 +105,10 @@
       "NO_SOLUTION": "No solution"
     }
   },
+  "SETTINGS": {
+    "THEME_COLOR": "Theme Color",
+    "LANGUAGE": "Language"
+  },
   "RES_PERSON": "Responsible Person",
   "RECEIVED_DATE": "Received Date",
   "PROCESSING_DATE": "Processing Date",

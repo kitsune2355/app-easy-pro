@@ -323,7 +323,7 @@ const RepairDetailTechnicianView: React.FC<
                   <Button
                     variant="subtle"
                     colorScheme="emerald"
-                    size={"sm"}
+                    size="xs"
                     onPress={handleSubmit(onProcessDateSubmit)}
                   >
                     {t("COMMON.SAVE")}

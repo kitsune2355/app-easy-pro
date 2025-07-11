@@ -7,9 +7,9 @@ import {
   Text,
   FormControl,
   CheckIcon,
-  Icon
+  Icon,
 } from "native-base";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "../context/ThemeContext";
 
 const Select = ({
@@ -29,12 +29,14 @@ const Select = ({
   error?: string;
   isDisabled?: boolean;
 }) => {
-    const {colorTheme} = useTheme();
+  const { colorTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <FormControl isInvalid={!!error} isDisabled={isDisabled}>
-      <FormControl.Label>{label}</FormControl.Label>
+      <FormControl.Label>
+        <Text color={colorTheme.colors.text}>{label}</Text>
+      </FormControl.Label>
 
       <Pressable onPress={() => !isDisabled && setIsOpen(true)}>
         <Input
@@ -58,9 +60,10 @@ const Select = ({
       <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>
       <Actionsheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Actionsheet.Content>
-
           {options.length === 0 ? (
-            <Box p={4}><Text>No options available.</Text></Box>
+            <Box p={4}>
+              <Text color={colorTheme.colors.text}>No options available.</Text>
+            </Box>
           ) : (
             <FlatList
               data={options}
@@ -72,19 +75,22 @@ const Select = ({
                     setIsOpen(false);
                   }}
                   _text={{
-                    color: value === item.value ? colorTheme.colors.primary : 'black',
-                    fontWeight: value === item.value ? 'bold' : 'normal',
+                    color:
+                      value === item.value
+                        ? colorTheme.colors.success
+                        : "black",
+                    fontWeight: value === item.value ? "bold" : "normal",
                   }}
                   startIcon={
                     value === item.value ? (
-                      <CheckIcon size="4" color={colorTheme.colors.primary} />
+                      <CheckIcon size="4" color={colorTheme.colors.success} />
                     ) : null
                   }
                 >
                   {item.label}
                 </Actionsheet.Item>
               )}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             />
           )}
         </Actionsheet.Content>

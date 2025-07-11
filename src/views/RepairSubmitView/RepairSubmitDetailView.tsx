@@ -46,21 +46,19 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
             placeholder={t("FORM.REPAIR_SUBMIT.SELECT_JOB_ID")}
             value={selectedJobId}
             onChange={(value) => {
-            onSelectJobId(value);
-          }}
+              onSelectJobId(value);
+            }}
             options={repairs
-            .filter(
-              (item) =>
-                item.status === "inprogress" &&
-                item.process_date &&
-                item.process_time
-            )
-            .map((repair) => (
-              {
+              .filter(
+                (item) =>
+                  item.status === "inprogress" &&
+                  item.process_date &&
+                  item.process_time
+              )
+              .map((repair) => ({
                 label: `${repair.id}`,
                 value: repair.id,
-              }
-            ))}
+              }))}
             error={error?.message}
           />
         )}
@@ -77,7 +75,7 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
             <Text
               fontSize="md"
               fontWeight="bold"
-              color={colorTheme.colors.primary}
+              color={colorTheme.colors.main}
             >
               #{jobDetails.id}
             </Text>
@@ -96,19 +94,23 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
               <Text fontSize="xs" color={colorTheme.colors.text}>
                 {t("BUILDING")}
               </Text>
-              <Text>{jobDetails.building}</Text>
+              <Text color={colorTheme.colors.text}>{jobDetails.building}</Text>
             </HStack>
             <HStack justifyContent="space-between">
               <Text fontSize="xs" color={colorTheme.colors.text}>
                 {t("FLOOR")}
               </Text>
-              <Text>{jobDetails.floor || `-`}</Text>
+              <Text color={colorTheme.colors.text}>
+                {jobDetails.floor || `-`}
+              </Text>
             </HStack>
             <HStack justifyContent="space-between">
               <Text fontSize="xs" color={colorTheme.colors.text}>
                 {t("ROOM")}
               </Text>
-              <Text>{jobDetails.room || `-`}</Text>
+              <Text color={colorTheme.colors.text}>
+                {jobDetails.room || `-`}
+              </Text>
             </HStack>
             <HStack justifyContent="space-between">
               <Text fontSize="xs" color={colorTheme.colors.text}>

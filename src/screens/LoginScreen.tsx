@@ -105,6 +105,7 @@ const LoginScreen = () => {
           <LanguageButtonGroup
             langs={["th", "en"]}
             value={lang}
+            color={colorTheme.colors.secondary}
             onPress={handleLangChange}
           />
         </Box>

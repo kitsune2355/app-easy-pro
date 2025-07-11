@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { extendTheme, NativeBaseProvider } from "native-base";
 import { View, ActivityIndicator, Text } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   useFonts,
   Prompt_400Regular,
   Prompt_500Medium,
   Prompt_700Bold,
 } from "@expo-google-fonts/prompt";
-
 import { LinearGradient } from "expo-linear-gradient";
 
 if (__DEV__) {
@@ -41,9 +41,9 @@ const fonts = {
   mono: "Prompt",
 };
 
-// สร้างธีมของ NativeBase
 const lightTheme = extendTheme({
   colors: {
+    main: "#006B9F",
     primary: "#006B9F",
     background: "#f0f0fc",
     card: "#ffffff",
@@ -51,10 +51,13 @@ const lightTheme = extendTheme({
     border: "#e0e0e0",
     notification: "#006B9F",
     secondary: "#9fd7f3",
-    dark: '#194066'
+    dark: "#194066",
+    darkLight: "#194066",
+    success: "#28a745",
+    switch: "#9fd7f3",
   },
-  fontConfig: fontConfig,
-  fonts: fonts,
+  fontConfig,
+  fonts,
   components: {
     Input: {
       baseStyle: {
@@ -91,23 +94,84 @@ const lightTheme = extendTheme({
           backgroundColor: "#ffffff",
         },
       },
-    }
+    },
   },
 });
 
 const darkTheme = extendTheme({
   colors: {
+    main: "#006B9F",
     primary: "#ffffff",
-    background: "#000000",
-    card: "#000000",
+    background: "#121212",
+    card: "#1E1E1E",
     text: "#ffffff",
-    border: "#333333",
+    border: "#444444",
+    notification: "#90CAF9",
+    secondary: "#BBBBBB",
+    dark: "#000",
+    darkLight: "#444444",
+    success: "#28a745",
+    switch: "#90CAF9",
   },
-  fontConfig: fontConfig,
-  fonts: fonts,
+  fontConfig,
+  fonts,
+  components: {
+    Input: {
+      baseStyle: {
+        borderRadius: 10,
+        backgroundColor: "#2C2C2C",
+        color: "#ffffff",
+        placeholderTextColor: "#BBBBBB",
+        _focus: {
+          borderColor: "#90CAF9",
+          backgroundColor: "#2C2C2C",
+        },
+      },
+    },
+    TextArea: {
+      baseStyle: {
+        borderRadius: 10,
+        backgroundColor: "#2C2C2C",
+        color: "#ffffff",
+        placeholderTextColor: "#BBBBBB",
+        _focus: {
+          borderColor: "#90CAF9",
+          backgroundColor: "#2C2C2C",
+        },
+      },
+    },
+    Select: {
+      baseStyle: {
+        borderRadius: 10,
+        backgroundColor: "#2C2C2C",
+        color: "#ffffff",
+        placeholderTextColor: "#BBBBBB",
+        _focus: {
+          borderColor: "#90CAF9",
+          backgroundColor: "#2C2C2C",
+        },
+      },
+      _selectedItem: {
+        bg: "#3A3A3A",
+        _text: {
+          color: "#ffffff",
+        },
+      },
+      _actionSheetContent: {
+        backgroundColor: "#1E1E1E",
+      },
+      _item: {
+        _text: {
+          color: "#ffffff",
+        },
+        _pressed: {
+          bg: "#3A3A3A",
+        },
+      },
+    },
+  },
 });
 
-// Context
 const ThemeContext = createContext({
   colorTheme: lightTheme,
   toggleTheme: () => {},
@@ -115,25 +179,48 @@ const ThemeContext = createContext({
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
-  const toggleTheme = () => setIsDark(!isDark);
-
   const [fontsLoaded] = useFonts({
     Prompt_400Regular,
     Prompt_500Medium,
     Prompt_700Bold,
   });
 
+  // โหลดค่าธีมที่เลือกไว้จาก AsyncStorage
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const value = await AsyncStorage.getItem("@theme_mode");
+        if (value === "dark") {
+          setIsDark(true);
+        }
+      } catch (e) {
+        console.warn("Failed to load theme from storage", e);
+      }
+    };
+    loadTheme();
+  }, []);
+
+  // สลับธีมและบันทึกไว้ใน AsyncStorage
+  const toggleTheme = async () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    try {
+      await AsyncStorage.setItem("@theme_mode", newTheme ? "dark" : "light");
+    } catch (e) {
+      console.warn("Failed to save theme to storage", e);
+    }
+  };
+
   const colorTheme = isDark ? darkTheme : lightTheme;
 
   if (!fontsLoaded) {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff" }}>
-      <ActivityIndicator size="large" color="#006B9F" />
-      <Text style={{ marginTop: 10 }}>กำลังโหลด...</Text>
-    </View>
-  );
-}
-
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff" }}>
+        <ActivityIndicator size="large" color="#006B9F" />
+        <Text style={{ marginTop: 10 }}>กำลังโหลด...</Text>
+      </View>
+    );
+  }
 
   return (
     <ThemeContext.Provider value={{ colorTheme, toggleTheme }}>
@@ -144,4 +231,5 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
+// ใช้ใน component เพื่อเข้าถึงธีม
 export const useTheme = () => useContext(ThemeContext);
