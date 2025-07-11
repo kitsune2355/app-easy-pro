@@ -324,18 +324,13 @@ const RepairHistoryScreen = () => {
   return (
     <VStack flex={1} bg={colorTheme.colors.background}>
       <AppHeader
-        title={
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text fontSize="lg" fontWeight="bold" color={colorTheme.colors.text}>
-              {t("MENU.REPAIR_REQ_HISTORY")}
-            </Text>
-            <SearchBar
-              containerStyle={{ width: "80%" }}
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-              onClearSearch={handleClearSearch}
-            />
-          </HStack>
+        title={t("MENU.REPAIR_REQ_HISTORY")}
+        rightContent={
+          <SearchBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            onClearSearch={handleClearSearch}
+          />
         }
         bgColor={colorTheme.colors.card}
       />
@@ -381,7 +376,9 @@ const RepairHistoryScreen = () => {
             >
               <Center
                 py={2}
-                bg={subTab === tab ? colorTheme.colors.darkLight : "transparent"}
+                bg={
+                  subTab === tab ? colorTheme.colors.darkLight : "transparent"
+                }
               >
                 <Text
                   fontSize="sm"

@@ -56,12 +56,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             />
           )}
         </View>
-        <View flexGrow={1}>
+        <View>
           <Text color={headerTextColor} fontSize="lg" fontWeight="bold">
             {title}
           </Text>
         </View>
-        <View>{rightContent}</View>
+        <View flex={1}>{rightContent}</View>
       </HStack>
     </>
   );

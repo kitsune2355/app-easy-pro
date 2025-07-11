@@ -52,7 +52,7 @@ const lightTheme = extendTheme({
     notification: "#006B9F",
     secondary: "#9fd7f3",
     dark: "#194066",
-    darkLight: "#194066",
+    darkLight: "#006B9F",
     success: "#28a745",
     switch: "#9fd7f3",
   },
