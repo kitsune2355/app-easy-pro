@@ -3,6 +3,7 @@ import repairReducer from './redux/repairSlice';
 import authReducer from './redux/authSlice';
 import areaReducer from './redux/areaSlice';
 import userReducer from './redux/userSlice';
+import notifyReducer from './redux/notifySlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     user: userReducer,
     repair: repairReducer,
     area: areaReducer,
+    notify: notifyReducer,
   }
 });
 

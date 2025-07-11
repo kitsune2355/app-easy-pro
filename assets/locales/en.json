@@ -15,7 +15,8 @@
   },
   "SCREENS": {
     "HOME": "Home",
-    "SETTINGS": "Settings"
+    "SETTINGS": "Settings",
+    "NOTIFICATION": "Notification"
   },
   "MAIN": {
     "REPAIR_SUMMARY": "Repair Summary",

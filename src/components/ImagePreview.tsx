@@ -17,9 +17,10 @@ interface ImagePreviewProps {
 export const BASE_UPLOAD_PATH = `${env.API_ENDPOINT}/uploads/`;
 export const BASE_UPLOAD_PATH_COMPLETED = `${env.API_ENDPOINT}/uploads/completed/`;
 
-export const parseImageUrls = (raw: any) => {
+export const parseImageUrls = (raw: any): string[] => {
   try {
     if (typeof raw === "string") {
+      if (!raw.trim()) return [];
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return parsed;
     } else if (Array.isArray(raw)) {

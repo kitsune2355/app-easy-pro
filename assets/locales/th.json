@@ -15,7 +15,8 @@
   },
   "SCREENS": {
     "HOME": "หน้าหลัก",
-    "SETTINGS": "ตั้งค่า"
+    "SETTINGS": "ตั้งค่า",
+    "NOTIFICATION": "การแจ้งเตือน"
   },
   "MAIN": {
     "REPAIR_SUMMARY": "ภาพรวมงานซ่อม",

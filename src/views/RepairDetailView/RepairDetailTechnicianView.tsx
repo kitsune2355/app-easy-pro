@@ -155,7 +155,7 @@ const RepairDetailTechnicianView: React.FC<
               {t("FORM.REPAIR.PHONE")}
             </Text>
             <Text color={colorTheme.colors.text}>
-              {repairDetail.received_by_tel}
+              {repairDetail.received_by_tel || '-'}
             </Text>
           </VStack>
         </HStack>

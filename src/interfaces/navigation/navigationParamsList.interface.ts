@@ -5,6 +5,7 @@ export type StackParamsList = {
   LoginScreen: undefined;
   MainBottomTab: undefined;
   MainDrawer: undefined;
+  NotificationScreen: undefined;
   RepairScreen: undefined;
   RepairHistoryScreen: {statusKey: string};
   RepairSubmitScreen: {repairId?: string};
