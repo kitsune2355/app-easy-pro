@@ -19,7 +19,7 @@ function AppContent() {
         theme={colorTheme}
         ref={navigationRef}
       >
-        <StatusBar hidden={true} />
+        <StatusBar hidden={false} />
         <MainStack />
       </NavigationContainer>
     </SafeAreaProvider>

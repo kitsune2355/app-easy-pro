@@ -29,7 +29,7 @@ const SplashScreen: React.FC = () => {
 }, []);
 
   return (
-    <Box flex={1} bg={{
+    <Box safeAreaBottom flex={1} bg={{
       linearGradient: {
         colors: ["#006B9F", "#00405f"],
         start: [0, 0],

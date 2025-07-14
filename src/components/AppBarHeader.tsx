@@ -14,12 +14,7 @@ const AppBarHeader: React.FC = () => {
   const navigation = useNavigation<any>();
   const navigateWithLoading = useNavigateWithLoading();
 
-  const { notifications } = useSelector((state: RootState) => state.notify);
-  console.log('notifications', notifications)
-
-  const unreadCount = notifications.filter(
-    (notification) => !notification.is_read
-  ).length;
+  const { unreadCount } = useSelector((state: RootState) => state.notify);
 
   return (
     <HStack

@@ -30,6 +30,7 @@ import RepairStatusProgress, {
 } from "../components/RepairStatusProgress";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { useFocusEffect } from "@react-navigation/native";
+import { fetchNotifications } from "../service/notifyService";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -43,6 +44,7 @@ const HomeScreen: React.FC = () => {
 
   const onFetchAllRepairs = useCallback(() => {
     dispatch(fetchAllRepairs());
+    dispatch(fetchNotifications({ isRead: null }));
   }, [dispatch]);
 
   useFocusEffect(onFetchAllRepairs);

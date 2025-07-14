@@ -33,24 +33,7 @@ const NotificationScreen: React.FC = () => {
   );
 
   const getNotifications = useCallback(async () => {
-    dispatch(setLoading(true));
-    dispatch(setError(null));
-
-    try {
-      const result = await fetchNotifications({
-        isRead: null,
-      });
-
-      if (result.success) {
-        dispatch(setNotifications(result.data));
-      } else {
-        dispatch(setError(result.message || "Failed to fetch notifications."));
-      }
-    } catch (err: any) {
-      dispatch(setError(err.message || "An unexpected error occurred."));
-    } finally {
-      dispatch(setLoading(false));
-    }
+    dispatch(fetchNotifications({ isRead: null }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -58,23 +41,7 @@ const NotificationScreen: React.FC = () => {
   }, [getNotifications]);
 
   const handleMarkAsRead = async (notificationId: number) => {
-    dispatch(setLoading(true));
-    try {
-      const result = await markNotificationAsRead(notificationId);
-      if (result.success) {
-        dispatch(markNotificationAsReadInState(notificationId));
-      } else {
-        dispatch(
-          setError(result.message || "Failed to mark notification as read.")
-        );
-      }
-    } catch (err: any) {
-      dispatch(
-        setError(err.message || "An error occurred while marking as read.")
-      );
-    } finally {
-      dispatch(setLoading(false));
-    }
+    dispatch(markNotificationAsRead(notificationId));
   };
 
   const renderNotificationItem = (notification: INotification) => {
@@ -87,10 +54,9 @@ const NotificationScreen: React.FC = () => {
         onPress={() => {
           !notification.is_read && handleMarkAsRead(notification.id),
             navigateWithLoading("RepairDetailScreen", {
-              repairId: notification.id,
+              repairId: notification.related_id,
             });
         }}
-        disabled={notification.is_read}
       >
         <VStack
           p={4}
@@ -110,7 +76,7 @@ const NotificationScreen: React.FC = () => {
                   : colorTheme.colors.success
               }
             >
-              #{notification.id}
+              #{notification.related_id}
             </Text>
             {!notification.is_read && (
               <Box rounded="full" bg={colorTheme.colors.notification} p={2} />
@@ -123,23 +89,7 @@ const NotificationScreen: React.FC = () => {
                 numberOfLines={2}
                 ellipsizeMode="tail"
               >
-                {notification.title}
-              </Text>
-              <Text
-                color={colorTheme.colors.text}
-                fontSize="sm"
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {notification.desc}
-              </Text>
-              <Text
-                color={colorTheme.colors.text}
-                fontSize="sm"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {notification.building} {notification.floor} {notification.room}
+                {notification.desc}, {notification.building} {notification.floor} {notification.room}
               </Text>
               <Text fontSize="xs" fontWeight="bold" color="gray.500">
                 {dayJs(notification.created_at).fromNow()}

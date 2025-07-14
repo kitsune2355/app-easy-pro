@@ -95,6 +95,7 @@ const LoginScreen = () => {
           end: [1, 1],
         },
       }}
+      safeAreaBottom
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -209,7 +210,7 @@ const LoginScreen = () => {
         </VStack>
       </KeyboardAvoidingView>
 
-      <Center pb={6} safeAreaBottom>
+      <Center safeAreaBottom>
         <Text color="white" fontSize="xs">
           {t("PROACTIVE")}
         </Text>
