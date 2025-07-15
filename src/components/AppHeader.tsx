@@ -25,7 +25,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   const headerTextColor = textColor || colorTheme.colors.text;
   return (
     <>
-      <StatusBar hidden={true} />
+      <StatusBar hidden={false} />
       <HStack
         bg={headerBgColor}
         py={2}

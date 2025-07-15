@@ -65,7 +65,7 @@ const AppBarHeader: React.FC = () => {
               alignSelf="flex-end"
               _text={{
                 fontSize: 10,
-                color: colorTheme.colors.card,
+                color: 'white',
               }}
             >
               {unreadCount}

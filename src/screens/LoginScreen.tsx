@@ -87,7 +87,7 @@ const LoginScreen = () => {
   return (
     <VStack
       flex={1}
-      px={8}
+      p={4}
       bg={{
         linearGradient: {
           colors: ["#006B9F", "#9fd7f3", "#fff", "#fff", "#9fd7f3", "#192f6a"],

@@ -71,28 +71,30 @@ const HomeScreen: React.FC = () => {
               navigateWithLoading("RepairHistoryScreen", { statusKey: st.key })
             }
           >
-            <Center bg={colorTheme.colors.card} rounded="2xl" shadow={2} h="32">
-              <Icon
-                as={Ionicons}
-                name={st.icon}
-                size="8"
-                mb="2"
-                color={st.color}
-              />
-              <Text
-                color={colorTheme.colors.text}
-                fontSize="sm"
-                fontWeight="medium"
-                mb="1"
-                textAlign="center"
-              >
-                {t(`PROCESS.${st.key}`)}
-              </Text>
+            <Center flex={1} bg={colorTheme.colors.card} rounded="2xl" shadow={2} py={2}>
+              <VStack flexGrow={1} alignItems="center">
+                <Icon
+                  as={Ionicons}
+                  name={st.icon}
+                  size="8"
+                  mb="2"
+                  color={st.color}
+                />
+                <Text
+                  color={colorTheme.colors.text}
+                  fontSize="sm"
+                  fontWeight="medium"
+                  textAlign="center"
+                >
+                  {t(`PROCESS.${st.key}`)}
+                </Text>
+              </VStack>
               <Text
                 color={colorTheme.colors.text}
                 fontSize="2xl"
                 fontWeight="medium"
                 textAlign="center"
+               
               >
                 {count}
               </Text>
@@ -217,7 +219,7 @@ const HomeScreen: React.FC = () => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                   >
-                    {item.building}, {item.floor}, {item.room}
+                    {item.building} {item.floor} {item.room}
                   </Text>
                   <Text color="gray.500" fontSize="xs">
                     {dayJs(item.created_at).format("DD MMM YYYY, HH:mm ")}
@@ -244,7 +246,7 @@ const HomeScreen: React.FC = () => {
 
       <Pressable
         onPress={() =>
-          navigateWithLoading("RepairHistoryScreen", { statusKey: 'all' })
+          navigateWithLoading("RepairHistoryScreen", { statusKey: "all" })
         }
       >
         <RepairStatusProgress statusKey="all" repairs={repairs} />

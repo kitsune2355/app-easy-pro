@@ -15,7 +15,7 @@ export const tabRoutes = [
   {
     name: "HOME",
     component: HomeScreen,
-    iconActive: "home",
+    iconActive: "home-sharp",
     iconInactive: "home-outline",
   },
   {
@@ -48,7 +48,8 @@ const MainBottomTab: React.FC = () => {
         tabBarInactiveTintColor: colorTheme.colors.secondary,
         tabBarStyle: {
           backgroundColor: colorTheme.colors.primary,
-          borderRadius: 20,
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
         },
         tabBarShowLabel: false,
         tabBarItemStyle: {
