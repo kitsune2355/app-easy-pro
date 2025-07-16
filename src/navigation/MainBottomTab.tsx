@@ -5,7 +5,6 @@ import HomeScreen from "../screens/HomeScreen";
 import SettingScreen from "../screens/SettingScreen";
 import { useTheme } from "../context/ThemeContext";
 import AppBarHeader from "../components/AppBarHeader";
-import ScreenWrapper from "../components/ScreenWrapper";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 
@@ -30,15 +29,6 @@ const MainBottomTab: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
 
-  // Create stable wrapper components
-  const createWrappedComponent = (Component: React.ComponentType) => {
-    return React.memo(() => (
-      <ScreenWrapper>
-        <Component />
-      </ScreenWrapper>
-    ));
-  };
-
   return (
     <Tab.Navigator
       screenOptions={{
@@ -54,19 +44,18 @@ const MainBottomTab: React.FC = () => {
         tabBarShowLabel: false,
         tabBarItemStyle: {
           borderRadius: 20,
-        }
+        },
       }}
     >
       {tabRoutes.map((route) => (
         <Tab.Screen
           key={route.name}
           name={route.name as keyof BottomTabParamsList}
-          component={createWrappedComponent(route.component)}
+          component={route.component}
           options={{
             title: t(`SCREENS.${route.name}`),
             tabBarIcon: ({ focused, color, size }) => {
               const iconName = focused ? route.iconActive : route.iconInactive;
-
               return (
                 <Ionicons
                   name={iconName as keyof typeof Ionicons.glyphMap}

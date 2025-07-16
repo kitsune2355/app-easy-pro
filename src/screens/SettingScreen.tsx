@@ -15,7 +15,7 @@ const SettingScreen: React.FC = () => {
   };
 
   return (
-    <VStack flexGrow={1} bg={colorTheme.colors.card} p={4} rounded="md">
+    <VStack flexGrow={1} bg={colorTheme.colors.card} m={4} p={4} rounded="md">
       <Text
         fontSize="xl"
         fontWeight="bold"
