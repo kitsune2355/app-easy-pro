@@ -1,12 +1,6 @@
-import { VStack, Text, Box, HStack, Image } from "native-base";
+import { VStack, Text, Box, HStack, Image, Center } from "native-base";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setLoading,
-  setError,
-  setNotifications,
-  markNotificationAsReadInState,
-} from "../redux/notifySlice";
 import { INotification } from "../interfaces/notify.interface";
 import {
   fetchNotifications,
@@ -48,6 +42,7 @@ const NotificationScreen: React.FC = () => {
     const imagesForPreview = parseImageUrls(notification?.image_url).map(
       (path: string) => BASE_UPLOAD_PATH + path.replace(/\\/g, "/")
     );
+
     return (
       <TouchableOpacity
         key={notification.id.toString()}

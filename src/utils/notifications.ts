@@ -16,10 +16,10 @@ export async function registerForPushNotificationsAsync(): Promise<
   }
 
   // Override หรือ mock ค่าของ Device.isDevice
-  // Object.defineProperty(Device, "isDevice", {
-  //   value: true, // หรือ false ตามต้องการ
-  //   writable: true, // ทำให้มันสามารถเปลี่ยนค่าได้
-  // });
+  Object.defineProperty(Device, "isDevice", {
+    value: true, // หรือ false ตามต้องการ
+    writable: true, // ทำให้มันสามารถเปลี่ยนค่าได้
+  });
 
   if (Device.isDevice) {
     const { status: existingStatus } =

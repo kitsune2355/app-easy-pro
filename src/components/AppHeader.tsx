@@ -25,7 +25,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   const headerTextColor = textColor || colorTheme.colors.text;
   return (
     <>
-      <StatusBar hidden={false} />
+      <StatusBar translucent />
       <HStack
         bg={headerBgColor}
         py={2}
@@ -38,23 +38,17 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         safeAreaTop
       >
         <View>
-          {leftContent ?? (
-            <IconButton
-              icon={
-                <Icons
-                  name="arrow-back-ios"
-                  size={24}
-                  color={headerTextColor}
-                />
-              }
-              onPress={() => navigation.goBack()}
-              _pressed={{
-                bg: colorTheme.colors.border,
-                opacity: 0.7,
-              }}
-              borderRadius="full"
-            />
-          )}
+          <IconButton
+            icon={
+              <Icons name="arrow-back-ios" size={24} color={headerTextColor} />
+            }
+            onPress={() => navigation.goBack()}
+            _pressed={{
+              bg: colorTheme.colors.border,
+              opacity: 0.7,
+            }}
+            borderRadius="full"
+          />
         </View>
         <View>
           <Text color={headerTextColor} fontSize="lg" fontWeight="bold">

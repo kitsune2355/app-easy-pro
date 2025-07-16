@@ -13,6 +13,9 @@
   "APP_BAR": {
     "WELCOME": "Welcome to"
   },
+   "USER": {
+    "POSITION": "Position"
+  },
   "SCREENS": {
     "HOME": "Home",
     "SETTINGS": "Settings",

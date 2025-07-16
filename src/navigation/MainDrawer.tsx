@@ -92,7 +92,7 @@ const MainDrawer: React.FC = () => {
                   {userDetail?.user_name} {userDetail?.user_fname}
                 </Text>
                 <Text color={colorTheme.colors.card} fontSize="xs">
-                  ตำแหน่ง : {userDetail?.user_department_name}
+                  {t('USER.POSITION')} : {userDetail?.user_department_name}
                 </Text>
               </VStack>
             </HStack>

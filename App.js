@@ -33,22 +33,10 @@ function AppContent() {
     init();
   }, []);
 
-  useEffect(() => {
-  const subscription = Notifications.addNotificationReceivedListener((notification) => {
-    console.log("📩 ได้รับแจ้งเตือน:", notification);
-  });
-
-  return () => {
-    console.log("🧹 ลบ listener แจ้งเตือนแล้ว");
-    subscription.remove();
-  };
-}, []);
-
-
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={colorTheme} ref={navigationRef}>
-        <StatusBar hidden={false} />
+        <StatusBar translucent />
         <MainStack />
       </NavigationContainer>
     </SafeAreaProvider>

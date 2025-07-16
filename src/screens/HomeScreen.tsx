@@ -42,12 +42,12 @@ const HomeScreen: React.FC = () => {
 
   useDoubleBackExit();
 
-  const onFetchAllRepairs = useCallback(() => {
+  const onFetch = useCallback(() => {
     dispatch(fetchAllRepairs());
     dispatch(fetchNotifications({ isRead: null }));
   }, [dispatch]);
 
-  useFocusEffect(onFetchAllRepairs);
+  useFocusEffect(onFetch);
 
   const renderDashboardItem = () => (
     <>
