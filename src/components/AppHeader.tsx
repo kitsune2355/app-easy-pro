@@ -24,8 +24,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   const headerBgColor = bgColor || colorTheme.colors.card;
   const headerTextColor = textColor || colorTheme.colors.text;
   return (
-    <>
-      <StatusBar translucent />
       <HStack
         bg={headerBgColor}
         py={2}
@@ -57,7 +55,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         </View>
         <View flex={1}>{rightContent}</View>
       </HStack>
-    </>
   );
 };
 

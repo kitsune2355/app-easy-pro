@@ -7,11 +7,10 @@ import {
   Text,
   Image,
   Box,
+  Input,
 } from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  TextInput,
-  StyleSheet,
   Platform,
   KeyboardAvoidingView,
 } from "react-native";
@@ -78,12 +77,6 @@ const LoginScreen = () => {
     setShowPassword((prev) => !prev);
   }, []);
 
-  const getInputStyle = (hasError: boolean) => ({
-    ...styles.input,
-    borderColor: hasError ? "#ef4444" : "#d1d5db",
-    color: colorTheme.colors.text,
-  });
-
   return (
     <VStack
       flex={1}
@@ -110,11 +103,11 @@ const LoginScreen = () => {
             onPress={handleLangChange}
           />
         </Box>
-        <VStack flex={1} justifyContent="center" alignItems="center">
+        <VStack p={4} flex={1} justifyContent="center" alignItems="center">
           <Image
             source={require("../../assets/images/logo_full.png")}
             alt="logo"
-            size={48}
+            size={40}
             mb={4}
           />
 
@@ -126,13 +119,17 @@ const LoginScreen = () => {
               fieldState: { error },
             }) => (
               <FormControl isInvalid={!!error} width="100%" maxWidth={500}>
-                <TextInput
+                <Input
                   placeholder={t("LOGIN.USERNAME")}
                   value={value}
                   onBlur={onBlur}
                   onChangeText={onChange}
-                  style={getInputStyle(!!error)}
-                  placeholderTextColor="#9ca3af"
+                  borderColor={error ? "red.500" : "gray.300"}
+                  color={colorTheme.colors.text}
+                  placeholderTextColor="gray.400"
+                  _focus={{
+                    borderColor: colorTheme.colors.primary,
+                  }}
                 />
                 {error && (
                   <FormControl.ErrorMessage>
@@ -156,30 +153,28 @@ const LoginScreen = () => {
                 width="100%"
                 maxWidth={500}
               >
-                <VStack position="relative">
-                  <TextInput
-                    placeholder={t("LOGIN.PASSWORD")}
-                    secureTextEntry={!showPassword}
-                    value={value}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    style={getInputStyle(!!error)}
-                    placeholderTextColor="#9ca3af"
-                  />
-                  <Pressable
-                    onPress={toggleShowPassword}
-                    position="absolute"
-                    right={3}
-                    top={3}
-                    zIndex={1}
-                  >
-                    <Icons
-                      name={showPassword ? "visibility" : "visibility-off"}
-                      size={24}
-                      color={colorTheme.colors.text}
-                    />
-                  </Pressable>
-                </VStack>
+                <Input
+                  placeholder={t("LOGIN.PASSWORD")}
+                  type={showPassword ? "text" : "password"}
+                  value={value}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  borderColor={error ? "red.500" : "gray.300"}
+                  color={colorTheme.colors.text}
+                  placeholderTextColor="gray.400"
+                  _focus={{
+                    borderColor: colorTheme.colors.primary,
+                  }}
+                  InputRightElement={
+                    <Pressable onPress={toggleShowPassword} mr={3}>
+                      <Icons
+                        name={showPassword ? "visibility" : "visibility-off"}
+                        size={24}
+                        color={colorTheme.colors.text}
+                      />
+                    </Pressable>
+                  }
+                />
                 {error && (
                   <FormControl.ErrorMessage>
                     {error.message}
@@ -201,7 +196,7 @@ const LoginScreen = () => {
             mt="4"
             w="full"
             bg={colorTheme.colors.primary}
-            _text={{ color: "#fff", fontSize: "md", fontWeight: "bold" }}
+            _text={{ color: "#fff", fontWeight: "bold" }}
             isLoading={isLoading}
             onPress={handleSubmit(onSubmit)}
           >
@@ -218,16 +213,5 @@ const LoginScreen = () => {
     </VStack>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    height: 48,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    backgroundColor: "#ffffff",
-  },
-});
 
 export default LoginScreen;

@@ -24,6 +24,7 @@ Notifications.setNotificationHandler({
 
 function AppContent() {
   const { colorTheme } = useTheme();
+  const isDark = colorTheme.colors.background === "#121212";
 
   useEffect(() => {
     const init = async () => {
@@ -36,7 +37,7 @@ function AppContent() {
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={colorTheme} ref={navigationRef}>
-        <StatusBar translucent />
+        <StatusBar translucent backgroundColor="transparent" barStyle={isDark ? 'light-content' : 'dark-content'} />
         <MainStack />
       </NavigationContainer>
     </SafeAreaProvider>
