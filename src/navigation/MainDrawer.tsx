@@ -76,7 +76,7 @@ const MainDrawer: React.FC = () => {
     return (
       <VStack
         flex={1}
-        bg={colorTheme.colors.primary}
+        bg={colorTheme.colors.drawer}
         roundedTopRight={20}
         roundedBottomRight={20}
       >
@@ -86,12 +86,12 @@ const MainDrawer: React.FC = () => {
         >
           <VStack p={4} space={4}>
             <HStack space={3} alignItems="center">
-              <Avatar bgColor={colorTheme.colors.card}></Avatar>
+              <Avatar bgColor={'white'}></Avatar>
               <VStack>
-                <Text color={colorTheme.colors.card} fontSize="md" fontWeight="bold">
+                <Text color={'white'} fontSize="md" fontWeight="bold">
                   {userDetail?.user_name} {userDetail?.user_fname}
                 </Text>
-                <Text color={colorTheme.colors.card} fontSize="xs">
+                <Text color={'white'} fontSize="xs">
                   {t('USER.POSITION')} : {userDetail?.user_department_name}
                 </Text>
               </VStack>
@@ -102,16 +102,16 @@ const MainDrawer: React.FC = () => {
           <DrawerItemList {...props} />
           <Spacer />
           <VStack p={4} space={4} safeAreaBottom>
-            <Button
-              bg={colorTheme.colors.card}
+            {/* <Button
+              bg={'white'}
               rounded="full"
               _text={{ color: colorTheme.colors.primary, fontWeight: "bold" }}
               onPress={handleLogout}
             >
               {t("LOGOUT")}
-            </Button>
+            </Button> */}
             <Center>
-              <Text color={colorTheme.colors.card} fontSize="xs">
+              <Text color={'white'} fontSize="xs">
                 {t("PROACTIVE")}
               </Text>
             </Center>
@@ -126,10 +126,10 @@ const MainDrawer: React.FC = () => {
       screenOptions={{
         headerShown: false,
         drawerStyle: {
-          backgroundColor: colorTheme.colors.primary,
+          backgroundColor: colorTheme.colors.drawer,
         },
-        drawerActiveTintColor: colorTheme.colors.card,
-        drawerInactiveTintColor: colorTheme.colors.card,
+        drawerActiveTintColor: 'white',
+        drawerInactiveTintColor: 'white',
         drawerLabelStyle: {
           fontWeight: "bold",
         },

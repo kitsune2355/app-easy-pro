@@ -34,10 +34,10 @@ const MainBottomTab: React.FC = () => {
       screenOptions={{
         header: () => <AppBarHeader />,
         tabBarHideOnKeyboard: true,
-        tabBarActiveTintColor: colorTheme.colors.card,
+        tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: colorTheme.colors.secondary,
         tabBarStyle: {
-          backgroundColor: colorTheme.colors.primary,
+          backgroundColor: colorTheme.colors.drawer,
           borderTopRightRadius: 20,
           borderTopLeftRadius: 20,
         },

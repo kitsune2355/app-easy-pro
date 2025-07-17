@@ -38,11 +38,11 @@ const SplashScreen: React.FC = () => {
     }}>
       <Center flex={1}>
         <VStack space={8} alignItems="center">
-          <Box bg="white" rounded="full" p={6} shadow={5}>
+          <Box bg="white" rounded="full" p={4} shadow={5}>
             <Image
               source={require("../../assets/images/logo.png")}
               alt="Logo"
-              size={24}
+              size={20}
             />
           </Box>
           <VStack space={2} alignItems="center">
@@ -60,7 +60,7 @@ const SplashScreen: React.FC = () => {
             </Text>
           </VStack>
         </VStack>
-        <Box position="absolute" bottom={10}>
+        <Box position="absolute" bottom={3}>
           <Text fontSize="xs" color="white" opacity={0.6} textAlign="center">
             {t('VERSION')} 1.0.0
           </Text>
