@@ -31,7 +31,7 @@
     "MY_TASKS": "งานของฉัน",
     "ALL": "ทั้งหมด",
     "PENDING": "รอดำเนินการ",
-    "INPROGRESS": "กำลังดำเนินการ",
+    "INPROGRESS": "ดำเนินการ",
     "COMPLETED": "เสร็จสิ้น"
   },
   "MENU": {
@@ -39,6 +39,14 @@
     "REPAIR_REQ_HISTORY": "ประวัติ",
     "SUBMIT_REPAIR_REQ": "ปิดงาน",
     "REPAIR_DESC": "รายละเอียด"
+  },
+  "NOTIFICATION": {
+    "TODAY":"วันนี้",
+    "YESTERDAY":"เมื่อวาน",
+    "LAST_WEEK":"สัปดาห์ที่แล้ว",
+    "LAST_MONTH":"เดือนที่แล้ว",
+    "OLDER":"เก่ากว่านี้",
+    "NO_NOTIFICATIONS":"ไม่มีการแจ้งเตือน"
   },
   "BUILDING": "อาคาร",
   "FLOOR": "ชั้น",

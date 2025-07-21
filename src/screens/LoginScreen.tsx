@@ -10,10 +10,7 @@ import {
   Input,
 } from "native-base";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Platform,
-  KeyboardAvoidingView,
-} from "react-native";
+import { Platform, KeyboardAvoidingView } from "react-native";
 import { useLoginForm } from "../hooks/useLoginForm";
 import { ILoginForm } from "../interfaces/form/loginForm";
 import { Controller } from "react-hook-form";
@@ -43,7 +40,7 @@ const LoginScreen = () => {
   const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const [showPassword, setShowPassword] = useState(false);
   const [lang, setLang] = useState(i18n.language || "th");
-  const { control, handleSubmit, setError, setValue } = useLoginForm();
+  const { control, handleSubmit, setError, setValue, reset } = useLoginForm();
   const { loginUser, isLoading, error, isLoggedIn } = useAuth();
 
   useEffect(() => {
@@ -65,6 +62,7 @@ const LoginScreen = () => {
           username: formValues.username,
           password: hashedPassword,
         });
+        reset();
       } catch (e) {
         setError("username", { message: "ชื่อผู้ใช้งานหรือรหัสผ่านผิด" });
         setValue("password", "");

@@ -40,6 +40,14 @@
     "SUBMIT_REPAIR_REQ": "Submit Repair",
     "REPAIR_DESC": "Detail"
   },
+  "NOTIFICATION": {
+    "TODAY":"Today",
+    "YESTERDAY":"Yesterday",
+    "LAST_WEEK":"Last Week",
+    "LAST_MONTH":"Last month",
+    "OLDER":"Older",
+    "NO_NOTIFICATIONS":"No notifications"
+  },
   "BUILDING": "Building",
   "FLOOR": "Floor",
   "ROOM": "Room",

@@ -10,7 +10,6 @@ import "./src/config/il8n";
 import { LoadingProvider } from "./src/context/LoadingContext";
 import { navigationRef } from "./src/utils/NavigationService";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { registerForPushNotificationsAsync } from "./src/utils/notifications";
 import * as Notifications from "expo-notifications";
 
 // ✅ เพิ่ม Handler นี้เพื่อให้แสดง Notification ตอนแอปเปิดอยู่
@@ -25,14 +24,6 @@ Notifications.setNotificationHandler({
 function AppContent() {
   const { colorTheme } = useTheme();
   const isDark = colorTheme.colors.background === "#121212";
-
-  useEffect(() => {
-    const init = async () => {
-      await registerForPushNotificationsAsync();
-    };
-
-    init();
-  }, []);
 
   return (
     <SafeAreaProvider>

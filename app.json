@@ -23,11 +23,11 @@
     "plugins": [
       "expo-font"
     ],
+    "owner": "hlg_it",
     "extra": {
       "eas": {
-        "projectId": "76784e15-a953-4b7c-85c0-a66e330033e8"
+        "projectId": "1a2144a8-1d98-4987-9d99-fedd46572aa3"
       }
-    },
-    "owner": "pe3ka"
+    }
   }
 }

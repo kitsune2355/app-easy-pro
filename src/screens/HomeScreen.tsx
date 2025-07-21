@@ -9,7 +9,6 @@ import {
   HStack,
   Badge,
   Pressable,
-  Spinner,
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "../context/ThemeContext";
@@ -30,16 +29,16 @@ import RepairStatusProgress, {
   getStatusSummary,
 } from "../components/RepairStatusProgress";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
-import { useFocusEffect } from "@react-navigation/native";
 import { fetchNotifications } from "../service/notifyService";
-import ScreenWrapper from "../components/ScreenWrapper"; // ✅ เพิ่มตรงนี้
+import ScreenWrapper from "../components/ScreenWrapper";
+import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const navigateWithLoading = useNavigateWithLoading();
   const dispatch = useDispatch<AppDispatch>();
-  const { repairs, loading, error } = useSelector((state: any) => state.repair);
+  const { repairs } = useSelector((state: any) => state.repair);
   const statusItem = getStatusSummary(repairs);
 
   useDoubleBackExit();
@@ -54,7 +53,7 @@ const HomeScreen: React.FC = () => {
     ]).finally(() => setRefreshing(false));
   }, [dispatch]);
 
-  useFocusEffect(onRefresh); // ✅ โหลดอัตโนมัติตอนเข้า
+  useFocusEffect(onRefresh);
 
   const renderDashboardItem = () => (
     <>
