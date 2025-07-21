@@ -4,6 +4,8 @@ import { LoginPayload, LoginResponse } from '../service/authService';
 import { login, logout } from '../redux/authSlice';
 import { checkToken } from '../service/authService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { registerForPushNotificationsAsync } from '../utils/notifications';
+import { fetchNotifications } from '../service/notifyService';
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -20,6 +22,8 @@ export const useAuth = () => {
         // บันทึกข้อมูลลง AsyncStorage
         await AsyncStorage.setItem('userToken', userData.token);
         await AsyncStorage.setItem('userInfo', JSON.stringify(userData));
+        await registerForPushNotificationsAsync();
+        await dispatch(fetchNotifications({ isRead: null }))
         
         return { success: true };
       } else {

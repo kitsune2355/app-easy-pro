@@ -33,17 +33,8 @@ const SettingScreen: React.FC = () => {
   };
 
   return (
-    <>
-      <VStack flexGrow={1} bg={colorTheme.colors.card} m={4} p={4} rounded="md">
-        <Text
-          fontSize="xl"
-          fontWeight="bold"
-          color={colorTheme.colors.text}
-          mb={6}
-        >
-          {t("SCREENS.SETTINGS")}
-        </Text>
-
+    <VStack flex={1} space={2} p={4}>
+      <VStack flexGrow={1} bg={colorTheme.colors.card} p={4} rounded="md" shadow='2'>
         {/* ตั้งค่าธีมสี */}
         <HStack alignItems="center" mb={4}>
           <Text fontSize="md" color={colorTheme.colors.text}>
@@ -75,8 +66,9 @@ const SettingScreen: React.FC = () => {
         </HStack>
       </VStack>
 
-      <VStack p={4} space={4} safeAreaBottom>
+      <VStack safeAreaBottom>
         <Button
+          shadow="2"
           bg={colorTheme.colors.card}
           _text={{ color: colorTheme.colors.primary, fontWeight: "bold" }}
           onPress={handleLogout}
@@ -84,7 +76,7 @@ const SettingScreen: React.FC = () => {
           {t("LOGOUT")}
         </Button>
       </VStack>
-    </>
+    </VStack>
   );
 };
 
