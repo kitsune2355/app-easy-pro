@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "996332431137",
+    "project_id": "easyproapp-292c5",
+    "storage_bucket": "easyproapp-292c5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996332431137:android:e68e55eba2a91f5bdec060",
+        "android_client_info": {
+          "package_name": "com.pe3ka.appeasypro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI397nT-hDKxnB5dzn1Xrkz92goJ3Yo5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
