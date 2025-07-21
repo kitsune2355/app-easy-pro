@@ -53,7 +53,7 @@ const RepairHistoryCard = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigateWithLoading = useNavigateWithLoading();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [accepting, setAccepting] = useState(false);
   const { showToast } = useToastMessage();
 

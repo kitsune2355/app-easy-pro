@@ -15,12 +15,11 @@ import {
   FontAwesome,
   MaterialIcons,
 } from "react-native-vector-icons";
-import { dayJs, setDayJsLocale } from "../../config/dayJs";
+import { dayJs } from "../../config/dayJs";
 import { Controller } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
 import { IRepair } from "../../interfaces/repair.interface";
 import { useRepairProcessForm } from "../../hooks/useRepairProcessForm";
-import i18n from "../../config/il8n";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { updateRepairProcessDate } from "../../service/repairService";
 import { useDispatch } from "react-redux";
@@ -56,13 +55,9 @@ const RepairDetailTechnicianView: React.FC<
   } = useRepairProcessForm();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-
-  const currentLanguage = i18n.language;
   const isRequired = watch("process_date") && watch("process_time");
 
   const onStart = useCallback(() => {
-    setDayJsLocale(currentLanguage);
-
     if (
       repairDetail.process_date &&
       repairDetail.process_date !== "0000-00-00"
@@ -78,7 +73,6 @@ const RepairDetailTechnicianView: React.FC<
       setValue("process_time", "");
     }
   }, [
-    currentLanguage,
     repairDetail.process_date,
     repairDetail.process_time,
     setValue,
@@ -232,7 +226,6 @@ const RepairDetailTechnicianView: React.FC<
                             value={value ? dayJs(value).toDate() : new Date()}
                             mode="date"
                             display="default"
-                            locale={currentLanguage}
                             minimumDate={dayJs(repairDetail.received_date)
                               .startOf("day")
                               .toDate()}
@@ -299,7 +292,6 @@ const RepairDetailTechnicianView: React.FC<
                             }
                             mode="time"
                             display="default"
-                            locale={currentLanguage}
                             onChange={(event, selectedTime) => {
                               setShowTimePicker(false);
                               if (selectedTime) {

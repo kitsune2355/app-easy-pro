@@ -31,7 +31,6 @@ import RepairStatusProgress, {
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { fetchNotifications } from "../service/notifyService";
 import ScreenWrapper from "../components/ScreenWrapper";
-import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -40,10 +39,9 @@ const HomeScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { repairs } = useSelector((state: any) => state.repair);
   const statusItem = getStatusSummary(repairs);
+  const [refreshing, setRefreshing] = useState(false);
 
   useDoubleBackExit();
-
-  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -53,7 +51,9 @@ const HomeScreen: React.FC = () => {
     ]).finally(() => setRefreshing(false));
   }, [dispatch]);
 
-  useFocusEffect(onRefresh);
+  useEffect(() => {
+    onRefresh();
+  }, [onRefresh]);
 
   const renderDashboardItem = () => (
     <>

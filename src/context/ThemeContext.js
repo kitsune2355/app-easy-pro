@@ -108,7 +108,7 @@ const darkTheme = extendTheme({
     text: "#ffffff",
     border: "#444444",
     notification: "#90CAF9",
-    secondary: "#1E1E1E",
+    secondary: "#444444",
     dark: "#000",
     darkLight: "#444444",
     success: "#28a745",

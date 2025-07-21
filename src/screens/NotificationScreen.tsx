@@ -15,6 +15,7 @@ import { dayJs } from "../config/dayJs";
 import { BASE_UPLOAD_PATH, parseImageUrls } from "../components/ImagePreview";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { useFocusEffect } from "@react-navigation/native";
+import AppHeader from "../components/AppHeader";
 
 const NotificationScreen: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -204,7 +205,7 @@ const NotificationScreen: React.FC = () => {
 
   return (
     <>
-      {/* <AppHeader title={t("SCREENS.NOTIFICATION")} /> */}
+      <AppHeader title={t("SCREENS.NOTIFICATION")} />
       <ScreenWrapper>
         <VStack space={2}>
           {Object.entries(groupedNotifications).map(([groupTitle, notificationList]) => (
