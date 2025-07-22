@@ -34,6 +34,7 @@ type StatusItem = {
 };
 
 interface IRepairDetailTechnicianViewProps {
+  userRole: 'admin' | 'employer';
   repairDetail: IRepair;
   imagesForPreview: any[];
   statusItem: StatusItem;
@@ -41,7 +42,7 @@ interface IRepairDetailTechnicianViewProps {
 
 const RepairDetailTechnicianView: React.FC<
   IRepairDetailTechnicianViewProps
-> = ({ repairDetail, imagesForPreview, statusItem }) => {
+> = ({ userRole, repairDetail, imagesForPreview, statusItem }) => {
   const { showToast } = useToastMessage();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
@@ -72,11 +73,7 @@ const RepairDetailTechnicianView: React.FC<
     } else {
       setValue("process_time", "");
     }
-  }, [
-    repairDetail.process_date,
-    repairDetail.process_time,
-    setValue,
-  ]);
+  }, [repairDetail.process_date, repairDetail.process_time, setValue]);
 
   useEffect(() => {
     onStart();
@@ -149,7 +146,7 @@ const RepairDetailTechnicianView: React.FC<
               {t("FORM.REPAIR.PHONE")}
             </Text>
             <Text color={colorTheme.colors.text}>
-              {repairDetail.received_by_tel || '-'}
+              {repairDetail.received_by_tel || "-"}
             </Text>
           </VStack>
         </HStack>
@@ -199,6 +196,7 @@ const RepairDetailTechnicianView: React.FC<
                       <>
                         <TouchableOpacity
                           onPress={() => setShowDatePicker(true)}
+                          disabled={userRole !== "admin"}
                         >
                           <Input
                             isReadOnly
@@ -218,6 +216,7 @@ const RepairDetailTechnicianView: React.FC<
                                 color="muted.400"
                               />
                             }
+                            isDisabled={userRole !== "admin"}
                           />
                         </TouchableOpacity>
 
@@ -259,6 +258,7 @@ const RepairDetailTechnicianView: React.FC<
                       <>
                         <TouchableOpacity
                           onPress={() => setShowTimePicker(true)}
+                          disabled={userRole !== "admin"}
                         >
                           <Input
                             isReadOnly
@@ -280,6 +280,7 @@ const RepairDetailTechnicianView: React.FC<
                                 color="muted.400"
                               />
                             }
+                            isDisabled={userRole !== "admin"}
                           />
                         </TouchableOpacity>
 
@@ -311,7 +312,7 @@ const RepairDetailTechnicianView: React.FC<
                   </FormControl.ErrorMessage>
                 </FormControl>
 
-                {isRequired && (
+                {isRequired && userRole === "admin" && (
                   <Button
                     variant="subtle"
                     colorScheme="emerald"

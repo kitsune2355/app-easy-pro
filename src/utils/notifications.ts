@@ -22,7 +22,6 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
     }
 
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log("Expo Push Token:", token);
     try {
       const userInfoString = await AsyncStorage.getItem("userInfo");
       const user = userInfoString ? JSON.parse(userInfoString) : null;
@@ -32,6 +31,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | null
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token, user_id: user.id }),
         });
+        console.log("Expo Push Token:", token, user.id);
       }
     } catch (err) {
       console.error("Error sending token to backend:", err);

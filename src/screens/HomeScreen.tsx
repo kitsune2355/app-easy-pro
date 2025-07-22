@@ -21,7 +21,7 @@ import {
 } from "../constant/ConstantItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllRepairs } from "../service/repairService";
-import { AppDispatch } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useTranslation } from "react-i18next";
 import { dayJs } from "../config/dayJs";
@@ -31,6 +31,7 @@ import RepairStatusProgress, {
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { fetchNotifications } from "../service/notifyService";
 import ScreenWrapper from "../components/ScreenWrapper";
+import { IRepair } from "../interfaces/repair.interface";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ const HomeScreen: React.FC = () => {
   const navigateWithLoading = useNavigateWithLoading();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs } = useSelector((state: any) => state.repair);
+  const { user } = useSelector((state: RootState) => state.auth);
   const statusItem = getStatusSummary(repairs);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -118,36 +120,38 @@ const HomeScreen: React.FC = () => {
       mb="4"
       onPress={() => navigateWithLoading(item.screen as never)}
     >
-      <Box
-        bg={{
-          linearGradient: {
-            colors: gradientcolorTheme[key],
-            start: [0, 0],
-            end: [1, 1],
-          },
-        }}
-        rounded="3xl"
-        shadow={2}
-        p="4"
-        h="32"
-      >
-        <Center flex={1}>
-          <Icon as={Ionicons} name={item.icon} size="12" color="white" />
-          <Text
-            color="white"
-            fontSize="md"
-            mb="1"
-            textAlign="center"
-            fontWeight="bold"
-          >
-            {t(`MENU.${item.title}`)}
-          </Text>
-        </Center>
-      </Box>
+      {item.role.includes(user?.role) && (
+        <Box
+          bg={{
+            linearGradient: {
+              colors: gradientcolorTheme[key],
+              start: [0, 0],
+              end: [1, 1],
+            },
+          }}
+          rounded="3xl"
+          shadow={2}
+          p="4"
+          h="32"
+        >
+          <Center flex={1}>
+            <Icon as={Ionicons} name={item.icon} size="12" color="white" />
+            <Text
+              color="white"
+              fontSize="md"
+              mb="1"
+              textAlign="center"
+              fontWeight="bold"
+            >
+              {t(`MENU.${item.title}`)}
+            </Text>
+          </Center>
+        </Box>
+      )}
     </Pressable>
   );
 
-  const renderActivityAll = () => (
+  const renderActivityAll = (repairs: IRepair[]) => (
     <>
       {repairs.slice(0, 3).map((item, key) => {
         const status = statusItems[item.status as keyof typeof statusItems];
@@ -231,6 +235,17 @@ const HomeScreen: React.FC = () => {
     </>
   );
 
+  const renderMyTasksSection = (title: string, filteredRepairs: IRepair[]) => (
+    <>
+      <HStack space={4} justifyContent="space-between" alignItems="center">
+        <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
+          {title}
+        </Text>
+      </HStack>
+      {renderActivityAll(filteredRepairs)}
+    </>
+  );
+
   return (
     <ScreenWrapper refreshing={refreshing} onRefresh={onRefresh}>
       <VStack space={4}>
@@ -266,13 +281,38 @@ const HomeScreen: React.FC = () => {
           {processItem.map((item, key) => renderProcessItem(item, key))}
         </Flex>
 
-        <HStack space={4} justifyContent="space-between" alignItems="center">
-          <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-            {t("MAIN.RECENT_JOBS")}
-          </Text>
-        </HStack>
+        {repairs.length > 0 && user?.role === "admin" && (
+          <>
+            <HStack
+              space={4}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Text
+                color={colorTheme.colors.text}
+                fontSize="lg"
+                fontWeight="bold"
+              >
+                {t("MAIN.RECENT_JOBS")}
+              </Text>
+            </HStack>
+            {renderActivityAll(repairs)}
+          </>
+        )}
 
-        {renderActivityAll()}
+        {user?.role === "admin" &&
+          repairs.some((item) => item.received_by === user?.id) &&
+          renderMyTasksSection(
+            t("PROCESS.MY_TASKS"),
+            repairs.filter((item) => item.received_by === user?.id)
+          )}
+
+        {user?.role === "employer" &&
+          repairs.some((item) => item.created_by === user?.id) &&
+          renderMyTasksSection(
+            t("PROCESS.MY_TASKS"),
+            repairs.filter((item) => item.created_by === user?.id)
+          )}
       </VStack>
     </ScreenWrapper>
   );

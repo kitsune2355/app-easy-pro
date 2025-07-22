@@ -28,6 +28,8 @@ import RepairDetailTechnicianView from "../views/RepairDetailView/RepairDetailTe
 import { useToastMessage } from "../components/ToastMessage";
 import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSummaryView";
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
+import { useAuth } from "../hooks/useAuth";
+import { fetchUserById } from "../service/userService";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,7 +39,14 @@ const RepairDetailScreen: React.FC = () => {
   const { colorTheme } = useTheme();
   const { showToast } = useToastMessage();
   const { repairId } = route.params as { repairId: string };
+  const { user } = useAuth();
   const [accepting, setAccepting] = useState(false);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(user.id));
+    }
+  }, []);
 
   const { repairDetail, loading, error } = useSelector(
     (state: RootState) => state.repair
@@ -117,7 +126,7 @@ const RepairDetailScreen: React.FC = () => {
             <Skeleton size="10" w="32" />
           </Text>
         </VStack>
-        <Skeleton size="8" rounded="xl" w="full" />
+        {user?.role === "admin" && <Skeleton size="8" rounded="xl" w="full" />}
         {Array.from({ length: 3 }).map((_, key) => (
           <VStack
             key={key}
@@ -192,7 +201,7 @@ const RepairDetailScreen: React.FC = () => {
                   </Text>
                 </VStack>
 
-                {repairDetail.status === "pending" && (
+                {repairDetail.status === "pending" && user?.role === "admin" && (
                   <Button
                     variant="solid"
                     rounded="xl"
@@ -212,6 +221,7 @@ const RepairDetailScreen: React.FC = () => {
                 />
                 {statusItem.text !== "PENDING" && (
                   <RepairDetailTechnicianView
+                    userRole={user?.role}
                     imagesForPreview={imagesForPreview}
                     repairDetail={repairDetail}
                     statusItem={statusItem}

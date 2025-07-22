@@ -58,10 +58,10 @@ const MainDrawer: React.FC = () => {
   const { userDetail } = useSelector((state: any) => state.user);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user.id) {
       dispatch(fetchUserById(user.id));
     }
-  }, []);
+  }, [dispatch]);
 
   const renderDrawerContent = (props: DrawerContentComponentProps) => {
     const handleLogout = async () => {
