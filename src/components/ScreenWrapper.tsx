@@ -4,8 +4,8 @@ import { Platform, RefreshControl } from "react-native";
 
 interface ScreenWrapperProps {
   children: React.ReactNode;
-  onRefresh?: () => void;        
-  refreshing?: boolean;           
+  onRefresh?: () => void;
+  refreshing?: boolean;
 }
 
 const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
@@ -26,6 +26,8 @@ const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           ) : undefined
         }
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
       >
         <VStack p="4" safeAreaBottom>
           {children}

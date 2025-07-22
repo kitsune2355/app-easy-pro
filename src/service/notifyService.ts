@@ -49,15 +49,26 @@ export const markNotificationAsRead = createAsyncThunk<
   number
 >("notifications/markAsRead", async (notificationId, thunkAPI) => {
   try {
+    const userInfoString = await AsyncStorage.getItem("userInfo");
+    const user = userInfoString ? JSON.parse(userInfoString) : null;
+
+    if (!user || !user.id) {
+      throw new Error("User not found");
+    }
+
     const response = await axios.post<IMarkReadResponse>(
       `${env.API_ENDPOINT}/mark_notification_as_read.php`,
-      { notification_id: notificationId },
+      {
+        notification_id: notificationId,
+        user_id: user.id, // ✅ ต้องส่งไปด้วย
+      },
       {
         headers: {
           "Content-Type": "application/json",
         },
       }
     );
+
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue({

@@ -57,7 +57,9 @@ const LoginScreen = () => {
   const onSubmit = useCallback(
     async (formValues: ILoginForm) => {
       try {
+        console.log('username', formValues.username)
         const hashedPassword = generateMd5(formValues.password);
+        console.log('hashedPassword', hashedPassword)
         await loginUser({
           username: formValues.username,
           password: hashedPassword,

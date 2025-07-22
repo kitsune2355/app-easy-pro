@@ -301,10 +301,10 @@ const HomeScreen: React.FC = () => {
         )}
 
         {user?.role === "admin" &&
-          repairs.some((item) => item.received_by === user?.id) &&
+          repairs.some((item) => item.received_by.user_id === user?.id) &&
           renderMyTasksSection(
             t("PROCESS.MY_TASKS"),
-            repairs.filter((item) => item.received_by === user?.id)
+            repairs.filter((item) => item.received_by.user_id === user?.id)
           )}
 
         {user?.role === "employer" &&

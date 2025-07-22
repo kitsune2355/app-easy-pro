@@ -30,6 +30,7 @@ import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSumma
 import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { useAuth } from "../hooks/useAuth";
 import { fetchUserById } from "../service/userService";
+import { markNotificationAsRead } from "../service/notifyService";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -80,6 +81,7 @@ const RepairDetailScreen: React.FC = () => {
   const onFetchRepairsById = useCallback(async () => {
     try {
       await dispatch(fetchRepairById(repairId));
+      await dispatch(markNotificationAsRead(Number(repairId)));
     } catch (err) {
       console.error("Failed to fetch repair details:", err);
     }

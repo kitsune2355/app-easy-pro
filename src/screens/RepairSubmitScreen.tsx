@@ -199,7 +199,8 @@ const RepairSubmitScreen: React.FC = () => {
       if (result.status === "success") {
         showAlertDialog(
           `${t("SUBMIT_WORK")}`,
-          `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`
+          `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`,
+          "success"
         );
         // Reset form state on success
         setStep(1);

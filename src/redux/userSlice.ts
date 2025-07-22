@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IUser } from '../interfaces/user.interface';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IUser } from "../interfaces/user.interface";
 
 interface UserState {
   user: IUser | null;
@@ -18,7 +18,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -59,7 +59,10 @@ const userSlice = createSlice({
       state.user = action.payload;
       state.error = null;
       state.loading = false;
-    }
+    },
+    clearUserDetail: (state) => {
+      state.userDetail = null;
+    },
   },
 });
 
@@ -73,6 +76,7 @@ export const {
   clearError,
   updateUser,
   restoreUser,
+  clearUserDetail,
 } = userSlice.actions;
 
 export default userSlice.reducer;
