@@ -5,10 +5,9 @@ import {
   HStack,
   Image,
   Skeleton,
-  Divider,
   Center,
 } from "native-base";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { INotification } from "../interfaces/notify.interface";
 import {
@@ -22,13 +21,14 @@ import { useTheme } from "../context/ThemeContext";
 import { TouchableOpacity } from "react-native";
 import { dayJs } from "../config/dayJs";
 import { BASE_UPLOAD_PATH, parseImageUrls } from "../components/ImagePreview";
-import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
-import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import AppHeader from "../components/AppHeader";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 const NotificationScreen: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const navigateWithLoading = useNavigateWithLoading();
+  const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
 
@@ -40,11 +40,9 @@ const NotificationScreen: React.FC = () => {
     dispatch(fetchNotifications({ isRead: null }));
   }, [dispatch]);
 
-  useFocusEffect(
-    useCallback(() => {
-      getNotifications();
-    }, [getNotifications])
-  );
+  useEffect(() => {
+    getNotifications();
+  }, [getNotifications]);
 
   const handleMarkAsRead = async (notificationId: number) => {
     dispatch(markNotificationAsRead(notificationId));
@@ -111,10 +109,12 @@ const NotificationScreen: React.FC = () => {
       <TouchableOpacity
         key={notification.id.toString()}
         onPress={() => {
-          !notification.is_read && handleMarkAsRead(notification.id),
-            navigateWithLoading("RepairDetailScreen", {
-              repairId: notification.related_id,
-            });
+          if (!notification.is_read) {
+            handleMarkAsRead(notification.id);
+          }
+          navigation.navigate("RepairDetailScreen", {
+            repairId: notification.related_id.toString(),
+          });
         }}
       >
         <VStack

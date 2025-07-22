@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Pressable } from "react-native";
-import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   VStack,
@@ -19,13 +19,14 @@ import { useTranslation } from "react-i18next";
 import { getBackgroundColor, statusItems } from "../constant/ConstantItem";
 import { dayJs } from "../config/dayJs";
 import SearchBar from "../components/SearchBar";
-import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
-import { fetchAllRepairs, updateRepairStatus } from "../service/repairService";
+import { fetchAllRepairs } from "../service/repairService";
 import { AppDispatch, RootState } from "../store";
 import { useToastMessage } from "../components/ToastMessage";
 import { IRepair } from "../interfaces/repair.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ScreenWrapper from "../components/ScreenWrapper";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 type mainTabType = "ALL" | "MINE";
 type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
@@ -52,7 +53,7 @@ const RepairHistoryCard = ({
   subTab: subTabType;
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigateWithLoading = useNavigateWithLoading();
+  const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const [isOpen, setIsOpen] = useState(true);
   const [accepting, setAccepting] = useState(false);
   const { showToast } = useToastMessage();
@@ -196,7 +197,7 @@ const RepairHistoryCard = ({
               borderColor={statusColor}
               _text={{ color: statusColor, fontWeight: "bold" }}
               onPress={() =>
-                navigateWithLoading("RepairDetailScreen", { repairId: item.id })
+                navigation.navigate("RepairDetailScreen", { repairId: item.id })
               }
             >
               {t("COMMON.MORE_DETAILS")}
@@ -222,7 +223,7 @@ const RepairHistoryCard = ({
                 _text={{ color: "white", fontWeight: "bold" }}
                 isDisabled={item.status === "completed"}
                 onPress={() =>
-                  navigateWithLoading("RepairSubmitScreen", {
+                  navigation.navigate("RepairSubmitScreen", {
                     repairId: item.id,
                   })
                 }

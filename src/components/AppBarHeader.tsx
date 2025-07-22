@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { fetchNotifications } from "../service/notifyService";
 import { fetchUserById } from "../service/userService";
+import { fetchAllRepairs } from "../service/repairService";
 
 interface AppBarHeaderProps {
   title: string;
@@ -22,6 +23,7 @@ const AppBarHeader: React.FC<AppBarHeaderProps> = ({ title }) => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   const getNotifications = useCallback(async () => {
+    await dispatch(fetchAllRepairs());
     dispatch(fetchNotifications({ isRead: null }));
   }, [dispatch]);
 

@@ -28,15 +28,17 @@ import { dayJs } from "../config/dayJs";
 import RepairStatusProgress, {
   getStatusSummary,
 } from "../components/RepairStatusProgress";
-import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { fetchNotifications } from "../service/notifyService";
 import ScreenWrapper from "../components/ScreenWrapper";
 import { IRepair } from "../interfaces/repair.interface";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const navigateWithLoading = useNavigateWithLoading();
+  const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs } = useSelector((state: any) => state.repair);
   const { user } = useSelector((state: RootState) => state.auth);
@@ -71,7 +73,7 @@ const HomeScreen: React.FC = () => {
             width="30%"
             mb="4"
             onPress={() =>
-              navigateWithLoading("RepairHistoryScreen", { statusKey: st.key })
+              navigation.navigate("RepairHistoryScreen", { statusKey: st.key })
             }
           >
             <Center
@@ -118,7 +120,7 @@ const HomeScreen: React.FC = () => {
       key={item.title}
       width="48%"
       mb="4"
-      onPress={() => navigateWithLoading(item.screen as never)}
+      onPress={() => navigation.navigate(item.screen as never)}
     >
       {item.role.includes(user?.role) && (
         <Box
@@ -164,7 +166,7 @@ const HomeScreen: React.FC = () => {
             p="4"
             key={key}
             onPress={() =>
-              navigateWithLoading("RepairDetailScreen", { repairId: item.id })
+              navigation.navigate("RepairDetailScreen", { repairId: item.id })
             }
           >
             <HStack alignItems="flex-start" space={3}>
@@ -264,7 +266,7 @@ const HomeScreen: React.FC = () => {
 
         <Pressable
           onPress={() =>
-            navigateWithLoading("RepairHistoryScreen", { statusKey: "all" })
+            navigation.navigate("RepairHistoryScreen", { statusKey: "all" })
           }
         >
           <RepairStatusProgress statusKey="all" repairs={repairs} />

@@ -27,15 +27,16 @@ import RepairDetailView from "../views/RepairDetailView/RepairDetailView";
 import RepairDetailTechnicianView from "../views/RepairDetailView/RepairDetailTechnicianView";
 import { useToastMessage } from "../components/ToastMessage";
 import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSummaryView";
-import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { useAuth } from "../hooks/useAuth";
 import { fetchUserById } from "../service/userService";
 import { markNotificationAsRead } from "../service/notifyService";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const route = useRoute();
-  const navigateWithLoading = useNavigateWithLoading();
+  const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { showToast } = useToastMessage();
@@ -248,7 +249,7 @@ const RepairDetailScreen: React.FC = () => {
                       bg={statusItem.color}
                       _text={{ color: "white", fontWeight: "bold" }}
                       onPress={() =>
-                        navigateWithLoading("RepairSubmitScreen", {
+                        navigation.navigate("RepairSubmitScreen", {
                           repairId: repairDetail.id,
                         })
                       }
