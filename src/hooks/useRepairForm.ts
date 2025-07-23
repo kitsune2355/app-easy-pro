@@ -25,6 +25,7 @@ export const useRepairForm = () => {
     phone: yup
       .string()
       .required(t(`${invalid}.PHONE`))
+      .length(10, t(`${invalid}.PHONE_LENGTH`))
       .default(""),
     building: yup
       .string()

@@ -98,6 +98,7 @@
         "TIME": "Time is required",
         "NAME": "Name is required",
         "PHONE": "Phone number is required",
+        "PHONE_LENGTH": "Please enter a 10-digit phone number",
         "BUILDING": "Building is required",
         "FLOOR": "Floor is required",
         "ROOM": "Room is required",
