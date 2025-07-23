@@ -166,7 +166,8 @@
     "PLS_SELECT_ID_TO_PROCEED": "กรุณาเลือกหมายเลขซ่อม เพื่อดำเนินการต่อ",
     "PLS_PROVIDE_DETAILS": "กรุณาระบุรายละเอียดวิธีการซ่อมแซม",
     "PLS_SELECT_SERVICE_TYPE": "กรุณาเลือกชนิดของการบริการ",
-    "PLS_SELECT_JOB_TYPE": "กรุณาเลือกประเภทงาน"
+    "PLS_SELECT_JOB_TYPE": "กรุณาเลือกประเภทงาน",
+    "NO_OPTIONS_AVAILABLE": "ไม่มีตัวเลือก"
   },
   "BTN_CONTROL": {
     "NEXT": "ถัดไป",

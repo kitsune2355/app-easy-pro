@@ -11,6 +11,7 @@ import {
 } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "../context/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 interface SelectProps {
   isRequired?: boolean;
@@ -35,6 +36,7 @@ const Select: React.FC<SelectProps> = ({
   isDisabled = false,
   renderOption,
 }) => {
+  const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -68,7 +70,7 @@ const Select: React.FC<SelectProps> = ({
         <Actionsheet.Content>
           {options.length === 0 ? (
             <Box p={4}>
-              <Text color={colorTheme.colors.text}>No options available.</Text>
+              <Text color={colorTheme.colors.text}>{t("ALERT.NO_OPTIONS_AVAILABLE")}</Text>
             </Box>
           ) : (
             <FlatList
