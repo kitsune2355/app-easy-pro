@@ -12,7 +12,7 @@ export interface IRepair {
   problem_detail: string;
   image_url?: File[] | string[];
   created_at?: string;
-  created_by?: string;
+  created_by?: IUser;
   status: string;
   received_date?: string;
   received_by?: IUser;

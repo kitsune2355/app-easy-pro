@@ -59,6 +59,20 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
                 label: `${repair.id}`,
                 value: repair.id,
               }))}
+            renderOption={(option) => {
+              const repair = repairs.find((item) => item.id === option.value);
+              return (
+                <HStack space={4} alignItems="center">
+                  <Text fontWeight="bold">
+                    #{option.label}
+                  </Text>
+                  <VStack>
+                    <Text>{repair?.problem_detail}</Text>
+                    <Text>{repair?.building} {repair?.floor} {repair?.room}</Text>
+                  </VStack>
+                </HStack>
+              );
+            }}
             error={error?.message}
           />
         )}
