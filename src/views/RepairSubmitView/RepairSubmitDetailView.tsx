@@ -8,8 +8,6 @@ import ImagePreview, {
   BASE_UPLOAD_PATH,
   parseImageUrls,
 } from "../../components/ImagePreview";
-import { Controller } from "react-hook-form";
-import { useRepairSubmitForm } from "../../hooks/useRepairSubmitForm";
 import Select from "../../components/Select";
 
 interface RepairSubmitDetailViewProps {
@@ -27,7 +25,6 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const { control } = useRepairSubmitForm();
 
   const imagesForPreview = useMemo(() => {
     return parseImageUrls(jobDetails?.image_url).map(
@@ -37,45 +34,38 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
 
   return (
     <VStack space={4}>
-      <Controller
-        control={control}
-        name="id"
-        render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <Select
-            label={t("FORM.REPAIR_SUBMIT.STEP_LABELS.1")}
-            placeholder={t("FORM.REPAIR_SUBMIT.SELECT_JOB_ID")}
-            value={selectedJobId}
-            onChange={(value) => {
-              onSelectJobId(value);
-            }}
-            options={repairs
-              .filter(
-                (item) =>
-                  item.status === "inprogress" &&
-                  item.process_date &&
-                  item.process_time
-              )
-              .map((repair) => ({
-                label: `${repair.id}`,
-                value: repair.id,
-              }))}
-            renderOption={(option) => {
-              const repair = repairs.find((item) => item.id === option.value);
-              return (
-                <HStack space={4} alignItems="center">
-                  <Text fontWeight="bold">
-                    #{option.label}
-                  </Text>
-                  <VStack>
-                    <Text>{repair?.problem_detail}</Text>
-                    <Text>{repair?.building} {repair?.floor} {repair?.room}</Text>
-                  </VStack>
-                </HStack>
-              );
-            }}
-            error={error?.message}
-          />
-        )}
+      <Select
+        label={t("FORM.REPAIR_SUBMIT.STEP_LABELS.1")}
+        placeholder={t("FORM.REPAIR_SUBMIT.SELECT_JOB_ID")}
+        value={selectedJobId}
+        onChange={(value) => {
+          onSelectJobId(value);
+        }}
+        options={repairs
+          .filter(
+            (item) =>
+              item.status === "inprogress" &&
+              item.process_date &&
+              item.process_time
+          )
+          .map((repair) => ({
+            label: `${repair.id}`,
+            value: repair.id,
+          }))}
+        renderOption={(option) => {
+          const repair = repairs.find((item) => item.id === option.value);
+          return (
+            <HStack space={4} alignItems="center">
+              <Text fontWeight="bold">#{option.label}</Text>
+              <VStack>
+                <Text>{repair?.problem_detail}</Text>
+                <Text>
+                  {repair?.building} {repair?.floor} {repair?.room}
+                </Text>
+              </VStack>
+            </HStack>
+          );
+        }}
       />
       {jobDetails ? (
         <VStack space={4}>
@@ -125,6 +115,13 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
               <Text color={colorTheme.colors.text}>
                 {jobDetails.room || `-`}
               </Text>
+            </HStack>
+            <Divider />
+            <HStack justifyContent="space-between">
+              <Text fontSize="xs" color={colorTheme.colors.text}>
+                {t("FORM.REPAIR.NAME")}
+              </Text>
+              <Text color={colorTheme.colors.text}>{jobDetails.name}</Text>
             </HStack>
             <HStack justifyContent="space-between">
               <Text fontSize="xs" color={colorTheme.colors.text}>

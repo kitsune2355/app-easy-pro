@@ -15,9 +15,9 @@ import { fetchAllRepairs, completeRepair } from "../service/repairService";
 import { IRepair } from "../interfaces/repair.interface";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { RepairSubmitScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAlertDialog } from "../components/AlertDialogComponent";
 import { fetchUserById } from "../service/userService";
+import { useRepairSubmitForm } from "../hooks/useRepairSubmitForm";
 
 const labels = [
   "FORM.REPAIR_SUBMIT.STEP_LABELS.1",
@@ -57,14 +57,18 @@ const RepairSubmitScreen: React.FC = () => {
   const { repairs } = useSelector((state: any) => state.repair);
   const { user } = useSelector((state: RootState) => state.auth);
   const { showAlertDialog, AlertDialogComponent } = useAlertDialog();
+  const form = useRepairSubmitForm();
+  const { getValues, handleSubmit, reset } = form;
+
   const [step, setStep] = useState(1);
   const [images, setImages] = useState<string[]>([]);
-  const [selectedRepairId, setSelectedRepairId] = useState<
-    string | undefined | null
-  >(route ? route.params?.repairId : null);
+  const [selectedRepairId, setSelectedRepairId] = useState<string | null>(
+    route?.params?.repairId ?? null
+  );
   const [selectedRepairDetails, setSelectedRepairDetails] =
     useState<IRepair | null>(null);
-  const [solution, setSolution] = useState<string>("");
+  const [showImagePickerSheet, setShowImagePickerSheet] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onFetchAllRepairs = useCallback(() => {
     dispatch(fetchAllRepairs());
@@ -74,21 +78,25 @@ const RepairSubmitScreen: React.FC = () => {
 
   useEffect(() => {
     if (selectedRepairId) {
-      const foundRepair = repairs.find(
-        (repair: IRepair) => repair.id === selectedRepairId
-      );
-      if (foundRepair) {
-        setSelectedRepairDetails(foundRepair);
-      }
+      const found = repairs.find((r: IRepair) => r.id === selectedRepairId);
+      setSelectedRepairDetails(found ?? null);
     } else {
       setSelectedRepairDetails(null);
     }
-  }, [selectedRepairId, repairs, dispatch]);
+  }, [selectedRepairId, repairs]);
 
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchUserById(user.id));
     }
+  }, []);
+
+  const handleOpenImagePickerSheet = useCallback(() => {
+    setShowImagePickerSheet(true);
+  }, []);
+
+  const handleCloseImagePickerSheet = useCallback(() => {
+    setShowImagePickerSheet(false);
   }, []);
 
   const handleCamera = async () => {
@@ -111,6 +119,7 @@ const RepairSubmitScreen: React.FC = () => {
       const newImages = [...images, uri];
       setImages(newImages);
     }
+    handleCloseImagePickerSheet();
   };
 
   const handleGallery = async () => {
@@ -135,6 +144,7 @@ const RepairSubmitScreen: React.FC = () => {
       const newImages = [...images, ...uris];
       setImages(newImages);
     }
+    handleCloseImagePickerSheet();
   };
 
   const handleRemoveImage = (index: number) => {
@@ -143,22 +153,41 @@ const RepairSubmitScreen: React.FC = () => {
     setImages(newImages);
   };
 
+  // Validate แต่ละ step
   const handleNext = () => {
     if (step === 1 && !selectedRepairId) {
       showAlertDialog(
-        `${t("ALERT.REQ_TXT")}`,
-        `${t("ALERT.PLS_SELECT_ID_TO_PROCEED")}`,
+        t("ALERT.REQ_TXT"),
+        t("ALERT.PLS_SELECT_ID_TO_PROCEED"),
         "warning"
       );
       return;
     }
-    if (step === 2 && !solution.trim()) {
-      showAlertDialog(
-        `${t("ALERT.REQ_TXT")}`,
-        `${t("ALERT.PLS_PROVIDE_DETAILS")}`,
-        "warning"
-      );
-      return;
+    if (step === 2) {
+      if (!getValues("service_type")?.trim()) {
+        showAlertDialog(
+          t("ALERT.REQ_TXT"),
+          t("ALERT.PLS_SELECT_SERVICE_TYPE"),
+          "warning"
+        );
+        return;
+      }
+      if (!getValues("job_type")?.trim()) {
+        showAlertDialog(
+          t("ALERT.REQ_TXT"),
+          t("ALERT.PLS_SELECT_JOB_TYPE"),
+          "warning"
+        );
+        return;
+      }
+      if (!getValues("solution")?.trim()) {
+        showAlertDialog(
+          t("ALERT.REQ_TXT"),
+          t("ALERT.PLS_PROVIDE_DETAILS"),
+          "warning"
+        );
+        return;
+      }
     }
     if (step < 3) setStep(step + 1);
   };
@@ -167,55 +196,46 @@ const RepairSubmitScreen: React.FC = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = async () => {
+  const onSubmit = async (data) => {
+    setIsSubmitting(true); // เริ่ม loading
     if (!selectedRepairId || !selectedRepairDetails) {
       showAlertDialog(
-        `${t("ALERT.ERROR")}`,
-        `${t("ALERT.MISSING_REPAIR_DESC")}`,
+        t("ALERT.ERROR"),
+        t("ALERT.MISSING_REPAIR_DESC"),
         "warning"
       );
+      setIsSubmitting(false); // หยุด loading
       return;
     }
-    if (!solution.trim()) {
-      showAlertDialog(
-        `${t("ALERT.REQ_TXT")}`,
-        `${t("ALERT.PLS_DESC_SOLUTION")}`,
-        "warning"
-      );
-      return;
-    }
-
     try {
       const result = await dispatch(
         completeRepair({
           repair_request_id: selectedRepairId,
-          completed_solution: solution,
+          completed_solution: data.solution,
+          service_type: data.service_type,
+          job_type: data.job_type,
           completed_by: user.id,
           completed_image_urls: images,
         })
       );
-
-      // Check the result of the dispatched action
       if (result.status === "success") {
         showAlertDialog(
-          `${t("SUBMIT_WORK")}`,
-          `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`,
+          t("SUBMIT_WORK"),
+          t("WORK_SUBMISSION.SUCCESS_MESSAGE"),
           "success"
         );
-        // Reset form state on success
         setStep(1);
         setImages([]);
         setSelectedRepairId(null);
         setSelectedRepairDetails(null);
-        setSolution("");
+        reset();
       } else {
-        // Handle error from the completeRepair action
         showAlertDialog("Error", result.message, "error");
       }
     } catch (error: any) {
-      console.error("Submission error:", error);
       showAlertDialog("Error", error.message, "error");
     }
+    setIsSubmitting(false); // หยุด loading ทุกกรณี
   };
 
   return (
@@ -253,15 +273,19 @@ const RepairSubmitScreen: React.FC = () => {
                 onCamera={handleCamera}
                 onGallery={handleGallery}
                 onRemoveImage={handleRemoveImage}
-                solution={solution}
-                onSolutionChange={setSolution}
+                form={form}
+                showImagePickerSheet={showImagePickerSheet}
+                onOpen={handleOpenImagePickerSheet}
+                onClose={handleCloseImagePickerSheet}
               />
             )}
             {step === 3 && (
               <RepairSubmitView
                 images={images}
                 jobDetails={selectedRepairDetails}
-                solution={solution}
+                solution={getValues("solution")}
+                serviceType={getValues("service_type")}
+                jobType={getValues("job_type")}
               />
             )}
           </ScreenWrapper>
@@ -280,7 +304,7 @@ const RepairSubmitScreen: React.FC = () => {
               <Button
                 flexGrow={1}
                 bg={colorTheme.colors.main}
-                _text={{ color: 'white', fontWeight: "bold" }}
+                _text={{ color: "white", fontWeight: "bold" }}
                 isDisabled={!selectedRepairId || !selectedRepairDetails}
                 onPress={handleNext}
               >
@@ -289,8 +313,9 @@ const RepairSubmitScreen: React.FC = () => {
             ) : (
               <Button
                 bg="emerald.500"
-                _text={{ color: 'white', fontWeight: "bold" }}
-                onPress={handleSubmit}
+                _text={{ color: "white", fontWeight: "bold" }}
+                onPress={handleSubmit(onSubmit)}
+                isLoading={isSubmitting}
               >
                 {t("SUBMIT_WORK")}
               </Button>

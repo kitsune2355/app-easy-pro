@@ -60,6 +60,7 @@ const RepairScreen = () => {
     setValue,
     getValues,
     watch,
+    reset,
   } = useRepairForm();
 
   const selectedBuildingId = watch("building");
@@ -150,23 +151,6 @@ const RepairScreen = () => {
           t("FORM.REPAIR.SUBMIT_SUCCESS_TITLE"),
           t("FORM.REPAIR.SUBMIT_SUCCESS_DESC"),
           "success",
-          [
-            {
-              text: t("COMMON.OK"),
-              onPress: () => {
-                setValue("report_date", dayJs().format("YYYY-MM-DD"));
-                setValue("report_time", dayJs().format("HH:mm"));
-                setValue("name", "");
-                setValue("phone", "");
-                setValue("building", "");
-                setValue("floor", "");
-                setValue("room", "");
-                setValue("desc", "");
-                setValue("image_url", []);
-                setImages([]);
-              },
-            },
-          ]
         );
       } else {
         showAlertDialog(
@@ -184,6 +168,7 @@ const RepairScreen = () => {
       );
     } finally {
       setIsSubmitting(false);
+      reset();
     }
   };
 

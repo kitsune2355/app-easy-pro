@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IJobType, IServiceType } from '../interfaces/repair.interface';
 
 interface RepairState {
   repairs: any[];
   repairDetail: any | null;
+  serviceType: IServiceType[] | null;
+  jobType: IJobType[] | null;
   loading: boolean;
   error: string | null;
 }
@@ -10,6 +13,8 @@ interface RepairState {
 const initialState: RepairState = {
   repairs: [],
   repairDetail: null,
+  serviceType: [],
+  jobType: [],
   loading: false,
   error: null,
 };
@@ -30,8 +35,14 @@ const repairSlice = createSlice({
     setError(state, action: PayloadAction<string>) {
       state.error = action.payload;
     },
+    setServiceType(state, action: PayloadAction<any[]>) {
+      state.serviceType = action.payload;
+    },
+    setJobType(state, action: PayloadAction<any[]>) {
+      state.jobType = action.payload;
+    },
   },
 });
 
-export const { setRepairs, setRepairDetail, setLoading, setError } = repairSlice.actions;
+export const { setRepairs, setRepairDetail, setLoading, setError, setServiceType, setJobType } = repairSlice.actions;
 export default repairSlice.reducer;

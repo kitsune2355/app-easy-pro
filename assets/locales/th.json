@@ -98,6 +98,7 @@
         "TIME": "กรุณาเลือกเวลา",
         "NAME": "กรุณากรอกชื่อ",
         "PHONE": "กรุณากรอกเบอร์โทรศัพท์",
+        "PHONE_LENGTH": "กรุณากรอกเบอร์โทร 10 หลัก",
         "BUILDING": "กรุณากรอกชื่ออาคาร",
         "FLOOR": "กรุณากรอกหมายเลขชั้น",
         "ROOM": "กรุณากรอกหมายเลขห้อง",
@@ -113,6 +114,10 @@
       "SELECT_JOB_ID": "กรุณาเลือกหมายเลขงาน",
       "SOLUTION_DESC": "รายละเอียดการแก้ไข",
       "SOLUTION_DESC_PLACEHOLDER": "อธิบายวิธีการแก้ไขปัญหาโดยละเอียด",
+      "SOLUTION_SERVICE_TYPE": "ชนิดของการบริการ",
+      "SOLUTION_SERVICE_TYPE_PLACEHOLDER": "เลือกชนิดของการบริการ",
+      "SOLUTION_JOB_TYPE": "ประเภทงาน",
+      "SOLUTION_JOB_TYPE_PLACEHOLDER": "เลือกประเภทงาน",
       "VERIFY_INFO": "ตรวจสอบข้อมูล",
       "SOLUTION": "วิธีแก้ไขปัญหา",
       "NO_SOLUTION": "ไม่มีรายละเอียดการแก้ไขปัญหา"
@@ -160,7 +165,10 @@
     "ERROR": "ข้อผิดพลาด",
     "MISSING_REPAIR_DESC": "รายละเอียดการซ่อมแซมที่ขาดหายไป โปรดย้อนกลับและเลือกงานซ่อมแซม",
     "PLS_SELECT_ID_TO_PROCEED": "กรุณาเลือกหมายเลขซ่อม เพื่อดำเนินการต่อ",
-    "PLS_PROVIDE_DETAILS": "กรุณาระบุรายละเอียดวิธีการซ่อมแซม"
+    "PLS_PROVIDE_DETAILS": "กรุณาระบุรายละเอียดวิธีการซ่อมแซม",
+    "PLS_SELECT_SERVICE_TYPE": "กรุณาเลือกชนิดของการบริการ",
+    "PLS_SELECT_JOB_TYPE": "กรุณาเลือกประเภทงาน",
+    "NO_OPTIONS_AVAILABLE": "ไม่มีตัวเลือก"
   },
   "BTN_CONTROL": {
     "NEXT": "ถัดไป",

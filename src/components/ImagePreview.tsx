@@ -57,7 +57,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   const ImageContent = (
     <>
       {images.map((uri, index) => (
-        <Box key={index}>
+        <Box key={index} m={1}>
           <TouchableOpacity
             onPress={() => {
               setSelectedIndex(index);
@@ -107,12 +107,12 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   return (
     <Box mt="3">
       {noScroll ? (
-        <HStack space={3} my={2} flexWrap="wrap">
+        <HStack flexWrap="wrap">
           {ImageContent}
         </HStack>
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <HStack space={3} my={2}>
+          <HStack>
             {ImageContent}
           </HStack>
         </ScrollView>

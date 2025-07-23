@@ -10,7 +10,9 @@ export const useRepairSubmitForm = () => {
   const invalid = "FORM.REPAIR.RECIVED.VALIDATION";
 
   const schema: yup.ObjectSchema<IRepairSubmitForm> = yup.object().shape({
-    id: yup.string().notRequired().default(""),
+    service_type: yup.string().required().default(""),
+    job_type: yup.string().required().default(""),
+    solution: yup.string().required().default(""),
   });
 
   return useForm({
