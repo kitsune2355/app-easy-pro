@@ -283,7 +283,7 @@ const HomeScreen: React.FC = () => {
           {processItem.map((item, key) => renderProcessItem(item, key))}
         </Flex>
 
-        {repairs.length > 0 && user?.role === "admin" && (
+        {user?.role === "admin" && repairs.length > 0 && (
           <>
             <HStack
               space={4}
@@ -310,10 +310,10 @@ const HomeScreen: React.FC = () => {
           )}
 
         {user?.role === "employer" &&
-          repairs.some((item) => item.created_by === user?.id) &&
+          repairs.some((item) => item.created_by.user_id === user?.id) &&
           renderMyTasksSection(
-            t("PROCESS.MY_TASKS"),
-            repairs.filter((item) => item.created_by === user?.id)
+            t("PROCESS.MY_REPAIR_REQ"),
+            repairs.filter((item) => item.created_by.user_id === user?.id)
           )}
       </VStack>
     </ScreenWrapper>

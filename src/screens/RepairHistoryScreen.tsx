@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Pressable } from "react-native";
-import { RouteProp, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   VStack,
@@ -337,32 +342,34 @@ const RepairHistoryScreen = () => {
       />
 
       <>
-        <HStack bg={colorTheme.colors.card}>
-          {["ALL", "MINE"].map((tab) => (
-            <Pressable
-              key={tab}
-              onPress={() => setMainTab(tab as typeof mainTab)}
-              style={{ flex: 1 }}
-            >
-              <Center
-                py={2}
-                bg={mainTab === tab ? colorTheme.colors.dark : "transparent"}
-                borderBottomWidth={1}
-                borderBottomColor={colorTheme.colors.border}
+        {user?.role === "admin" && (
+          <HStack bg={colorTheme.colors.card}>
+            {["ALL", "MINE"].map((tab) => (
+              <Pressable
+                key={tab}
+                onPress={() => setMainTab(tab as typeof mainTab)}
+                style={{ flex: 1 }}
               >
-                <Text
-                  fontSize="sm"
-                  fontWeight="bold"
-                  color={mainTab === tab ? "white" : colorTheme.colors.text}
+                <Center
+                  py={2}
+                  bg={mainTab === tab ? colorTheme.colors.dark : "transparent"}
+                  borderBottomWidth={1}
+                  borderBottomColor={colorTheme.colors.border}
                 >
-                  {tab === "ALL"
-                    ? t("PROCESS.ALL_TASKS")
-                    : t("PROCESS.MY_TASKS")}
-                </Text>
-              </Center>
-            </Pressable>
-          ))}
-        </HStack>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="bold"
+                    color={mainTab === tab ? "white" : colorTheme.colors.text}
+                  >
+                    {tab === "ALL"
+                      ? t("PROCESS.ALL_TASKS")
+                      : t("PROCESS.MY_TASKS")}
+                  </Text>
+                </Center>
+              </Pressable>
+            ))}
+          </HStack>
+        )}
 
         <HStack
           bg={colorTheme.colors.card}
