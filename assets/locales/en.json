@@ -29,6 +29,7 @@
   "PROCESS": {
     "ALL_TASKS": "All Tasks",
     "MY_TASKS": "My Tasks",
+    "MY_REPAIR_REQ": "My Repair Request",
     "ALL": "all",
     "PENDING": "pending",
     "INPROGRESS": "in progress",

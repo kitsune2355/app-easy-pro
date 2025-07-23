@@ -21,29 +21,31 @@ import {
 } from "../constant/ConstantItem";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllRepairs } from "../service/repairService";
-import { AppDispatch } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { useDoubleBackExit } from "../hooks/useDoubleBackExit";
 import { useTranslation } from "react-i18next";
 import { dayJs } from "../config/dayJs";
 import RepairStatusProgress, {
   getStatusSummary,
 } from "../components/RepairStatusProgress";
-import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
 import { fetchNotifications } from "../service/notifyService";
 import ScreenWrapper from "../components/ScreenWrapper";
-import { useFocusEffect } from "@react-navigation/native";
+import { IRepair } from "../interfaces/repair.interface";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
-  const navigateWithLoading = useNavigateWithLoading();
+  const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const dispatch = useDispatch<AppDispatch>();
   const { repairs } = useSelector((state: any) => state.repair);
+  const { user } = useSelector((state: RootState) => state.auth);
   const statusItem = getStatusSummary(repairs);
+  const [refreshing, setRefreshing] = useState(false);
 
   useDoubleBackExit();
-
-  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -53,7 +55,9 @@ const HomeScreen: React.FC = () => {
     ]).finally(() => setRefreshing(false));
   }, [dispatch]);
 
-  useFocusEffect(onRefresh);
+  useEffect(() => {
+    onRefresh();
+  }, [onRefresh]);
 
   const renderDashboardItem = () => (
     <>
@@ -69,7 +73,7 @@ const HomeScreen: React.FC = () => {
             width="30%"
             mb="4"
             onPress={() =>
-              navigateWithLoading("RepairHistoryScreen", { statusKey: st.key })
+              navigation.navigate("RepairHistoryScreen", { statusKey: st.key })
             }
           >
             <Center
@@ -116,38 +120,40 @@ const HomeScreen: React.FC = () => {
       key={item.title}
       width="48%"
       mb="4"
-      onPress={() => navigateWithLoading(item.screen as never)}
+      onPress={() => navigation.navigate(item.screen as never)}
     >
-      <Box
-        bg={{
-          linearGradient: {
-            colors: gradientcolorTheme[key],
-            start: [0, 0],
-            end: [1, 1],
-          },
-        }}
-        rounded="3xl"
-        shadow={2}
-        p="4"
-        h="32"
-      >
-        <Center flex={1}>
-          <Icon as={Ionicons} name={item.icon} size="12" color="white" />
-          <Text
-            color="white"
-            fontSize="md"
-            mb="1"
-            textAlign="center"
-            fontWeight="bold"
-          >
-            {t(`MENU.${item.title}`)}
-          </Text>
-        </Center>
-      </Box>
+      {item.role.includes(user?.role) && (
+        <Box
+          bg={{
+            linearGradient: {
+              colors: gradientcolorTheme[key],
+              start: [0, 0],
+              end: [1, 1],
+            },
+          }}
+          rounded="3xl"
+          shadow={2}
+          p="4"
+          h="32"
+        >
+          <Center flex={1}>
+            <Icon as={Ionicons} name={item.icon} size="12" color="white" />
+            <Text
+              color="white"
+              fontSize="md"
+              mb="1"
+              textAlign="center"
+              fontWeight="bold"
+            >
+              {t(`MENU.${item.title}`)}
+            </Text>
+          </Center>
+        </Box>
+      )}
     </Pressable>
   );
 
-  const renderActivityAll = () => (
+  const renderActivityAll = (repairs: IRepair[]) => (
     <>
       {repairs.slice(0, 3).map((item, key) => {
         const status = statusItems[item.status as keyof typeof statusItems];
@@ -160,7 +166,7 @@ const HomeScreen: React.FC = () => {
             p="4"
             key={key}
             onPress={() =>
-              navigateWithLoading("RepairDetailScreen", { repairId: item.id })
+              navigation.navigate("RepairDetailScreen", { repairId: item.id })
             }
           >
             <HStack alignItems="flex-start" space={3}>
@@ -231,6 +237,17 @@ const HomeScreen: React.FC = () => {
     </>
   );
 
+  const renderMyTasksSection = (title: string, filteredRepairs: IRepair[]) => (
+    <>
+      <HStack space={4} justifyContent="space-between" alignItems="center">
+        <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
+          {title}
+        </Text>
+      </HStack>
+      {renderActivityAll(filteredRepairs)}
+    </>
+  );
+
   return (
     <ScreenWrapper refreshing={refreshing} onRefresh={onRefresh}>
       <VStack space={4}>
@@ -249,7 +266,7 @@ const HomeScreen: React.FC = () => {
 
         <Pressable
           onPress={() =>
-            navigateWithLoading("RepairHistoryScreen", { statusKey: "all" })
+            navigation.navigate("RepairHistoryScreen", { statusKey: "all" })
           }
         >
           <RepairStatusProgress statusKey="all" repairs={repairs} />
@@ -266,13 +283,38 @@ const HomeScreen: React.FC = () => {
           {processItem.map((item, key) => renderProcessItem(item, key))}
         </Flex>
 
-        <HStack space={4} justifyContent="space-between" alignItems="center">
-          <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
-            {t("MAIN.RECENT_JOBS")}
-          </Text>
-        </HStack>
+        {user?.role === "admin" && repairs.length > 0 && (
+          <>
+            <HStack
+              space={4}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Text
+                color={colorTheme.colors.text}
+                fontSize="lg"
+                fontWeight="bold"
+              >
+                {t("MAIN.RECENT_JOBS")}
+              </Text>
+            </HStack>
+            {renderActivityAll(repairs)}
+          </>
+        )}
 
-        {renderActivityAll()}
+        {user?.role === "admin" &&
+          repairs.some((item) => item.received_by.user_id === user?.id) &&
+          renderMyTasksSection(
+            t("PROCESS.MY_TASKS"),
+            repairs.filter((item) => item.received_by.user_id === user?.id)
+          )}
+
+        {user?.role === "employer" &&
+          repairs.some((item) => item.created_by.user_id === user?.id) &&
+          renderMyTasksSection(
+            t("PROCESS.MY_REPAIR_REQ"),
+            repairs.filter((item) => item.created_by.user_id === user?.id)
+          )}
       </VStack>
     </ScreenWrapper>
   );

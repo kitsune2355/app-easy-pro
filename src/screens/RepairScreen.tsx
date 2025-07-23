@@ -21,7 +21,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRepairForm } from "../hooks/useRepairForm";
 import { IRepairForm } from "../interfaces/form/repairForm";
 import { Controller } from "react-hook-form";
-import { dayJs, setDayJsLocale } from "../config/dayJs";
+import { dayJs } from "../config/dayJs";
 import * as ImagePicker from "expo-image-picker";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { fetchAllAreas, submitRepairForm } from "../service/repairService";
@@ -37,7 +37,7 @@ import { useAlertDialog } from "../components/AlertDialogComponent";
 import Select from "../components/Select";
 
 const RepairScreen = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { showAlertDialog, AlertDialogComponent } = useAlertDialog();
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +61,6 @@ const RepairScreen = () => {
     getValues,
     watch,
   } = useRepairForm();
-  const currentLanguage = i18n.language;
 
   const selectedBuildingId = watch("building");
   const selectedFloorId = watch("floor");
@@ -79,8 +78,6 @@ const RepairScreen = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setDayJsLocale(currentLanguage);
-
     if (!getValues("report_date")) {
       setValue("report_date", dayJs().format("YYYY-MM-DD"));
     }
@@ -90,7 +87,7 @@ const RepairScreen = () => {
     if (!getValues("image_url")) {
       setValue("image_url", []);
     }
-  }, [setValue, getValues, currentLanguage]);
+  }, [setValue, getValues]);
 
   const handleCamera = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
@@ -256,7 +253,6 @@ const RepairScreen = () => {
                           value={date}
                           mode="date"
                           display="default"
-                          locale={currentLanguage}
                           onChange={(event, selectedDate) => {
                             setShowDatePicker(false);
                             if (selectedDate) {
@@ -311,7 +307,6 @@ const RepairScreen = () => {
                           mode="time"
                           is24Hour={true}
                           display="default"
-                          locale={currentLanguage}
                           onChange={(event, selectedTime) => {
                             setShowTimePicker(false);
                             if (selectedTime) {

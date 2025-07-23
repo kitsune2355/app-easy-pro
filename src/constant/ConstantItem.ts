@@ -56,16 +56,19 @@ export const processItem = [
     title: "REPAIR_REQ",
     icon: "build",
     screen: "RepairScreen",
+    role: ["admin","employer"],
   },
   {
     title: "REPAIR_REQ_HISTORY",
     icon: "time",
     screen: "RepairHistoryScreen",
+    role: ["admin","employer"],
   },
   {
     title: "SUBMIT_REPAIR_REQ",
     icon: "checkmark-circle",
     screen: "RepairSubmitScreen",
+    role: ["admin"],
   },
 ];
 

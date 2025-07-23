@@ -9,6 +9,7 @@ import { registerForPushNotificationsAsync } from "../utils/notifications";
 import { fetchNotifications } from "../service/notifyService";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
+import { fetchAllRepairs } from "../service/repairService";
 
 type SplashScreenNavigationProp = StackNavigationProp<
   StackParamsList,
@@ -27,6 +28,7 @@ const SplashScreen: React.FC = () => {
     if (loggedIn) {
       try {
         await registerForPushNotificationsAsync();
+        await dispatch(fetchAllRepairs());
         await dispatch(fetchNotifications({ isRead: null }))
       } catch (err) {
         console.log("❌ เกิดข้อผิดพลาดขณะ register push notification:", err);

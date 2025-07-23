@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store";
 import { fetchUserById } from "../service/userService";
+import { clearUserDetail } from "../redux/userSlice";
 
 const Drawer = createDrawerNavigator<DrawerParamsList>();
 
@@ -58,15 +59,16 @@ const MainDrawer: React.FC = () => {
   const { userDetail } = useSelector((state: any) => state.user);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user && user.id) {
       dispatch(fetchUserById(user.id));
     }
-  }, []);
+  }, [dispatch, user]);
 
   const renderDrawerContent = (props: DrawerContentComponentProps) => {
     const handleLogout = async () => {
       try {
         await logoutUser();
+        dispatch(clearUserDetail());
         props.navigation.navigate("LoginScreen");
       } catch (error) {
         console.error("Logout error:", error);
@@ -86,13 +88,19 @@ const MainDrawer: React.FC = () => {
         >
           <VStack p={4} space={4}>
             <HStack space={3} alignItems="center">
-              <Avatar bgColor={'white'}></Avatar>
+              <Avatar bgColor={"white"}></Avatar>
               <VStack>
-                <Text color={'white'} fontSize="md" fontWeight="bold">
-                  {userDetail?.user_name} {userDetail?.user_fname}
+                <Text color={"white"} fontSize="md" fontWeight="bold">
+                  {userDetail
+                    ? `${userDetail.user_name} ${userDetail.user_fname}`
+                    : ""}
                 </Text>
-                <Text color={'white'} fontSize="xs">
-                  {t('USER.POSITION')} : {userDetail?.user_department_name}
+                <Text color={"white"} fontSize="xs">
+                  {userDetail
+                    ? `${t("USER.POSITION")} : ${
+                        userDetail.user_department_name
+                      }`
+                    : ""}
                 </Text>
               </VStack>
             </HStack>
@@ -111,7 +119,7 @@ const MainDrawer: React.FC = () => {
               {t("LOGOUT")}
             </Button> */}
             <Center>
-              <Text color={'white'} fontSize="xs">
+              <Text color={"white"} fontSize="xs">
                 {t("PROACTIVE")}
               </Text>
             </Center>
@@ -128,8 +136,8 @@ const MainDrawer: React.FC = () => {
         drawerStyle: {
           backgroundColor: colorTheme.colors.drawer,
         },
-        drawerActiveTintColor: 'white',
-        drawerInactiveTintColor: 'white',
+        drawerActiveTintColor: "white",
+        drawerInactiveTintColor: "white",
         drawerLabelStyle: {
           fontWeight: "bold",
         },

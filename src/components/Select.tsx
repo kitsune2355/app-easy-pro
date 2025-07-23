@@ -20,6 +20,7 @@ const Select = ({
   onChange,
   error,
   isDisabled = false,
+  renderOption,
 }: {
   label: string;
   placeholder: string;
@@ -28,6 +29,7 @@ const Select = ({
   onChange: (val: string) => void;
   error?: string;
   isDisabled?: boolean;
+  renderOption?: (option: { label: string; value: string }) => React.ReactNode;
 }) => {
   const { colorTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -70,6 +72,7 @@ const Select = ({
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <Actionsheet.Item
+                  w="full"
                   onPress={() => {
                     onChange(item.value);
                     setIsOpen(false);
@@ -78,7 +81,7 @@ const Select = ({
                     color:
                       value === item.value
                         ? colorTheme.colors.success
-                        : "black",
+                        : colorTheme.colors.text,
                     fontWeight: value === item.value ? "bold" : "normal",
                   }}
                   startIcon={
@@ -87,7 +90,7 @@ const Select = ({
                     ) : null
                   }
                 >
-                  {item.label}
+                  {renderOption ? renderOption(item) : item.label}
                 </Actionsheet.Item>
               )}
               style={{ width: "100%" }}

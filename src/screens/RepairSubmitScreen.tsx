@@ -10,13 +10,14 @@ import RepairSubmitDetailView from "../views/RepairSubmitView/RepairSubmitDetail
 import RepairSubmitEditDetailView from "../views/RepairSubmitView/RepairSubmitEditDetailView";
 import RepairSubmitView from "../views/RepairSubmitView/RepairSubmitView";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { fetchAllRepairs, completeRepair } from "../service/repairService";
 import { IRepair } from "../interfaces/repair.interface";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { RepairSubmitScreenRouteProp } from "../interfaces/navigation/navigationParamsList.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAlertDialog } from "../components/AlertDialogComponent";
+import { fetchUserById } from "../service/userService";
 
 const labels = [
   "FORM.REPAIR_SUBMIT.STEP_LABELS.1",
@@ -54,6 +55,7 @@ const RepairSubmitScreen: React.FC = () => {
   const { colorTheme } = useTheme();
   const route = useRoute<RepairSubmitScreenRouteProp>();
   const { repairs } = useSelector((state: any) => state.repair);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { showAlertDialog, AlertDialogComponent } = useAlertDialog();
   const [step, setStep] = useState(1);
   const [images, setImages] = useState<string[]>([]);
@@ -82,6 +84,12 @@ const RepairSubmitScreen: React.FC = () => {
       setSelectedRepairDetails(null);
     }
   }, [selectedRepairId, repairs, dispatch]);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(user.id));
+    }
+  }, []);
 
   const handleCamera = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
@@ -178,17 +186,6 @@ const RepairSubmitScreen: React.FC = () => {
     }
 
     try {
-      const userInfoString = await AsyncStorage.getItem("userInfo");
-      const user = userInfoString ? JSON.parse(userInfoString) : null;
-
-      if (!user || !user.id) {
-        showAlertDialog(
-          "Error",
-          "User information not found. Please log in again."
-        );
-        return;
-      }
-
       const result = await dispatch(
         completeRepair({
           repair_request_id: selectedRepairId,
@@ -202,7 +199,8 @@ const RepairSubmitScreen: React.FC = () => {
       if (result.status === "success") {
         showAlertDialog(
           `${t("SUBMIT_WORK")}`,
-          `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`
+          `${t("WORK_SUBMISSION.SUCCESS_MESSAGE")}`,
+          "success"
         );
         // Reset form state on success
         setStep(1);

@@ -7,14 +7,25 @@ import {
 } from "../redux/repairSlice";
 import { AppDispatch } from "../store";
 import { env } from "../config/environment";
-import { ICompleteRepairForm, IRepairForm } from "../interfaces/form/repairForm";
+import {
+  ICompleteRepairForm,
+  IRepairForm,
+} from "../interfaces/form/repairForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAreaStructure } from "../redux/areaSlice";
 
 export const fetchAllRepairs = () => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.get(`${env.API_ENDPOINT}/get_all_repair.php`);
+    const userInfoString = await AsyncStorage.getItem("userInfo");
+    const user = userInfoString ? JSON.parse(userInfoString) : null;
+
+    if (!user || !user.id) {
+      throw new Error("User information not found");
+    }
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_repair.php`, {
+      params: { user_id: user.id },
+    });
     dispatch(setRepairs(response.data.data));
   } catch (error) {
     dispatch(setError("Failed to fetch repairs"));
@@ -177,7 +188,8 @@ export const updateRepairStatus =
   };
 
 export const updateRepairProcessDate =
-  (id: string, processDate: string, processTime: string) => async (dispatch: AppDispatch) => {
+  (id: string, processDate: string, processTime: string) =>
+  async (dispatch: AppDispatch) => {
     dispatch(setLoading(true));
 
     try {
@@ -212,7 +224,6 @@ export const updateRepairProcessDate =
       dispatch(setLoading(false));
     }
   };
-
 
 export const completeRepair =
   (form: ICompleteRepairForm) => async (dispatch: AppDispatch) => {

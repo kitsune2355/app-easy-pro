@@ -13,7 +13,7 @@ export interface LoginResponse {
   tel: string;
   position: string;
   department: string;
-  role: string;
+  role: 'admin' | 'employer';
   token: string;
   verify: string;
   status: 'success';

@@ -27,17 +27,28 @@ import RepairDetailView from "../views/RepairDetailView/RepairDetailView";
 import RepairDetailTechnicianView from "../views/RepairDetailView/RepairDetailTechnicianView";
 import { useToastMessage } from "../components/ToastMessage";
 import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSummaryView";
-import { useNavigateWithLoading } from "../hooks/useNavigateWithLoading";
+import { useAuth } from "../hooks/useAuth";
+import { fetchUserById } from "../service/userService";
+import { markNotificationAsRead } from "../service/notifyService";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const route = useRoute();
-  const navigateWithLoading = useNavigateWithLoading();
+  const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { showToast } = useToastMessage();
   const { repairId } = route.params as { repairId: string };
+  const { user } = useAuth();
   const [accepting, setAccepting] = useState(false);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(user.id));
+    }
+  }, []);
 
   const { repairDetail, loading, error } = useSelector(
     (state: RootState) => state.repair
@@ -71,6 +82,7 @@ const RepairDetailScreen: React.FC = () => {
   const onFetchRepairsById = useCallback(async () => {
     try {
       await dispatch(fetchRepairById(repairId));
+      await dispatch(markNotificationAsRead(Number(repairId)));
     } catch (err) {
       console.error("Failed to fetch repair details:", err);
     }
@@ -117,7 +129,7 @@ const RepairDetailScreen: React.FC = () => {
             <Skeleton size="10" w="32" />
           </Text>
         </VStack>
-        <Skeleton size="8" rounded="xl" w="full" />
+        {user?.role === "admin" && <Skeleton size="8" rounded="xl" w="full" />}
         {Array.from({ length: 3 }).map((_, key) => (
           <VStack
             key={key}
@@ -192,7 +204,7 @@ const RepairDetailScreen: React.FC = () => {
                   </Text>
                 </VStack>
 
-                {repairDetail.status === "pending" && (
+                {repairDetail.status === "pending" && user?.role === "admin" && (
                   <Button
                     variant="solid"
                     rounded="xl"
@@ -212,6 +224,7 @@ const RepairDetailScreen: React.FC = () => {
                 />
                 {statusItem.text !== "PENDING" && (
                   <RepairDetailTechnicianView
+                    userRole={user?.role}
                     imagesForPreview={imagesForPreview}
                     repairDetail={repairDetail}
                     statusItem={statusItem}
@@ -236,7 +249,7 @@ const RepairDetailScreen: React.FC = () => {
                       bg={statusItem.color}
                       _text={{ color: "white", fontWeight: "bold" }}
                       onPress={() =>
-                        navigateWithLoading("RepairSubmitScreen", {
+                        navigation.navigate("RepairSubmitScreen", {
                           repairId: repairDetail.id,
                         })
                       }

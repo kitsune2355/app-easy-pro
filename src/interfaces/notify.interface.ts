@@ -10,13 +10,14 @@ export interface INotification {
   related_id: number | null;
   is_read: boolean;
   image_url?: string;
+  created_by?: string;
   created_at: string;
 }
 
 export interface IFetchNotificationsResponse {
   success: boolean;
   data: INotification[];
-  message?: string;
+  unreadCount: number;
 }
 
 export interface IMarkReadResponse {

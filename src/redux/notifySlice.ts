@@ -2,6 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { INotification } from '../interfaces/notify.interface';
 import { fetchNotifications, markNotificationAsRead } from '../service/notifyService';
 
+interface FetchNotificationsResponse {
+  data: INotification[];
+  unreadCount: number;
+}
+
 export interface INotifyState {
   notifications: INotification[];
   loading: boolean;
@@ -20,9 +25,15 @@ const notifySlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
-    setNotifications: (state, action: PayloadAction<INotification[]>) => {
-      state.notifications = action.payload;
-      state.unreadCount = action.payload.filter((n) => !n.is_read).length;
+    setNotifications: (state, action: PayloadAction<FetchNotificationsResponse>) => {
+      const userId = localStorage.getItem('user_id');
+
+      const filtered = action.payload.data.filter(
+        (noti) => noti.created_by !== userId
+      );
+
+      state.notifications = filtered;
+      state.unreadCount = filtered.filter((n) => !n.is_read).length;
       state.error = null;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
@@ -33,10 +44,16 @@ const notifySlice = createSlice({
       state.loading = false;
     },
     addNotification: (state, action: PayloadAction<INotification>) => {
-      state.notifications.unshift(action.payload);
-      if (!action.payload.is_read) {
-        state.unreadCount += 1;
+      const userId = localStorage.getItem('user_id');
+
+      // ✅ ป้องกันไม่เพิ่ม noti ที่สร้างโดยตัวเอง
+      if (action.payload.created_by !== userId) {
+        state.notifications.unshift(action.payload);
+        if (!action.payload.is_read) {
+          state.unreadCount += 1;
+        }
       }
+
       state.error = null;
     },
     markNotificationAsReadInState: (state, action: PayloadAction<number>) => {
@@ -52,22 +69,27 @@ const notifySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Handle fetchNotifications
       .addCase(fetchNotifications.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.loading = false;
-        state.notifications = action.payload.data;
-        state.unreadCount = action.payload.data.filter((n) => !n.is_read).length;
+      
+        const userId = action.payload.userId;
+      
+        // ✅ กรอง noti ที่ตัวเองสร้าง
+        const filtered = action.payload.data.filter(
+          (noti) => noti.created_by !== userId
+        );
+      
+        state.notifications = filtered;
+        state.unreadCount = filtered.filter((n) => !n.is_read).length;
         state.error = null;
       })
       .addCase(fetchNotifications.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-
-      // Handle markNotificationAsRead
       .addCase(markNotificationAsRead.pending, (state) => {
         state.loading = true;
       })

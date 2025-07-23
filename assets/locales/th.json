@@ -29,6 +29,7 @@
   "PROCESS": {
     "ALL_TASKS": "งานทั้งหมด",
     "MY_TASKS": "งานของฉัน",
+    "MY_REPAIR_REQ": "แจ้งซ่อมของฉัน",
     "ALL": "ทั้งหมด",
     "PENDING": "รอดำเนินการ",
     "INPROGRESS": "ดำเนินการ",
