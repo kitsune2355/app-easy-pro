@@ -26,7 +26,10 @@ const SettingScreen: React.FC = () => {
       await AsyncStorage.removeItem("userToken");
       await AsyncStorage.removeItem("userInfo");
       await logoutUser();
-      navigation.navigate("LoginScreen");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "LoginScreen" }],
+      });
     } catch (error) {
       console.error("Logout error:", error);
     }
