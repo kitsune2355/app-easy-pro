@@ -113,6 +113,10 @@
       "SELECT_JOB_ID": "Select Job ID",
       "SOLUTION_DESC": "Solution Description",
       "SOLUTION_DESC_PLACEHOLDER": "Describe the solution in detail",
+      "SOLUTION_SERVICE_TYPE": "Service Type",
+      "SOLUTION_SERVICE_TYPE_PLACEHOLDER": "Select service type",
+      "SOLUTION_JOB_TYPE": "Job Type",
+      "SOLUTION_JOB_TYPE_PLACEHOLDER": "Select job type",
       "VERIFY_INFO": "Verify information",
       "SOLUTION": "Solution",
       "NO_SOLUTION": "No solution"
@@ -160,7 +164,9 @@
     "ERROR": "Error",
     "MISSING_REPAIR_DESC": "Missing repair details. Please go back and select a repair job.",
     "PLS_SELECT_ID_TO_PROCEED": "Please select a repair job ID to proceed.",
-    "PLS_PROVIDE_DETAILS": "Please provide details of the repair solution."
+    "PLS_PROVIDE_DETAILS": "Please provide details of the repair solution.",
+    "PLS_SELECT_SERVICE_TYPE": "Please select a service type.",
+    "PLS_SELECT_JOB_TYPE": "Please select a job type."
   },
   "BTN_CONTROL": {
     "NEXT": "Next",

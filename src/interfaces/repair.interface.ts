@@ -24,3 +24,13 @@ export interface IRepair {
   completed_solution?: string;
   completed_image_urls?: File[] | string[];
 }
+
+export interface IServiceType {
+  rpg_id: string;
+  rpg_name: string;
+}
+
+export interface IJobType {
+  rps_id: string;
+  rps_name: string;
+}

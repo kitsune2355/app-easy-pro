@@ -4,6 +4,8 @@ import {
   setLoading,
   setError,
   setRepairDetail,
+  setServiceType,
+  setJobType,
 } from "../redux/repairSlice";
 import { AppDispatch } from "../store";
 import { env } from "../config/environment";
@@ -233,6 +235,8 @@ export const completeRepair =
       formData.append("repair_request_id", form.repair_request_id);
       formData.append("completed_solution", form.completed_solution);
       formData.append("completed_by", form.completed_by);
+      formData.append("service_type", form.service_type);
+      formData.append("job_type", form.job_type);
 
       // Append completed images
       const completed_image_urlsArray = Array.isArray(form.completed_image_urls)
@@ -287,3 +291,51 @@ export const completeRepair =
       dispatch(setLoading(false));
     }
   };
+
+export const fetchAllServiceType = () => async (dispatch: AppDispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_service_type.php`);
+    dispatch(setServiceType(response.data.service_type));
+  } catch (error) {
+    dispatch(setError("Failed to fetch service types"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const fetchAllJobType = () => async (dispatch: AppDispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_job_type.php`);
+    dispatch(setJobType(response.data.job_type));
+  } catch (error) {
+    dispatch(setError("Failed to fetch job types"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const fetchServiceTypeById = (id: string) => async (dispatch: AppDispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_service_type.php?id=${id}`);
+    dispatch(setServiceType(response.data.service_type));
+  } catch (error) {
+    dispatch(setError("Failed to fetch service type"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const fetchJobTypeById = (id: string) => async (dispatch: AppDispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_job_type.php?id=${id}`);
+    dispatch(setJobType(response.data.job_type));
+  } catch (error) {
+    dispatch(setError("Failed to fetch job type"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};

@@ -12,16 +12,8 @@ import {
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "../context/ThemeContext";
 
-const Select = ({
-  label,
-  placeholder,
-  value,
-  options,
-  onChange,
-  error,
-  isDisabled = false,
-  renderOption,
-}: {
+interface SelectProps {
+  isRequired?: boolean;
   label: string;
   placeholder: string;
   value: string;
@@ -30,12 +22,24 @@ const Select = ({
   error?: string;
   isDisabled?: boolean;
   renderOption?: (option: { label: string; value: string }) => React.ReactNode;
+}
+
+const Select: React.FC<SelectProps> = ({
+  isRequired,
+  label,
+  placeholder,
+  value,
+  options,
+  onChange,
+  error,
+  isDisabled = false,
+  renderOption,
 }) => {
   const { colorTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <FormControl isInvalid={!!error} isDisabled={isDisabled}>
+    <FormControl isRequired={isRequired} isInvalid={!!error} isDisabled={isDisabled}>
       <FormControl.Label>
         <Text color={colorTheme.colors.text}>{label}</Text>
       </FormControl.Label>
@@ -72,7 +76,7 @@ const Select = ({
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <Actionsheet.Item
-                  w="full"
+                  style={{ width: "100%",justifyContent: "space-between" }}
                   onPress={() => {
                     onChange(item.value);
                     setIsOpen(false);
@@ -84,13 +88,13 @@ const Select = ({
                         : colorTheme.colors.text,
                     fontWeight: value === item.value ? "bold" : "normal",
                   }}
-                  startIcon={
+                  endIcon={
                     value === item.value ? (
-                      <CheckIcon size="4" color={colorTheme.colors.success} />
+                      <CheckIcon size="4" color={colorTheme.colors.success} right={2} />
                     ) : null
                   }
                 >
-                  {renderOption ? renderOption(item) : item.label}
+                  {renderOption ? renderOption(item) : <Text>{item.label}</Text>}
                 </Actionsheet.Item>
               )}
               style={{ width: "100%" }}

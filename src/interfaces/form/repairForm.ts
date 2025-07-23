@@ -16,12 +16,16 @@ export interface IRepairProcessForm {
 }
 
 export interface IRepairSubmitForm {
-  id: string;
+  service_type: string;
+  job_type: string;
+  solution: string;
 }
 
 export interface ICompleteRepairForm {
   repair_request_id: string;
   completed_solution: string;
+  service_type: string;
+  job_type: string;
   completed_by: string;
   completed_image_urls?: string[];
 }
