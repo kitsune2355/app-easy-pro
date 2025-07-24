@@ -41,7 +41,7 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
         🔍 {t("FORM.REPAIR_SUBMIT.VERIFY_INFO")}
       </Text>
       <Text bold color={colorTheme.colors.primary}>
-        #{jobDetails?.id || "N/A"}
+        {jobDetails?.rp_format || "N/A"}
       </Text>
 
       <HStack justifyContent="space-between">

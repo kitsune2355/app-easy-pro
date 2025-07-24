@@ -145,13 +145,13 @@
   "ACCEPT_WORK": "Accept Work",
   "SUBMIT_WORK": "Submit Work",
   "WORK_ACCEPTANCE": {
-    "SUCCESS_MESSAGE": "You have successfully accepted work #{id}",
+    "SUCCESS_MESSAGE": "You have successfully accepted work",
     "ERROR_MESSAGE": "Failed to accept work. Please try again.",
     "NETWORK_ERROR": "Network error. Please check your connection.",
     "ACCEPTING": "Accepting work..."
   },
   "WORK_SUBMISSION": {
-    "SUCCESS_MESSAGE": "Work #{id} has been submitted successfully",
+    "SUCCESS_MESSAGE": "Work has been submitted successfully",
     "ERROR_MESSAGE": "Failed to submit work. Please try again.",
     "SUBMITTING": "Submitting work..."
   },
