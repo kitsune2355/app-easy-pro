@@ -4,7 +4,7 @@
     "slug": "app-easy-pro",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/easypro_logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
@@ -12,14 +12,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.png",
+        "foregroundImage": "./assets/images/easypro_logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.pe3ka.appeasypro",
       "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
-      "favicon": "./assets/images/logo.png"
+      "favicon": "./assets/images/easypro_logo.png"
     },
     "plugins": [
       "expo-font"

@@ -54,51 +54,26 @@ const NotificationScreen: React.FC = () => {
     const groups: { [key: string]: INotification[] } = {};
 
     filtered.forEach((notification) => {
-      const createdDate = dayJs(notification.created_at);
-      const now = dayJs();
-
-      let groupKey = "";
-
-      if (createdDate.isSame(now, "day")) {
-        groupKey = t("NOTIFICATION.TODAY");
-      } else if (createdDate.isSame(now.subtract(1, "day"), "day")) {
-        groupKey = t("NOTIFICATION.YESTERDAY");
-      } else if (createdDate.isAfter(now.subtract(7, "day"))) {
-        groupKey = t("NOTIFICATION.LAST_WEEK");
-      } else if (createdDate.isAfter(now.subtract(30, "day"))) {
-        groupKey = t("NOTIFICATION.LAST_MONTH");
-      } else {
-        groupKey = t("NOTIFICATION.OLDER");
+      const createdDate = dayJs(notification.created_at).format("YYYY-MM-DD");
+      if (!groups[createdDate]) {
+        groups[createdDate] = [];
       }
-
-      if (!groups[groupKey]) {
-        groups[groupKey] = [];
-      }
-      groups[groupKey].push(notification);
+      groups[createdDate].push(notification);
     });
 
-    // เรียงลำดับกลุ่มตามความสำคัญ
+    // เรียงวันที่จากใหม่ไปเก่า
     const orderedGroups: { [key: string]: INotification[] } = {};
-    const groupOrder = [
-      t("NOTIFICATION.TODAY"),
-      t("NOTIFICATION.YESTERDAY"),
-      t("NOTIFICATION.LAST_WEEK"),
-      t("NOTIFICATION.LAST_MONTH"),
-      t("NOTIFICATION.OLDER"),
-    ];
-
-    groupOrder.forEach((groupKey) => {
-      if (groups[groupKey]) {
-        // เรียงลำดับการแจ้งเตือนในแต่ละกลุ่มจากใหม่ไปเก่า
-        orderedGroups[groupKey] = groups[groupKey].sort(
+    Object.keys(groups)
+      .sort((a, b) => dayJs(b).valueOf() - dayJs(a).valueOf())
+      .forEach((date) => {
+        orderedGroups[date] = groups[date].sort(
           (a, b) =>
             dayJs(b.created_at).valueOf() - dayJs(a.created_at).valueOf()
         );
-      }
-    });
+      });
 
     return orderedGroups;
-  }, [notifications, t]);
+  }, [notifications]);
 
   const renderNotificationItem = (notification: INotification) => {
     const imagesForPreview = parseImageUrls(notification?.image_url).map(
@@ -173,9 +148,9 @@ const NotificationScreen: React.FC = () => {
   const renderGroupHeader = (groupTitle: string) => (
     <HStack space={2} alignItems="center" px={1} py={2}>
       <Text fontSize="sm" fontWeight="bold" color="gray.500" opacity={0.7}>
-        {groupTitle}
+        {dayJs(groupTitle).format("DD MMM YYYY")}
       </Text>
-      <Box flex={1} height="1px" bg={colorTheme.colors.border} opacity={0.5} />
+      <Box flex={1} height="1px" bg="gray.500" opacity={0.5} />
     </HStack>
   );
 

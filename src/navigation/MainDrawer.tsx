@@ -10,7 +10,6 @@ import RepairScreen from "../screens/RepairScreen";
 import RepairHistoryScreen from "../screens/RepairHistoryScreen";
 import RepairSubmitScreen from "../screens/RepairSubmitScreen";
 import {
-  Avatar,
   HStack,
   VStack,
   Text,
@@ -88,7 +87,12 @@ const MainDrawer: React.FC = () => {
         >
           <VStack p={4} space={4}>
             <HStack space={3} alignItems="center">
-              <Avatar bgColor={"white"}></Avatar>
+              <Icon
+                as={Ionicons}
+                name="person-circle"
+                size='5xl'
+                color={"white"}
+              />
               <VStack>
                 <Text color={"white"} fontSize="md" fontWeight="bold">
                   {userDetail
@@ -101,6 +105,9 @@ const MainDrawer: React.FC = () => {
                         userDetail.user_department_name
                       }`
                     : ""}
+                </Text>
+                <Text color={"white"} fontSize="xs">
+                  {userDetail?.agency.ag_contract}
                 </Text>
               </VStack>
             </HStack>
