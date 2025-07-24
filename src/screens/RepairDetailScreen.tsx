@@ -93,7 +93,7 @@ const RepairDetailScreen: React.FC = () => {
     try {
       const res = await dispatch(updateRepairStatus(id, "inprogress"));
       if (res.status === "success") {
-        showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`);
+        showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} ${id}`);
       } else {
         showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
       }
@@ -213,7 +213,7 @@ const RepairDetailScreen: React.FC = () => {
                     bg={statusItem.color}
                     _text={{ color: "white", fontWeight: "bold" }}
                     isLoading={accepting}
-                    onPress={() => handleAcceptWork(repairDetail.id)}
+                    onPress={() => handleAcceptWork(repairDetail.rp_format)}
                   >
                     {t("ACCEPT_WORK")}
                   </Button>
