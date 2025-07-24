@@ -162,7 +162,7 @@ const RepairDetailScreen: React.FC = () => {
         title={
           <Text color={colorTheme.colors.text}>
             {t("MENU.REPAIR_DESC")}{" "}
-            <Text color={colorTheme.colors.primary}>#{repairDetail?.id}</Text>
+            <Text color={colorTheme.colors.primary}>{repairDetail?.rp_format}</Text>
           </Text>
         }
         bgColor={colorTheme.colors.card}

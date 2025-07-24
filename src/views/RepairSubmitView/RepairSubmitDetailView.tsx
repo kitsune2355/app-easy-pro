@@ -49,21 +49,26 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
               item.process_time
           )
           .map((repair) => ({
-            label: `${repair.id}`,
+            label: repair.rp_format,
             value: repair.id,
           }))}
         renderOption={(option) => {
           const repair = repairs.find((item) => item.id === option.value);
           return (
-            <HStack space={4} alignItems="center">
-              <Text fontWeight="bold">#{option.label}</Text>
-              <VStack>
-                <Text>{repair?.problem_detail}</Text>
-                <Text>
-                  {repair?.building} {repair?.floor} {repair?.room}
+              <VStack space={1}>
+                <Text fontWeight="bold" color={colorTheme.colors.main}>
+                  {option.label}
+                </Text>
+
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  color={colorTheme.colors.text}
+                >
+                  {repair?.problem_detail} | {repair?.building} {repair?.floor}{" "}
+                  {repair?.room}
                 </Text>
               </VStack>
-            </HStack>
           );
         }}
       />
@@ -81,7 +86,7 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
               fontWeight="bold"
               color={colorTheme.colors.main}
             >
-              #{jobDetails.id}
+              {jobDetails.rp_format}
             </Text>
 
             <VStack space={1}>

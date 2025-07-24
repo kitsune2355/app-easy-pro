@@ -8,6 +8,7 @@ import {
   FormControl,
   CheckIcon,
   Icon,
+  HStack,
 } from "native-base";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "../context/ThemeContext";
@@ -41,7 +42,11 @@ const Select: React.FC<SelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <FormControl isRequired={isRequired} isInvalid={!!error} isDisabled={isDisabled}>
+    <FormControl
+      isRequired={isRequired}
+      isInvalid={!!error}
+      isDisabled={isDisabled}
+    >
       <FormControl.Label>
         <Text color={colorTheme.colors.text}>{label}</Text>
       </FormControl.Label>
@@ -70,7 +75,9 @@ const Select: React.FC<SelectProps> = ({
         <Actionsheet.Content>
           {options.length === 0 ? (
             <Box p={4}>
-              <Text color={colorTheme.colors.text}>{t("ALERT.NO_OPTIONS_AVAILABLE")}</Text>
+              <Text color={colorTheme.colors.text}>
+                {t("ALERT.NO_OPTIONS_AVAILABLE")}
+              </Text>
             </Box>
           ) : (
             <FlatList
@@ -78,7 +85,6 @@ const Select: React.FC<SelectProps> = ({
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <Actionsheet.Item
-                  style={{ width: "100%",justifyContent: "space-between" }}
                   onPress={() => {
                     onChange(item.value);
                     setIsOpen(false);
@@ -92,11 +98,15 @@ const Select: React.FC<SelectProps> = ({
                   }}
                   endIcon={
                     value === item.value ? (
-                      <CheckIcon size="4" color={colorTheme.colors.success} right={2} />
+                      <CheckIcon size="5" color={colorTheme.colors.success} alignSelf="center" />
                     ) : null
                   }
                 >
-                  {renderOption ? renderOption(item) : <Text>{item.label}</Text>}
+                  {renderOption ? (
+                    <HStack flex={1} w='xs'>{renderOption(item)}</HStack>
+                  ) : (
+                    <Text>{item.label}</Text>
+                  )}
                 </Actionsheet.Item>
               )}
               style={{ width: "100%" }}
