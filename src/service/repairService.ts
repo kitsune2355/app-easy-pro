@@ -26,7 +26,7 @@ export const fetchAllRepairs = () => async (dispatch: AppDispatch) => {
       throw new Error("User information not found");
     }
     const response = await axios.get(`${env.API_ENDPOINT}/get_all_repair.php`, {
-      params: { user_id: user.id },
+      params: { user_id: user.id, ag_id: user.agency },
     });
     dispatch(setRepairs(response.data.data));
   } catch (error) {
@@ -97,6 +97,7 @@ export const submitRepairForm =
       formData.append("room", form.room);
       formData.append("problemDetail", form.desc);
       formData.append("createdBy", user.id);
+      formData.append("ag_id", user.agency);
 
       const image_urlsArray = Array.isArray(form.image_url)
         ? form.image_url

@@ -23,6 +23,10 @@ export interface IRepair {
   completed_time?: string;
   completed_solution?: string;
   completed_image_urls?: File[] | string[];
+  rp_format?: string;
+  service_type?: IServiceType;
+  job_type?: IJobType;
+  ag_id?: string;
 }
 
 export interface IServiceType {

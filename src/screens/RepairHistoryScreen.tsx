@@ -106,7 +106,7 @@ const RepairHistoryCard = ({
               color={colorTheme.colors.text}
               numberOfLines={1}
             >
-              #{item.id}
+              {item.rp_format}
             </Text>
           </VStack>
           <Icon
@@ -291,9 +291,7 @@ const RepairHistoryScreen = () => {
       const searchMatch =
         searchQuery === ""
           ? true
-          : item.id.toLowerCase().includes(searchLower) ||
-            (searchLower.startsWith("#") &&
-              item.id.toLowerCase().includes(searchLower.substring(1))) ||
+          : item.rp_format.toLowerCase().includes(searchLower) ||
             (item.problem_detail?.toLowerCase()?.includes(searchLower) ??
               false) ||
             (item.building?.toLowerCase()?.includes(searchLower) ?? false) ||

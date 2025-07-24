@@ -193,7 +193,7 @@ const HomeScreen: React.FC = () => {
                     ellipsizeMode="tail"
                     flex={1}
                   >
-                    #{item.id}
+                    {item.rp_format}
                   </Text>
                   <Badge
                     bgColor={status.color}

@@ -168,6 +168,7 @@ const RepairScreen = () => {
       );
     } finally {
       setIsSubmitting(false);
+      setImages([]);
       reset();
     }
   };
