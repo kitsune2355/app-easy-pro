@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Pressable } from "react-native";
+import { Linking, Pressable, TouchableOpacity } from "react-native";
 import {
   RouteProp,
   useFocusEffect,
@@ -155,7 +155,13 @@ const RepairHistoryCard = ({
               size="sm"
               color={colorTheme.colors.text}
             />
-            <Text color={colorTheme.colors.text}>{item.phone}</Text>
+            <TouchableOpacity
+              onPress={() => Linking.openURL(`tel:${item.phone}`)}
+            >
+              <Text color="blue.500">
+                {item.phone}
+              </Text>
+            </TouchableOpacity>
           </HStack>
 
           <HStack space={3}>

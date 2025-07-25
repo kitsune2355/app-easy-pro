@@ -1,4 +1,4 @@
-import { VStack, Text, HStack, Switch, Spacer, Button } from "native-base";
+import { VStack, Text, HStack, Switch, Spacer, Button, Icon } from "native-base";
 import React from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../hooks/useAuth";
+import { FontAwesome5,Ionicons } from "react-native-vector-icons";
 
 const SettingScreen: React.FC = () => {
   const { colorTheme, toggleTheme } = useTheme();
@@ -37,11 +38,23 @@ const SettingScreen: React.FC = () => {
 
   return (
     <VStack flex={1} space={2} p={4}>
-      <VStack flexGrow={1} bg={colorTheme.colors.card} p={4} rounded="md" shadow='2'>
+      <VStack
+        flexGrow={1}
+        bg={colorTheme.colors.card}
+        p={4}
+        rounded="md"
+        shadow="2"
+      >
         {/* ตั้งค่าธีมสี */}
-        <HStack alignItems="center" mb={4}>
+        <HStack alignItems="center" mb={4} space={2}>
+          <Icon
+            as={FontAwesome5}
+            name="moon"
+            size="sm"
+            color={colorTheme.colors.text}
+          />
           <Text fontSize="md" color={colorTheme.colors.text}>
-            {t("SETTINGS.THEME_COLOR")}
+            {t("SETTINGS.DARK_MODE")}
           </Text>
           <Spacer />
           <Switch
@@ -55,7 +68,13 @@ const SettingScreen: React.FC = () => {
         </HStack>
 
         {/* ตั้งค่าภาษา */}
-        <HStack alignItems="center">
+        <HStack alignItems="center" space={2}>
+          <Icon
+            as={Ionicons}
+            name="language"
+            size="md"
+            color={colorTheme.colors.text}
+          />
           <Text fontSize="md" color={colorTheme.colors.text} mr={4}>
             {t("SETTINGS.LANGUAGE")}
           </Text>

@@ -21,7 +21,7 @@ export const fetchNotifications = createAsyncThunk<
         throw new Error("User information not found");
       }
 
-      const url = `${env.API_ENDPOINT}/get_notifications.php?user_id=${user.id}&user_level=${user.role}&is_read=${isRead ? "1" : "0"}`;
+      const url = `${env.API_ENDPOINT}/get_notifications.php?user_id=${user.id}&user_level=${user.role}&is_read=${isRead ? "1" : "0"}&ag_id=${user.agency}`;
       const response = await axios.get<IFetchNotificationsResponse>(url);
 
       return {
