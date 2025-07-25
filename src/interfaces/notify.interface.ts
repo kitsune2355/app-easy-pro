@@ -8,6 +8,7 @@ export interface INotification {
   floor?: string;
   room?: string;
   related_id: number | null;
+  rp_format?: string;
   is_read: boolean;
   image_url?: string;
   created_by?: string;

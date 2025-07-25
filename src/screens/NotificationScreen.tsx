@@ -95,7 +95,7 @@ const NotificationScreen: React.FC = () => {
         <VStack
           p={4}
           bg={colorTheme.colors.card}
-          opacity={notification.is_read ? 0.6 : 1}
+          opacity={notification.is_read ? 0.5 : 1}
           borderWidth={1}
           borderColor={colorTheme.colors.border}
           rounded="lg"
@@ -110,7 +110,7 @@ const NotificationScreen: React.FC = () => {
                   : colorTheme.colors.success
               }
             >
-              #{notification.related_id}
+              {notification.rp_format}
             </Text>
             {!notification.is_read && (
               <Box rounded="full" bg={colorTheme.colors.notification} p={2} />
