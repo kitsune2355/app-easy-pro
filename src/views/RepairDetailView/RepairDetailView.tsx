@@ -6,6 +6,8 @@ import { Ionicons, FontAwesome } from "react-native-vector-icons";
 import { dayJs } from "../../config/dayJs";
 import ImagePreview from "../../components/ImagePreview";
 import { IRepair } from "../../interfaces/repair.interface";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Linking } from "react-native";
 
 interface RepairDetailViewProps {
   repairDetail: IRepair;
@@ -57,7 +59,13 @@ const RepairDetailView: React.FC<RepairDetailViewProps> = ({
             <Text fontSize="xs" color="gray.500">
               {t("FORM.REPAIR.PHONE")}
             </Text>
-            <Text color={colorTheme.colors.text}>{repairDetail.phone}</Text>
+            <TouchableOpacity
+              onPress={() => Linking.openURL(`tel:${repairDetail.phone}`)}
+            >
+              <Text color="blue.500">
+                {repairDetail.phone}
+              </Text>
+            </TouchableOpacity>
           </VStack>
         </HStack>
 
@@ -90,11 +98,7 @@ const RepairDetailView: React.FC<RepairDetailViewProps> = ({
               {t("FORM.REPAIR.LOCATION_INFO")}
             </Text>
             <Text color={colorTheme.colors.text}>
-              {repairDetail.building}
-              {" "}
-              {repairDetail.floor}
-              {" "}
-              {repairDetail.room}
+              {repairDetail.building} {repairDetail.floor} {repairDetail.room}
             </Text>
           </VStack>
         </HStack>
