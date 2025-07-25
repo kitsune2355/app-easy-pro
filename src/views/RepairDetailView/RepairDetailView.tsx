@@ -62,7 +62,7 @@ const RepairDetailView: React.FC<RepairDetailViewProps> = ({
             <TouchableOpacity
               onPress={() => Linking.openURL(`tel:${repairDetail.phone}`)}
             >
-              <Text color="blue.500">
+              <Text color="blue.500" underline>
                 {repairDetail.phone}
               </Text>
             </TouchableOpacity>

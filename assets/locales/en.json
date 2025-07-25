@@ -13,7 +13,7 @@
   "APP_BAR": {
     "WELCOME": "Welcome to"
   },
-   "USER": {
+  "USER": {
     "POSITION": "Position"
   },
   "SCREENS": {
@@ -24,7 +24,7 @@
   "MAIN": {
     "REPAIR_SUMMARY": "Repair Summary",
     "URGENT_ACTION": "Urgent Action",
-    "RECENT_JOBS": "Recent Jobs"
+    "REPAIR_REQ_LIST": "Repair Request List"
   },
   "PROCESS": {
     "ALL_TASKS": "All Tasks",
@@ -42,12 +42,12 @@
     "REPAIR_DESC": "Detail"
   },
   "NOTIFICATION": {
-    "TODAY":"Today",
-    "YESTERDAY":"Yesterday",
-    "LAST_WEEK":"Last Week",
-    "LAST_MONTH":"Last month",
-    "OLDER":"Older",
-    "NO_NOTIFICATIONS":"No notifications"
+    "TODAY": "Today",
+    "YESTERDAY": "Yesterday",
+    "LAST_WEEK": "Last Week",
+    "LAST_MONTH": "Last month",
+    "OLDER": "Older",
+    "NO_NOTIFICATIONS": "No notifications"
   },
   "BUILDING": "Building",
   "FLOOR": "Floor",
@@ -124,7 +124,7 @@
     }
   },
   "SETTINGS": {
-    "THEME_COLOR": "Theme Color",
+    "DARK_MODE": "Dark Mode",
     "LANGUAGE": "Language"
   },
   "RES_PERSON": "Responsible Person",

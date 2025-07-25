@@ -6,12 +6,14 @@ interface ILanguageButtonGroupComponentProps {
   langs: string[];
   value: string;
   color?: string;
+  textColor?: string;
+  borderColor?: string;
   onPress?(lang: string): void;
 }
 
 export const LanguageButtonGroup: React.FC<
   ILanguageButtonGroupComponentProps
-> = ({ langs, value, color, onPress }) => {
+> = ({ langs, value, color, textColor, borderColor, onPress }) => {
   const { colorTheme } = useTheme();
   const handlePress = useCallback(
     (lang: string) => {
@@ -27,7 +29,7 @@ export const LanguageButtonGroup: React.FC<
       borderWidth={1}
       borderRadius={4}
       overflow="hidden"
-      borderColor={colorTheme.colors.border}
+      borderColor={borderColor || colorTheme.colors.border}
       alignItems="center"
     >
       {langs.map((lang, key) => (
@@ -42,7 +44,7 @@ export const LanguageButtonGroup: React.FC<
           <Text
             textTransform="uppercase"
             fontWeight="500"
-            color={value === lang ? colorTheme.colors.card : colorTheme.colors.border}
+            color={textColor || colorTheme.colors.border}
           >
             {lang}
           </Text>

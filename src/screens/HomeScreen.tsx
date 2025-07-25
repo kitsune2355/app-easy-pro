@@ -283,30 +283,41 @@ const HomeScreen: React.FC = () => {
           {processItem.map((item, key) => renderProcessItem(item, key))}
         </Flex>
 
-        {user?.role === "admin" && repairs.length > 0 && (
-          <>
-            <HStack
-              space={4}
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Text
-                color={colorTheme.colors.text}
-                fontSize="lg"
-                fontWeight="bold"
+        {user?.role === "admin" &&
+          repairs.filter((item) => item.status === "pending").length > 0 && (
+            <>
+              <HStack
+                space={4}
+                justifyContent="space-between"
+                alignItems="center"
               >
-                {t("MAIN.RECENT_JOBS")}
-              </Text>
-            </HStack>
-            {renderActivityAll(repairs)}
-          </>
-        )}
+                <Text
+                  color={colorTheme.colors.text}
+                  fontSize="lg"
+                  fontWeight="bold"
+                >
+                  {t("MAIN.REPAIR_REQ_LIST")}
+                </Text>
+              </HStack>
+              {renderActivityAll(
+                repairs.filter((item) => item.status === "pending")
+              )}
+            </>
+          )}
 
         {user?.role === "admin" &&
-          repairs.some((item) => item.received_by.user_id === user?.id) &&
+          repairs.some(
+            (item) =>
+              item.received_by.user_id === user?.id &&
+              item.status === "inprogress"
+          ) &&
           renderMyTasksSection(
             t("PROCESS.MY_TASKS"),
-            repairs.filter((item) => item.received_by.user_id === user?.id)
+            repairs.filter(
+              (item) =>
+                item.received_by.user_id === user?.id &&
+                item.status === "inprogress"
+            )
           )}
 
         {user?.role === "employer" &&

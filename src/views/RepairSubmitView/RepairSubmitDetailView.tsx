@@ -63,7 +63,7 @@ const RepairSubmitDetailView: React.FC<RepairSubmitDetailViewProps> = ({
                 <Text
                   numberOfLines={1}
                   ellipsizeMode="tail"
-                  color={colorTheme.colors.text}
+                  color='#333'
                 >
                   {repair?.problem_detail} | {repair?.building} {repair?.floor}{" "}
                   {repair?.room}

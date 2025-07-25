@@ -99,7 +99,9 @@ const LoginScreen = () => {
           <LanguageButtonGroup
             langs={["th", "en"]}
             value={lang}
-            color={colorTheme.colors.secondary}
+            color={colorTheme.colors.language}
+            textColor="#fff"
+            borderColor="#fff"
             onPress={handleLangChange}
           />
         </Box>
@@ -125,10 +127,11 @@ const LoginScreen = () => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   borderColor={error ? "red.500" : "gray.300"}
-                  color={colorTheme.colors.text}
                   placeholderTextColor="gray.400"
+                  color="#333"
+                  backgroundColor="#fff"
                   _focus={{
-                    borderColor: colorTheme.colors.primary,
+                    backgroundColor: "#fff",
                   }}
                 />
                 {error && (
@@ -160,10 +163,11 @@ const LoginScreen = () => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   borderColor={error ? "red.500" : "gray.300"}
-                  color={colorTheme.colors.text}
                   placeholderTextColor="gray.400"
+                  color="#333"
+                  backgroundColor="#fff"
                   _focus={{
-                    borderColor: colorTheme.colors.primary,
+                    backgroundColor: "#fff",
                   }}
                   InputRightElement={
                     <Pressable onPress={toggleShowPassword} mr={3}>
@@ -195,7 +199,7 @@ const LoginScreen = () => {
           <Button
             mt="4"
             w="full"
-            bg={colorTheme.colors.primary}
+            bg="#006B9F"
             _text={{ color: "#fff", fontWeight: "bold" }}
             isLoading={isLoading}
             onPress={handleSubmit(onSubmit)}
