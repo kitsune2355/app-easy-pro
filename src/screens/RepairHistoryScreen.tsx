@@ -26,12 +26,13 @@ import { dayJs } from "../config/dayJs";
 import SearchBar from "../components/SearchBar";
 import { fetchAllRepairs } from "../service/repairService";
 import { AppDispatch, RootState } from "../store";
-import { useToastMessage } from "../components/ToastMessage";
 import { IRepair } from "../interfaces/repair.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ScreenWrapper from "../components/ScreenWrapper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
+import { useAuth } from "../hooks/useAuth";
+import { fetchUserById } from "../service/userService";
 
 type mainTabType = "ALL" | "MINE";
 type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
@@ -58,27 +59,15 @@ const RepairHistoryCard = ({
   subTab: subTabType;
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { user } = useAuth();
   const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const [isOpen, setIsOpen] = useState(true);
-  const [accepting, setAccepting] = useState(false);
-  const { showToast } = useToastMessage();
 
-  // const handleAcceptWork = useCallback(async (id: string) => {
-  //   try {
-  //     setAccepting(true);
-  //     const res = await dispatch(updateRepairStatus(id, "inprogress"));
-  //     if (res?.status === "success") {
-  //       showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`);
-  //     } else {
-  //       showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating repair status:", error);
-  //     showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
-  //   } finally {
-  //     setAccepting(false);
-  //   }
-  // },[dispatch, showToast, t]);
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(user.id));
+    }
+  }, []);
 
   return (
     <VStack
@@ -213,35 +202,20 @@ const RepairHistoryCard = ({
             >
               {t("COMMON.MORE_DETAILS")}
             </Button>
-            {/* <Button
-              variant="solid"
-              rounded="3xl"
-              size="sm"
-              bg={statusColor}
-              _text={{ color: "white", fontWeight: "bold" }}
-              isDisabled={item.status !== "pending"}
-              isLoading={accepting}
-              onPress={() => handleAcceptWork(item.id)}
-            >
-              {t("ACCEPT_WORK")}
-            </Button>
-            {item.process_date && item.process_time && (
+            {user?.role !== "admin" && item.status === "completed" && (
               <Button
                 variant="solid"
                 rounded="3xl"
                 size="sm"
                 bg={statusColor}
-                _text={{ color: "white", fontWeight: "bold" }}
-                isDisabled={item.status === "completed"}
+                _text={{ color: 'white', fontWeight: "bold" }}
                 onPress={() =>
-                  navigation.navigate("RepairSubmitScreen", {
-                    repairId: item.id,
-                  })
+                  navigation.navigate("RepairDetailScreen", { repairId: item.id })
                 }
               >
-                {t("SUBMIT_WORK")}
+                {t("COMMON.FEEDBACK")}
               </Button>
-            )} */}
+            )}
           </VStack>
         </VStack>
       </Collapse>

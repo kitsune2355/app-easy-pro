@@ -27,6 +27,7 @@ export interface IRepair {
   service_type?: IServiceType;
   job_type?: IJobType;
   ag_id?: string;
+  has_feedback?: number;
 }
 
 export interface IServiceType {

@@ -32,6 +32,7 @@ import { fetchUserById } from "../service/userService";
 import { markNotificationAsRead } from "../service/notifyService";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
+import RepairDetailFeedbackView from "../views/RepairDetailView/RepairDetailFeedbackView";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -162,7 +163,9 @@ const RepairDetailScreen: React.FC = () => {
         title={
           <Text color={colorTheme.colors.text}>
             {t("MENU.REPAIR_DESC")}{" "}
-            <Text color={colorTheme.colors.primary}>{repairDetail?.rp_format}</Text>
+            <Text color={colorTheme.colors.primary}>
+              {repairDetail?.rp_format}
+            </Text>
           </Text>
         }
         bgColor={colorTheme.colors.card}
@@ -204,20 +207,31 @@ const RepairDetailScreen: React.FC = () => {
                   </Text>
                 </VStack>
 
-                {repairDetail.status === "pending" && user?.role === "admin" && (
-                  <Button
-                    variant="solid"
-                    rounded="xl"
-                    size="sm"
-                    shadow={1}
-                    bg={statusItem.color}
-                    _text={{ color: "white", fontWeight: "bold" }}
-                    isLoading={accepting}
-                    onPress={() => handleAcceptWork(repairDetail.id, repairDetail.rp_format)}
-                  >
-                    {t("ACCEPT_WORK")}
-                  </Button>
-                )}
+                {repairDetail.status === "completed" &&
+                  user?.role !== "admin" && (
+                    <RepairDetailFeedbackView repairId={repairDetail.id} />
+                  )}
+
+                {repairDetail.status === "pending" &&
+                  user?.role === "admin" && (
+                    <Button
+                      variant="solid"
+                      rounded="xl"
+                      size="sm"
+                      shadow={1}
+                      bg={statusItem.color}
+                      _text={{ color: "white", fontWeight: "bold" }}
+                      isLoading={accepting}
+                      onPress={() =>
+                        handleAcceptWork(
+                          repairDetail.id,
+                          repairDetail.rp_format
+                        )
+                      }
+                    >
+                      {t("ACCEPT_WORK")}
+                    </Button>
+                  )}
                 <RepairDetailView
                   imagesForPreview={imagesForPreview}
                   repairDetail={repairDetail}

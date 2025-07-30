@@ -320,11 +320,25 @@ const HomeScreen: React.FC = () => {
             )
           )}
 
-        {user?.role === "employer" &&
+        {user?.role !== "admin" &&
           repairs.some((item) => item.created_by.user_id === user?.id) &&
           renderMyTasksSection(
             t("PROCESS.MY_REPAIR_REQ"),
             repairs.filter((item) => item.created_by.user_id === user?.id)
+          )}
+
+        {user?.role !== "admin" &&
+          repairs.some(
+            (item) =>
+              item.created_by.user_id === user?.id &&
+              item.status === "completed" &&
+              item.has_feedback === "0"
+          ) &&
+          renderMyTasksSection(
+            t("COMMON.FEEDBACK"),
+            repairs.filter(
+              (item) => item.status === "completed" && item.has_feedback === "0"
+            )
           )}
       </VStack>
     </ScreenWrapper>

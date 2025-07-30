@@ -140,7 +140,13 @@
     "OK": "OK",
     "MORE_DETAILS": "More Details",
     "SAVE": "Save",
-    "SAVE_ERROR": "Save failed. Please try again."
+    "SAVE_ERROR": "Save failed. Please try again.",
+    "FEEDBACK": "Feedback",
+    "REVIEWS": ["Worst", "Bad", "Okay", "Good", "Great"],
+    "COMMENT": "Comment",
+    "COMMENT_PLACEHOLDER": "Share your experience (optional)",
+    "SUBMIT": "Submit",
+    "SUBMITTING": "Submitting..."
   },
   "ACCEPT_WORK": "Accept Work",
   "SUBMIT_WORK": "Submit Work",
@@ -163,12 +169,16 @@
     "PLS_UPLOAD_AT_LEAST_ONE_IMG": "Please upload at least one image.",
     "PLS_DESC_SOLUTION": "Please provide details of the repair solution.",
     "ERROR": "Error",
+    "SUCCESS": "Success",
+    "NETWORK_ERROR": "Network error. Please check your connection.",
     "MISSING_REPAIR_DESC": "Missing repair details. Please go back and select a repair job.",
     "PLS_SELECT_ID_TO_PROCEED": "Please select a repair job ID to proceed.",
     "PLS_PROVIDE_DETAILS": "Please provide details of the repair solution.",
     "PLS_SELECT_SERVICE_TYPE": "Please select a service type.",
     "PLS_SELECT_JOB_TYPE": "Please select a job type.",
-    "NO_OPTIONS_AVAILABLE": "No options available."
+    "PLS_SELECT_RATING": "Please select a rating.",
+    "NO_OPTIONS_AVAILABLE": "No options available.",
+    "FEEDBACK_SUBMITTED": "Feedback submitted successfully."
   },
   "BTN_CONTROL": {
     "NEXT": "Next",
