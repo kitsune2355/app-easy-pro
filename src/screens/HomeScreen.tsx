@@ -66,11 +66,13 @@ const HomeScreen: React.FC = () => {
         if (st.key === "PENDING") count = statusItem.pending.count;
         else if (st.key === "INPROGRESS") count = statusItem.inprogress.count;
         else if (st.key === "COMPLETED") count = statusItem.completed.count;
+        else if (st.key === "FEEDBACK")
+          count = repairs.filter((item) => item.has_feedback === "1").length;
 
         return (
           <Pressable
             key={st.key}
-            width="30%"
+            width="23.5%"
             mb="4"
             onPress={() =>
               navigation.navigate("RepairHistoryScreen", { statusKey: st.key })
@@ -156,7 +158,16 @@ const HomeScreen: React.FC = () => {
   const renderActivityAll = (repairs: IRepair[]) => (
     <>
       {repairs.slice(0, 3).map((item, key) => {
-        const status = statusItems[item.status as keyof typeof statusItems];
+        let status = statusItems[item.status as keyof typeof statusItems];
+
+        // ถ้า status เป็น feedback และ has_feedback !== 1 ให้ใช้ status เริ่มต้น
+        if (item.status === "feedback" && item.has_feedback !== 1) {
+          status = {
+            text: item.status,
+            icon: "alert-circle",
+            color: "gray.400",
+          };
+        }
 
         return (
           <Pressable

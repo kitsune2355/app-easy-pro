@@ -33,7 +33,8 @@
     "ALL": "ทั้งหมด",
     "PENDING": "รอดำเนินการ",
     "INPROGRESS": "ดำเนินการ",
-    "COMPLETED": "เสร็จสิ้น"
+    "COMPLETED": "เสร็จสิ้น",
+    "FEEDBACK": "ประเมินแล้ว"
   },
   "MENU": {
     "REPAIR_REQ": "แจ้งซ่อม",

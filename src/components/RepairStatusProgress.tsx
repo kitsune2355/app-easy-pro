@@ -1,13 +1,12 @@
 import React from "react";
 import { Box, HStack, Icon, Text, VStack } from "native-base";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { FontAwesome } from "react-native-vector-icons";
 import { statusItems } from "../constant/ConstantItem";
 import { IRepair } from "../interfaces/repair.interface";
 import { useTheme } from "../context/ThemeContext";
 
-type StatusKey = "all" | "pending" | "inprogress" | "completed";
+type StatusKey = "all" | "pending" | "inprogress" | "completed" | "feedback";
 
 interface RepairStatusProgressProps {
   statusKey: StatusKey;
@@ -15,7 +14,12 @@ interface RepairStatusProgressProps {
 }
 
 export const getStatusSummary = (repairs: IRepair[]) => {
-  const statusKeys: StatusKey[] = ["pending", "inprogress", "completed"];
+  const statusKeys: StatusKey[] = [
+    "pending",
+    "inprogress",
+    "completed",
+    "feedback",
+  ];
   const summary = {} as Record<
     StatusKey | "total",
     {
@@ -98,11 +102,15 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
     const pending = rounded(getValue("pending"));
     const inprogress = rounded(getValue("inprogress"));
     const completed = rounded(getValue("completed"));
-
+    const feedback = rounded(getValue("feedback"));
     const barLayers = [
-      { value: pending + inprogress + completed, color: "amber.500" },
+      {
+        value: pending + inprogress + completed + feedback,
+        color: "orange.400",
+      },
       { value: inprogress + completed, color: "blue.500" },
-      { value: completed, color: "green.500" },
+      { value: completed + feedback, color: "green.500" },
+      { value: feedback, color: "yellow.500" },
     ];
 
     const renderLegendItem = (key: StatusKey) => (
@@ -127,7 +135,7 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
     return (
       <Box bg={colorTheme.colors.card} p={4} borderRadius="md" shadow={2}>
         <VStack space={1}>
-          {["pending", "inprogress", "completed"].map((key) =>
+          {["pending", "inprogress", "completed", "feedback"].map((key) =>
             renderLegendItem(key as StatusKey)
           )}
         </VStack>
@@ -139,12 +147,13 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
           bg="gray.200"
           borderRadius="full"
           overflow="hidden"
+          
         >
           {barLayers.map((layer, index) => (
             <Box
               key={index}
               position="absolute"
-              left={0}
+              right={0}
               h="full"
               w={`${Math.min(layer.value, 100)}%`}
               bg={layer.color}

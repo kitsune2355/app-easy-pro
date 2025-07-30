@@ -33,7 +33,8 @@
     "ALL": "all",
     "PENDING": "pending",
     "INPROGRESS": "in progress",
-    "COMPLETED": "completed"
+    "COMPLETED": "completed",
+    "FEEDBACK": "feedback"
   },
   "MENU": {
     "REPAIR_REQ": "Repair Request",

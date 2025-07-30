@@ -191,18 +191,18 @@ const RepairHistoryCard = ({
 
           <VStack space={1}>
             <Button
-              variant="outline"
+              variant="solid"
               rounded="3xl"
               size="sm"
-              borderColor={statusColor}
-              _text={{ color: statusColor, fontWeight: "bold" }}
+              bg={statusColor}
+              _text={{ color: colorTheme.colors.card, fontWeight: "bold" }}
               onPress={() =>
                 navigation.navigate("RepairDetailScreen", { repairId: item.id })
               }
             >
               {t("COMMON.MORE_DETAILS")}
             </Button>
-            {user?.role !== "admin" && item.status === "completed" && (
+            {user?.role !== "admin" && item.status === "completed" && item.has_feedback === 0 && (
               <Button
                 variant="solid"
                 rounded="3xl"
@@ -302,8 +302,8 @@ const RepairHistoryScreen = () => {
 
   const tabOptions =
     mainTab === "ALL"
-      ? ["ALL", "PENDING", "INPROGRESS", "COMPLETED"]
-      : ["ALL", "INPROGRESS", "COMPLETED"];
+      ? ["ALL", "PENDING", "INPROGRESS", "COMPLETED", "FEEDBACK"]
+      : ["ALL", "INPROGRESS", "COMPLETED", "FEEDBACK"];
 
   return (
     <VStack flex={1} bg={colorTheme.colors.background}>
