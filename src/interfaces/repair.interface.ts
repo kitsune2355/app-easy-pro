@@ -27,7 +27,8 @@ export interface IRepair {
   service_type?: IServiceType;
   job_type?: IJobType;
   ag_id?: string;
-  has_feedback?: number;
+  has_feedback?: string;
+  feedback?: IFeedback;
 }
 
 export interface IServiceType {
@@ -38,4 +39,9 @@ export interface IServiceType {
 export interface IJobType {
   rps_id: string;
   rps_name: string;
+}
+
+export interface IFeedback {
+  rating: string;
+  comments: string;
 }

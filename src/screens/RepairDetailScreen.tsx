@@ -198,6 +198,11 @@ const RepairDetailScreen: React.FC = () => {
                       color={statusItem.color}
                     />
                   </Center>
+                  {repairDetail.feedback?.rating && (
+                    <Text bold fontSize="xl" color={colorTheme.colors.primary}>
+                      {repairDetail.feedback?.rating}/5
+                    </Text>
+                  )}
                   <Text
                     color={statusItem.color}
                     fontSize="2xl"

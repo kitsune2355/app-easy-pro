@@ -108,9 +108,9 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
         value: pending + inprogress + completed + feedback,
         color: "orange.400",
       },
-      { value: inprogress + completed, color: "blue.500" },
+      { value: inprogress + completed + feedback, color: "blue.500" },
       { value: completed + feedback, color: "green.500" },
-      { value: feedback, color: "yellow.500" },
+      { value: feedback, color: "yellow.400" },
     ];
 
     const renderLegendItem = (key: StatusKey) => (
@@ -134,6 +134,14 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
 
     return (
       <Box bg={colorTheme.colors.card} p={4} borderRadius="md" shadow={2}>
+        <HStack justifyContent="space-between" alignItems="center">
+          <Text fontSize="xs" color={colorTheme.colors.text}>
+            {t(`PROCESS.ALL_PERCENT`)}
+          </Text>
+          <Text fontSize="xs" color={colorTheme.colors.text}>
+            100 %
+          </Text>
+        </HStack>
         <VStack space={1}>
           {["pending", "inprogress", "completed", "feedback"].map((key) =>
             renderLegendItem(key as StatusKey)
@@ -147,7 +155,6 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
           bg="gray.200"
           borderRadius="full"
           overflow="hidden"
-          
         >
           {barLayers.map((layer, index) => (
             <Box
@@ -157,7 +164,6 @@ const RepairStatusProgress: React.FC<RepairStatusProgressProps> = ({
               h="full"
               w={`${Math.min(layer.value, 100)}%`}
               bg={layer.color}
-              borderRadius="full"
               zIndex={index}
             />
           ))}

@@ -79,7 +79,6 @@ const AppBarHeader: React.FC<AppBarHeaderProps> = ({ title }) => {
               <Text color={colorTheme.colors.main}>EasyPro</Text>
             </Text>
 
-            {user?.role === "admin" && (
               <Box alignItems="center">
                 <VStack>
                   {unreadCount > 0 && (
@@ -117,7 +116,6 @@ const AppBarHeader: React.FC<AppBarHeaderProps> = ({ title }) => {
                   />
                 </VStack>
               </Box>
-            )}
           </>
         ) : (
           <Text fontSize="xl" fontWeight="bold" color={colorTheme.colors.text}>

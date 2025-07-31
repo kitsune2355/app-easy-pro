@@ -31,10 +31,12 @@
     "MY_TASKS": "My Tasks",
     "MY_REPAIR_REQ": "My Repair Request",
     "ALL": "all",
+    "ALL_PERCENT": "All",
     "PENDING": "pending",
     "INPROGRESS": "in progress",
     "COMPLETED": "completed",
-    "FEEDBACK": "feedback"
+    "FEEDBACK": "feedback",
+    "WAITING_FEEDBACK": "waiting feedback"
   },
   "MENU": {
     "REPAIR_REQ": "Repair Request",

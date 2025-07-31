@@ -14,11 +14,6 @@ export const statusItems = {
     color: "#1E90FF",
     icon: "construct",
   },
-  my_job: {
-    text: "MY_JOB",
-    color: "#FC427B",
-    icon: "briefcase",
-  },
   feedback: {
     text: "FEEDBACK",
     color: "#facc15",
@@ -56,7 +51,7 @@ export const statusAll = [
   },
   {
     key: "FEEDBACK",
-    color: "yellow.500",
+    color: "yellow.400",
     icon: "star",
   }
 ];

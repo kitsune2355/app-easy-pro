@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Linking, Pressable, TouchableOpacity } from "react-native";
+import { Linking, Pressable, TouchableOpacity, ScrollView } from "react-native";
 import {
   RouteProp,
   useFocusEffect,
@@ -115,7 +115,7 @@ const RepairHistoryCard = ({
           borderTopColor={colorTheme.colors.border}
           space={3}
         >
-          <HStack space={2}>
+          <HStack justifyContent="space-between" alignItems="center">
             <Badge
               bgColor={statusColor}
               rounded="full"
@@ -125,6 +125,18 @@ const RepairHistoryCard = ({
             >
               {t(`PROCESS.${statusText}`)}
             </Badge>
+            <HStack space={1}>
+            {item.has_feedback === "1" && (
+              Array.from({ length: parseInt(item.feedback?.rating) }).map((_, index) => (
+                <Icon
+                  key={index}
+                  as={Ionicons}
+                  name="star"
+                  size="sm"
+                  color="yellow.400"
+                />
+              ))
+            )}</HStack>
           </HStack>
 
           <HStack space={3}>
@@ -147,9 +159,7 @@ const RepairHistoryCard = ({
             <TouchableOpacity
               onPress={() => Linking.openURL(`tel:${item.phone}`)}
             >
-              <Text color="blue.500">
-                {item.phone}
-              </Text>
+              <Text color="blue.500">{item.phone}</Text>
             </TouchableOpacity>
           </HStack>
 
@@ -194,28 +204,33 @@ const RepairHistoryCard = ({
               variant="solid"
               rounded="3xl"
               size="sm"
-              bg={statusColor}
-              _text={{ color: colorTheme.colors.card, fontWeight: "bold" }}
+              borderWidth={1}
+              borderColor={statusColor}
+              _text={{ color: statusColor, fontWeight: "bold" }}
               onPress={() =>
                 navigation.navigate("RepairDetailScreen", { repairId: item.id })
               }
             >
               {t("COMMON.MORE_DETAILS")}
             </Button>
-            {user?.role !== "admin" && item.status === "completed" && item.has_feedback === 0 && (
-              <Button
-                variant="solid"
-                rounded="3xl"
-                size="sm"
-                bg={statusColor}
-                _text={{ color: 'white', fontWeight: "bold" }}
-                onPress={() =>
-                  navigation.navigate("RepairDetailScreen", { repairId: item.id })
-                }
-              >
-                {t("COMMON.FEEDBACK")}
-              </Button>
-            )}
+            {user?.role !== "admin" &&
+              item.status === "completed" &&
+              item.has_feedback === "0" && (
+                <Button
+                  variant="solid"
+                  rounded="3xl"
+                  size="sm"
+                  bg={statusColor}
+                  _text={{ color: "white", fontWeight: "bold" }}
+                  onPress={() =>
+                    navigation.navigate("RepairDetailScreen", {
+                      repairId: item.id,
+                    })
+                  }
+                >
+                  {t("COMMON.FEEDBACK")}
+                </Button>
+              )}
           </VStack>
         </VStack>
       </Collapse>
@@ -349,34 +364,42 @@ const RepairHistoryScreen = () => {
           </HStack>
         )}
 
-        <HStack
+        <VStack
           bg={colorTheme.colors.card}
           borderBottomWidth={1}
           borderBottomColor={colorTheme.colors.border}
         >
-          {tabOptions.map((tab) => (
-            <Pressable
-              key={tab}
-              onPress={() => setSubTab(tab as typeof subTab)}
-              style={{ flex: 1 }}
-            >
-              <Center
-                py={2}
-                bg={
-                  subTab === tab ? colorTheme.colors.darkLight : "transparent"
-                }
-              >
-                <Text
-                  fontSize="sm"
-                  fontWeight="bold"
-                  color={subTab === tab ? "white" : colorTheme.colors.text}
+          <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+            <HStack space={0}>
+              {tabOptions.map((tab) => (
+                <Pressable
+                  key={tab}
+                  onPress={() => setSubTab(tab as typeof subTab)}
+                  style={{ minWidth: 100 }}
                 >
-                  {t(`PROCESS.${tab}`)}
-                </Text>
-              </Center>
-            </Pressable>
-          ))}
-        </HStack>
+                  <Center
+                    py={2}
+                    px={4}
+                    bg={
+                      subTab === tab
+                        ? colorTheme.colors.darkLight
+                        : "transparent"
+                    }
+                  >
+                    <Text
+                      fontSize="sm"
+                      fontWeight="bold"
+                      color={subTab === tab ? "white" : colorTheme.colors.text}
+                      textAlign="center"
+                    >
+                      {t(`PROCESS.${tab}`)}
+                    </Text>
+                  </Center>
+                </Pressable>
+              ))}
+            </HStack>
+          </ScrollView>
+        </VStack>
       </>
 
       <ScreenWrapper>
