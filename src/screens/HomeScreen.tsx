@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import {
   VStack,
   Text,
@@ -45,6 +45,7 @@ const HomeScreen: React.FC = () => {
   const statusItem = getStatusSummary(repairs);
   const [refreshing, setRefreshing] = useState(false);
 
+
   useDoubleBackExit();
 
   const onRefresh = useCallback(() => {
@@ -66,11 +67,13 @@ const HomeScreen: React.FC = () => {
         if (st.key === "PENDING") count = statusItem.pending.count;
         else if (st.key === "INPROGRESS") count = statusItem.inprogress.count;
         else if (st.key === "COMPLETED") count = statusItem.completed.count;
+        else if (st.key === "FEEDBACK")
+          count = repairs.filter((item) => item.has_feedback === "1").length;
 
         return (
           <Pressable
             key={st.key}
-            width="30%"
+            width="23.5%"
             mb="4"
             onPress={() =>
               navigation.navigate("RepairHistoryScreen", { statusKey: st.key })
@@ -156,7 +159,16 @@ const HomeScreen: React.FC = () => {
   const renderActivityAll = (repairs: IRepair[]) => (
     <>
       {repairs.slice(0, 3).map((item, key) => {
-        const status = statusItems[item.status as keyof typeof statusItems];
+        let status = statusItems[item.status as keyof typeof statusItems];
+
+        // ถ้า status เป็น feedback และ has_feedback !== 1 ให้ใช้ status เริ่มต้น
+        if (item.status === "feedback" && item.has_feedback !== "1") {
+          status = {
+            text: item.status,
+            icon: "alert-circle",
+            color: "gray.400",
+          };
+        }
 
         return (
           <Pressable
@@ -184,7 +196,7 @@ const HomeScreen: React.FC = () => {
               </Center>
 
               <VStack flex={1} space={1}>
-                <HStack>
+                <HStack alignItems="center">
                   <Text
                     color={colorTheme.colors.text}
                     fontSize="md"
@@ -195,20 +207,52 @@ const HomeScreen: React.FC = () => {
                   >
                     {item.rp_format}
                   </Text>
-                  <Badge
-                    bgColor={status.color}
-                    variant="solid"
-                    px={2}
-                    py={0.5}
-                    rounded="full"
-                    _text={{
-                      fontSize: "2xs",
-                      fontWeight: "bold",
-                      color: "white",
-                    }}
-                  >
-                    {t(`PROCESS.${status.text}`)}
-                  </Badge>
+                  <VStack space={1}>
+                    <Badge
+                      bgColor={status.color}
+                      variant="solid"
+                      px={2}
+                      py={0.5}
+                      rounded="full"
+                      alignSelf="flex-end"
+                      _text={{
+                        fontSize: "2xs",
+                        fontWeight: "bold",
+                        color: "white",
+                      }}
+                    >
+                      {t(`PROCESS.${status.text}`)}
+                    </Badge>
+                    {item.status === "completed" &&
+                      item.has_feedback === "0" && (
+                        <Badge
+                          bgColor="yellow.100"
+                          borderColor="yellow.500"
+                          variant="outline"
+                          px={2}
+                          py={0.5}
+                          rounded="full"
+                          _text={{
+                            fontSize: "2xs",
+                            fontWeight: "bold",
+                            color: "yellow.500",
+                          }}
+                        >
+                          <HStack alignItems="center" space={1}>
+                            
+                              <Icon
+                                as={Ionicons}
+                                name="alert-circle"
+                                size="4"
+                                color="yellow.500"
+                              />
+                            <Text fontSize="2xs" bold color="yellow.500">
+                              {t(`PROCESS.WAITING_FEEDBACK`)}
+                            </Text>
+                          </HStack>
+                        </Badge>
+                      )}
+                  </VStack>
                 </HStack>
                 <Text
                   color={colorTheme.colors.text}
@@ -251,6 +295,20 @@ const HomeScreen: React.FC = () => {
   return (
     <ScreenWrapper refreshing={refreshing} onRefresh={onRefresh}>
       <VStack space={4}>
+        {user?.role !== "admin" &&
+          repairs.some(
+            (item) =>
+              item.created_by.user_id === user?.id &&
+              item.status === "completed" &&
+              item.has_feedback === "0"
+          ) &&
+          renderMyTasksSection(
+            t("COMMON.FEEDBACK"),
+            repairs.filter(
+              (item) => item.status === "completed" && item.has_feedback === "0"
+            )
+          )}
+
         <HStack justifyContent="space-between" alignItems="center">
           <Text color={colorTheme.colors.text} fontSize="lg" fontWeight="bold">
             {t("MAIN.REPAIR_SUMMARY")}
@@ -263,7 +321,6 @@ const HomeScreen: React.FC = () => {
             ทั้งหมด: {statusItem.total.count}
           </Text>
         </HStack>
-
         <Pressable
           onPress={() =>
             navigation.navigate("RepairHistoryScreen", { statusKey: "all" })
@@ -320,7 +377,7 @@ const HomeScreen: React.FC = () => {
             )
           )}
 
-        {user?.role === "employer" &&
+        {user?.role !== "admin" &&
           repairs.some((item) => item.created_by.user_id === user?.id) &&
           renderMyTasksSection(
             t("PROCESS.MY_REPAIR_REQ"),

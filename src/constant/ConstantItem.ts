@@ -1,7 +1,7 @@
 export const statusItems = {
   pending: {
     text: "PENDING",
-    color: "#FFA500",
+    color: "#fb923c",
     icon: "hourglass-outline",
   },
   completed: {
@@ -14,10 +14,10 @@ export const statusItems = {
     color: "#1E90FF",
     icon: "construct",
   },
-  my_job: {
-    text: "MY_JOB",
-    color: "#FFD700",
-    icon: "briefcase",
+  feedback: {
+    text: "FEEDBACK",
+    color: "#facc15",
+    icon: "star",
   },
 };
 
@@ -36,7 +36,7 @@ export const getBackgroundColor = (color: string) => {
 export const statusAll = [
   {
     key: "PENDING",
-    color: "amber.500",
+    color: "orange.400",
     icon: "hourglass",
   },
   {
@@ -49,6 +49,11 @@ export const statusAll = [
     color: "green.500",
     icon: "checkmark-circle",
   },
+  {
+    key: "FEEDBACK",
+    color: "yellow.400",
+    icon: "star",
+  }
 ];
 
 export const processItem = [

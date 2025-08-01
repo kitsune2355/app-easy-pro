@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Linking, Pressable, TouchableOpacity } from "react-native";
+import { Linking, Pressable, TouchableOpacity, ScrollView } from "react-native";
 import {
   RouteProp,
   useFocusEffect,
@@ -26,12 +26,13 @@ import { dayJs } from "../config/dayJs";
 import SearchBar from "../components/SearchBar";
 import { fetchAllRepairs } from "../service/repairService";
 import { AppDispatch, RootState } from "../store";
-import { useToastMessage } from "../components/ToastMessage";
 import { IRepair } from "../interfaces/repair.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ScreenWrapper from "../components/ScreenWrapper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
+import { useAuth } from "../hooks/useAuth";
+import { fetchUserById } from "../service/userService";
 
 type mainTabType = "ALL" | "MINE";
 type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
@@ -58,27 +59,15 @@ const RepairHistoryCard = ({
   subTab: subTabType;
 }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { user } = useAuth();
   const navigation = useNavigation<StackNavigationProp<StackParamsList>>();
   const [isOpen, setIsOpen] = useState(true);
-  const [accepting, setAccepting] = useState(false);
-  const { showToast } = useToastMessage();
 
-  // const handleAcceptWork = useCallback(async (id: string) => {
-  //   try {
-  //     setAccepting(true);
-  //     const res = await dispatch(updateRepairStatus(id, "inprogress"));
-  //     if (res?.status === "success") {
-  //       showToast("success", `${t("WORK_ACCEPTANCE.SUCCESS_MESSAGE")} #${id}`);
-  //     } else {
-  //       showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating repair status:", error);
-  //     showToast("error", t("WORK_ACCEPTANCE.ERROR_MESSAGE"));
-  //   } finally {
-  //     setAccepting(false);
-  //   }
-  // },[dispatch, showToast, t]);
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchUserById(user.id));
+    }
+  }, []);
 
   return (
     <VStack
@@ -126,16 +115,59 @@ const RepairHistoryCard = ({
           borderTopColor={colorTheme.colors.border}
           space={3}
         >
-          <HStack space={2}>
-            <Badge
-              bgColor={statusColor}
-              rounded="full"
-              px={2}
-              py={0.5}
-              _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
-            >
-              {t(`PROCESS.${statusText}`)}
-            </Badge>
+          <HStack justifyContent="space-between" alignItems="center">
+            <HStack space={1}>
+              <Badge
+                bgColor={statusColor}
+                rounded="full"
+                px={2}
+                py={0.5}
+                _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
+              >
+                {t(`PROCESS.${statusText}`)}
+              </Badge>
+              {item.status === "completed" && item.has_feedback === "0" && (
+                <Badge
+                  bgColor="yellow.100"
+                  borderColor="yellow.500"
+                  variant="outline"
+                  px={2}
+                  py={0.5}
+                  rounded="full"
+                  _text={{
+                    fontSize: "2xs",
+                    fontWeight: "bold",
+                    color: "yellow.500",
+                  }}
+                >
+                  <HStack alignItems="center" space={1}>
+                    <Icon
+                      as={Ionicons}
+                      name="alert-circle"
+                      size="4"
+                      color="yellow.500"
+                    />
+                    <Text fontSize="2xs" bold color="yellow.500">
+                      {t(`PROCESS.WAITING_FEEDBACK`)}
+                    </Text>
+                  </HStack>
+                </Badge>
+              )}
+            </HStack>
+            <HStack space={1}>
+              {item.has_feedback === "1" &&
+                Array.from({ length: parseInt(item.feedback?.rating) }).map(
+                  (_, index) => (
+                    <Icon
+                      key={index}
+                      as={Ionicons}
+                      name="star"
+                      size="sm"
+                      color="yellow.400"
+                    />
+                  )
+                )}
+            </HStack>
           </HStack>
 
           <HStack space={3}>
@@ -158,9 +190,7 @@ const RepairHistoryCard = ({
             <TouchableOpacity
               onPress={() => Linking.openURL(`tel:${item.phone}`)}
             >
-              <Text color="blue.500">
-                {item.phone}
-              </Text>
+              <Text color="blue.500">{item.phone}</Text>
             </TouchableOpacity>
           </HStack>
 
@@ -202,9 +232,10 @@ const RepairHistoryCard = ({
 
           <VStack space={1}>
             <Button
-              variant="outline"
+              variant="solid"
               rounded="3xl"
               size="sm"
+              borderWidth={1}
               borderColor={statusColor}
               _text={{ color: statusColor, fontWeight: "bold" }}
               onPress={() =>
@@ -213,35 +244,24 @@ const RepairHistoryCard = ({
             >
               {t("COMMON.MORE_DETAILS")}
             </Button>
-            {/* <Button
-              variant="solid"
-              rounded="3xl"
-              size="sm"
-              bg={statusColor}
-              _text={{ color: "white", fontWeight: "bold" }}
-              isDisabled={item.status !== "pending"}
-              isLoading={accepting}
-              onPress={() => handleAcceptWork(item.id)}
-            >
-              {t("ACCEPT_WORK")}
-            </Button>
-            {item.process_date && item.process_time && (
-              <Button
-                variant="solid"
-                rounded="3xl"
-                size="sm"
-                bg={statusColor}
-                _text={{ color: "white", fontWeight: "bold" }}
-                isDisabled={item.status === "completed"}
-                onPress={() =>
-                  navigation.navigate("RepairSubmitScreen", {
-                    repairId: item.id,
-                  })
-                }
-              >
-                {t("SUBMIT_WORK")}
-              </Button>
-            )} */}
+            {user?.role !== "admin" &&
+              item.status === "completed" &&
+              item.has_feedback === "0" && (
+                <Button
+                  variant="solid"
+                  rounded="3xl"
+                  size="sm"
+                  bg={statusColor}
+                  _text={{ color: "white", fontWeight: "bold" }}
+                  onPress={() =>
+                    navigation.navigate("RepairDetailScreen", {
+                      repairId: item.id,
+                    })
+                  }
+                >
+                  {t("COMMON.FEEDBACK")}
+                </Button>
+              )}
           </VStack>
         </VStack>
       </Collapse>
@@ -328,8 +348,8 @@ const RepairHistoryScreen = () => {
 
   const tabOptions =
     mainTab === "ALL"
-      ? ["ALL", "PENDING", "INPROGRESS", "COMPLETED"]
-      : ["ALL", "INPROGRESS", "COMPLETED"];
+      ? ["ALL", "PENDING", "INPROGRESS", "COMPLETED", "FEEDBACK"]
+      : ["ALL", "INPROGRESS", "COMPLETED", "FEEDBACK"];
 
   return (
     <VStack flex={1} bg={colorTheme.colors.background}>
@@ -375,34 +395,42 @@ const RepairHistoryScreen = () => {
           </HStack>
         )}
 
-        <HStack
+        <VStack
           bg={colorTheme.colors.card}
           borderBottomWidth={1}
           borderBottomColor={colorTheme.colors.border}
         >
-          {tabOptions.map((tab) => (
-            <Pressable
-              key={tab}
-              onPress={() => setSubTab(tab as typeof subTab)}
-              style={{ flex: 1 }}
-            >
-              <Center
-                py={2}
-                bg={
-                  subTab === tab ? colorTheme.colors.darkLight : "transparent"
-                }
-              >
-                <Text
-                  fontSize="sm"
-                  fontWeight="bold"
-                  color={subTab === tab ? "white" : colorTheme.colors.text}
+          <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+            <HStack space={0}>
+              {tabOptions.map((tab) => (
+                <Pressable
+                  key={tab}
+                  onPress={() => setSubTab(tab as typeof subTab)}
+                  style={{ minWidth: 100 }}
                 >
-                  {t(`PROCESS.${tab}`)}
-                </Text>
-              </Center>
-            </Pressable>
-          ))}
-        </HStack>
+                  <Center
+                    py={2}
+                    px={4}
+                    bg={
+                      subTab === tab
+                        ? colorTheme.colors.darkLight
+                        : "transparent"
+                    }
+                  >
+                    <Text
+                      fontSize="sm"
+                      fontWeight="bold"
+                      color={subTab === tab ? "white" : colorTheme.colors.text}
+                      textAlign="center"
+                    >
+                      {t(`PROCESS.${tab}`)}
+                    </Text>
+                  </Center>
+                </Pressable>
+              ))}
+            </HStack>
+          </ScrollView>
+        </VStack>
       </>
 
       <ScreenWrapper>

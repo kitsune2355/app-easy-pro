@@ -37,7 +37,9 @@ export const useAlertDialog = () => {
 
   const closeAlertDialog = () => {
     setAlertProps(null);
-    onClose();
+    setTimeout(() => {
+      onClose();
+    }, 1000);
   };
 
   const getStatusProps = (status: AlertProps["status"]) => {

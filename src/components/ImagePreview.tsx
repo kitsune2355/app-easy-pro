@@ -21,8 +21,23 @@ export const parseImageUrls = (raw: any): string[] => {
   try {
     if (typeof raw === "string") {
       if (!raw.trim()) return [];
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      // กรณี string ที่เหมือน array แต่ขาด ] ปิด
+      if (raw.trim().startsWith("[") && !raw.trim().endsWith("]")) {
+        try {
+          const fixed = raw.trim() + "]";
+          const parsed = JSON.parse(fixed);
+          if (Array.isArray(parsed)) return parsed;
+        } catch {}
+      }
+      // ปกติ
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+        if (typeof parsed === "string") return [parsed];
+      } catch {
+        // ถ้า parse ไม่ได้ แปลว่าเป็น path เดี่ยว
+        return [raw];
+      }
     } else if (Array.isArray(raw)) {
       return raw;
     }
@@ -91,12 +106,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
               }}
               onPress={() => onRemoveImage(index)}
             >
-              <Icon
-                as={MaterialIcons}
-                name="close"
-                size="4"
-                color="white"
-              />
+              <Icon as={MaterialIcons} name="close" size="4" color="white" />
             </TouchableOpacity>
           )}
         </Box>
@@ -107,14 +117,10 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
   return (
     <Box mt="3">
       {noScroll ? (
-        <HStack flexWrap="wrap">
-          {ImageContent}
-        </HStack>
+        <HStack flexWrap="wrap">{ImageContent}</HStack>
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <HStack>
-            {ImageContent}
-          </HStack>
+          <HStack>{ImageContent}</HStack>
         </ScrollView>
       )}
 
