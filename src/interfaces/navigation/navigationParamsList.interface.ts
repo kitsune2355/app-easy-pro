@@ -7,9 +7,9 @@ export type StackParamsList = {
   MainDrawer: undefined;
   NotificationScreen: undefined;
   RepairScreen: undefined;
-  RepairHistoryScreen: {statusKey: string};
-  RepairSubmitScreen: {repairId?: string};
-  RepairDetailScreen: {repairId: string};
+  RepairHistoryScreen: { statusKey: string };
+  RepairSubmitScreen: { repairId?: string };
+  RepairDetailScreen: { repairId: string; notificationId?: number };
 };
 export type DrawerParamsList = {
   MainStack: NavigatorScreenParams<StackParamsList>;

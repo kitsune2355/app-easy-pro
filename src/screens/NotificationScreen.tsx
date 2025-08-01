@@ -89,6 +89,7 @@ const NotificationScreen: React.FC = () => {
           }
           navigation.navigate("RepairDetailScreen", {
             repairId: notification.related_id.toString(),
+            notificationId: notification.id,
           });
         }}
       >

@@ -95,7 +95,7 @@ const AppBarHeader: React.FC<AppBarHeaderProps> = ({ title }) => {
                         color: "white",
                       }}
                     >
-                      {unreadCount}
+                      {unreadCount > 99 ? "99+" : unreadCount}
                     </Badge>
                   )}
                   <IconButton

@@ -90,7 +90,7 @@ const MainDrawer: React.FC = () => {
               <Icon
                 as={Ionicons}
                 name="person-circle"
-                size='5xl'
+                size="5xl"
                 color={"white"}
               />
               <VStack>
@@ -147,6 +147,8 @@ const MainDrawer: React.FC = () => {
         drawerInactiveTintColor: "white",
         drawerLabelStyle: {
           fontWeight: "bold",
+          fontFamily: "Prompt_500Medium",
+          fontSize: 14,
         },
       }}
       drawerContent={renderDrawerContent}
@@ -155,7 +157,9 @@ const MainDrawer: React.FC = () => {
         name={"MainBottomTab" as keyof DrawerParamsList}
         component={MainBottomTab}
         options={{
-          title: t("SCREENS.HOME"),
+          drawerLabel: ({ color }) => (
+            <Text style={{ color }}>{t("SCREENS.HOME")}</Text>
+          ),
           drawerIcon: ({ focused, color }) => (
             <Icon
               as={Ionicons}
@@ -172,7 +176,9 @@ const MainDrawer: React.FC = () => {
           name={item.title as keyof DrawerParamsList}
           component={item.screen}
           options={{
-            title: t(`MENU.${item.title}`),
+            drawerLabel: ({ color }) => (
+              <Text style={{ color }}>{t(`MENU.${item.title}`)}</Text>
+            ),
             drawerIcon: ({ focused, color }) => (
               <Icon
                 as={Ionicons}

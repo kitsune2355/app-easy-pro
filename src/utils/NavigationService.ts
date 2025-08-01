@@ -1,11 +1,11 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+import { createNavigationContainerRef } from "@react-navigation/native";
+import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 
-export const navigationRef = createNavigationContainerRef();
+export const navigationRef = createNavigationContainerRef<StackParamsList>();
 
-export function navigate(name: string, params?: any) {
+export function navigate(name: keyof StackParamsList, params?: any) {
   if (navigationRef.isReady()) {
-    // @ts-ignore
-    navigationRef.navigate(name, params);
+    (navigationRef as any).navigate(name, params);
   }
 }
 

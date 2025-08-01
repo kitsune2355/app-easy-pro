@@ -312,7 +312,7 @@ const RepairDetailTechnicianView: React.FC<
                   </FormControl.ErrorMessage>
                 </FormControl>
 
-                {isRequired && userRole === "admin" && repairDetail.status === "completed" && (
+                {isRequired && userRole === "admin" && repairDetail.status !== "feedback" && (
                   <Button
                     variant="subtle"
                     colorScheme="emerald"

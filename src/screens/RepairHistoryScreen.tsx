@@ -33,6 +33,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import { useAuth } from "../hooks/useAuth";
 import { fetchUserById } from "../service/userService";
+import { findNotificationIdByRepairId } from "../utils/notifications";
+import { INotification } from "../interfaces/notify.interface";
 
 type mainTabType = "ALL" | "MINE";
 type subTabType = "ALL" | "PENDING" | "INPROGRESS" | "COMPLETED";
@@ -48,6 +50,7 @@ const RepairHistoryCard = ({
   statusIcon,
   statusColor,
   t,
+  notifications,
 }: {
   item: IRepair;
   colorTheme: any;
@@ -57,6 +60,7 @@ const RepairHistoryCard = ({
   t: any;
   mainTab: mainTabType;
   subTab: subTabType;
+  notifications: INotification[];
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuth();
@@ -68,6 +72,8 @@ const RepairHistoryCard = ({
       dispatch(fetchUserById(user.id));
     }
   }, []);
+
+  const notificationId = findNotificationIdByRepairId(notifications, item.id);
 
   return (
     <VStack
@@ -239,7 +245,10 @@ const RepairHistoryCard = ({
               borderColor={statusColor}
               _text={{ color: statusColor, fontWeight: "bold" }}
               onPress={() =>
-                navigation.navigate("RepairDetailScreen", { repairId: item.id })
+                navigation.navigate("RepairDetailScreen", {
+                  repairId: item.id,
+                  notificationId: notificationId || undefined,
+                })
               }
             >
               {t("COMMON.MORE_DETAILS")}
@@ -256,6 +265,7 @@ const RepairHistoryCard = ({
                   onPress={() =>
                     navigation.navigate("RepairDetailScreen", {
                       repairId: item.id,
+                      notificationId: notificationId || undefined,
                     })
                   }
                 >
@@ -274,6 +284,7 @@ const RepairHistoryScreen = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { repairs } = useSelector((state: RootState) => state.repair);
+  const { notifications } = useSelector((state: RootState) => state.notify);
 
   const route =
     useRoute<RouteProp<Record<string, RepairHistoryParams>, string>>();
@@ -453,6 +464,7 @@ const RepairHistoryScreen = () => {
                   t={t}
                   mainTab={mainTab}
                   subTab={subTab}
+                  notifications={notifications}
                 />
               );
             })}

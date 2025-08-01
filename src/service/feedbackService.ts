@@ -3,6 +3,7 @@ import { AppDispatch } from "../store";
 import { env } from "../config/environment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateHasFeedback } from "../redux/repairSlice";
+import { fetchRepairById } from "./repairService";
 
 export interface IFeedbackForm {
   repair_id: number;
@@ -45,6 +46,14 @@ export const submitFeedback =
 
       if (result.status === "success") {
         dispatch(updateHasFeedback(1));
+        
+        // Fetch updated repair details to get real-time feedback data
+        try {
+          await dispatch(fetchRepairById(form.repair_id.toString()));
+        } catch (fetchError) {
+          console.warn("Failed to fetch updated repair details:", fetchError);
+          // Continue with success even if fetch fails
+        }
 
         return {
           status: "success",
