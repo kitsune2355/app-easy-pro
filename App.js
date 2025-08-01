@@ -11,6 +11,7 @@ import { LoadingProvider } from "./src/context/LoadingContext";
 import { navigationRef } from "./src/utils/NavigationService";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Notifications from "expo-notifications";
+import { setupNotificationHandler } from "./src/utils/notifications";
 
 // ✅ เพิ่ม Handler นี้เพื่อให้แสดง Notification ตอนแอปเปิดอยู่
 Notifications.setNotificationHandler({
@@ -25,10 +26,22 @@ function AppContent() {
   const { colorTheme } = useTheme();
   const isDark = colorTheme.colors.background === "#121212";
 
+  useEffect(() => {
+    // ตั้งค่า Notification Handler เมื่อแอปเริ่มต้น
+    const cleanup = setupNotificationHandler();
+
+    // Cleanup function เมื่อ component unmount
+    return cleanup;
+  }, []);
+
   return (
     <SafeAreaProvider>
       <NavigationContainer theme={colorTheme} ref={navigationRef}>
-        <StatusBar translucent backgroundColor="transparent" barStyle={isDark ? 'light-content' : 'dark-content'} />
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle={isDark ? "light-content" : "dark-content"}
+        />
         <MainStack />
       </NavigationContainer>
     </SafeAreaProvider>

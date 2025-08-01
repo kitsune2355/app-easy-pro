@@ -6,6 +6,8 @@ import { env } from "../config/environment";
 import { AppDispatch } from "../store";
 import { markNotificationAsRead } from "../service/notifyService";
 import { INotification } from "../interfaces/notify.interface";
+import { navigationRef, navigate } from "./NavigationService";
+import store from "../store";
 
 export async function registerForPushNotificationsAsync(): Promise<
   string | null
@@ -119,4 +121,96 @@ export const isValidNotification = (notification: any): boolean => {
     notification.id > 0 &&
     typeof notification.is_read === "boolean"
   );
+};
+
+/**
+ * Notification Handler สำหรับจัดการการคลิกแจ้งเตือน
+ * จะทำงานเมื่อแอปเปิดอยู่ (foreground หรือ background)
+ */
+export const setupNotificationHandler = () => {
+  // Handler สำหรับเมื่อแอปเปิดอยู่ (foreground)
+  const foregroundHandler = Notifications.addNotificationReceivedListener(
+    (notification) => {
+      console.log("📱 Notification received in foreground:", notification);
+    }
+  );
+
+  // Handler สำหรับเมื่อคลิกแจ้งเตือน
+  const responseHandler = Notifications.addNotificationResponseReceivedListener(
+    (response) => {
+      console.log("👆 Notification clicked:", response);
+
+      const data = response.notification.request.content.data;
+      console.log("📋 Notification data:", data);
+
+      // ตรวจสอบว่ามีข้อมูล screen และ params หรือไม่
+      if (data && data.screen) {
+        handleNotificationNavigation(data);
+      }
+    }
+  );
+
+  return () => {
+    foregroundHandler.remove();
+    responseHandler.remove();
+  };
+};
+
+/**
+ * จัดการการนำทางตามข้อมูลจาก notification
+ */
+const handleNotificationNavigation = (data: any) => {
+  try {
+    const { screen, params } = data;
+
+    // ตรวจสอบว่า navigationRef พร้อมใช้งานหรือไม่
+    if (!navigationRef.isReady()) {
+      console.log("⏳ Navigation not ready, retrying in 1 second...");
+      setTimeout(() => handleNotificationNavigation(data), 1000);
+      return;
+    }
+
+    // นำทางไปยัง screen ที่ต้องการ
+    switch (screen) {
+      case "RepairDetailScreen":
+        if (params && params.repairId) {
+          console.log(
+            "🔧 Navigating to RepairDetailScreen with repairId:",
+            params.repairId
+          );
+          navigate("RepairDetailScreen", {
+            repairId: params.repairId.toString(),
+            notificationId: params.notificationId || undefined,
+          });
+
+          // Mark notification as read if notificationId is provided
+          if (params.notificationId) {
+            // ใช้ setTimeout เพื่อให้การนำทางเสร็จสิ้นก่อน
+            setTimeout(() => {
+              markNotificationAsReadWithValidation(
+                store.dispatch,
+                params.notificationId
+              );
+            }, 1000);
+          }
+        }
+        break;
+
+      case "NotificationScreen":
+        console.log("🔔 Navigating to NotificationScreen");
+        navigate("NotificationScreen");
+        break;
+
+      case "RepairHistoryScreen":
+        console.log("📋 Navigating to RepairHistoryScreen");
+        navigate("RepairHistoryScreen", { statusKey: "all" });
+        break;
+
+      default:
+        console.log("❓ Unknown screen:", screen);
+        break;
+    }
+  } catch (error) {
+    console.error("❌ Error handling notification navigation:", error);
+  }
 };
