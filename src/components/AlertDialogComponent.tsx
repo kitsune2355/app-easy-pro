@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AlertDialog,
   Button,
@@ -25,6 +25,16 @@ export const useAlertDialog = () => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const [alertProps, setAlertProps] = useState<AlertProps | null>(null);
 
+  useEffect(() => {
+    if (isOpen && alertProps) {
+      const timer = setTimeout(() => {
+        closeAlertDialog();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, alertProps]);
+
   const showAlertDialog = (
     title: string,
     desc?: string,
@@ -37,9 +47,7 @@ export const useAlertDialog = () => {
 
   const closeAlertDialog = () => {
     setAlertProps(null);
-    setTimeout(() => {
-      onClose();
-    }, 1000);
+    onClose();
   };
 
   const getStatusProps = (status: AlertProps["status"]) => {

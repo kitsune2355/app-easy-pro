@@ -278,8 +278,11 @@ const RepairDetailScreen: React.FC = () => {
                     </Button>
                   )}
 
-                  {repairDetail.feedback && (
-                    <RepairDetailFeedbackInfoView repairDetail={repairDetail} />
+                {repairDetail.status === "feedback" &&
+                  repairDetail.feedback?.rating && (
+                    <RepairDetailFeedbackInfoView
+                      repairDetail={repairDetail}
+                    />
                   )}
               </VStack>
             )}
