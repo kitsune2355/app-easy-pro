@@ -33,6 +33,7 @@ import { markNotificationAsRead } from "../service/notifyService";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import RepairDetailFeedbackView from "../views/RepairDetailView/RepairDetailFeedbackView";
+import RepairDetailFeedbackInfoView from "../views/RepairDetailView/RepairDetailFeedbackInfoView";
 
 const RepairDetailScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -275,6 +276,10 @@ const RepairDetailScreen: React.FC = () => {
                     >
                       {t("SUBMIT_WORK")}
                     </Button>
+                  )}
+
+                  {repairDetail.feedback && (
+                    <RepairDetailFeedbackInfoView repairDetail={repairDetail} />
                   )}
               </VStack>
             )}

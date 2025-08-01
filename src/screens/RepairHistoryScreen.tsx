@@ -116,27 +116,58 @@ const RepairHistoryCard = ({
           space={3}
         >
           <HStack justifyContent="space-between" alignItems="center">
-            <Badge
-              bgColor={statusColor}
-              rounded="full"
-              px={2}
-              py={0.5}
-              _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
-            >
-              {t(`PROCESS.${statusText}`)}
-            </Badge>
             <HStack space={1}>
-            {item.has_feedback === "1" && (
-              Array.from({ length: parseInt(item.feedback?.rating) }).map((_, index) => (
-                <Icon
-                  key={index}
-                  as={Ionicons}
-                  name="star"
-                  size="sm"
-                  color="yellow.400"
-                />
-              ))
-            )}</HStack>
+              <Badge
+                bgColor={statusColor}
+                rounded="full"
+                px={2}
+                py={0.5}
+                _text={{ fontSize: "2xs", fontWeight: "bold", color: "white" }}
+              >
+                {t(`PROCESS.${statusText}`)}
+              </Badge>
+              {item.status === "completed" && item.has_feedback === "0" && (
+                <Badge
+                  bgColor="yellow.100"
+                  borderColor="yellow.500"
+                  variant="outline"
+                  px={2}
+                  py={0.5}
+                  rounded="full"
+                  _text={{
+                    fontSize: "2xs",
+                    fontWeight: "bold",
+                    color: "yellow.500",
+                  }}
+                >
+                  <HStack alignItems="center" space={1}>
+                    <Icon
+                      as={Ionicons}
+                      name="alert-circle"
+                      size="4"
+                      color="yellow.500"
+                    />
+                    <Text fontSize="2xs" bold color="yellow.500">
+                      {t(`PROCESS.WAITING_FEEDBACK`)}
+                    </Text>
+                  </HStack>
+                </Badge>
+              )}
+            </HStack>
+            <HStack space={1}>
+              {item.has_feedback === "1" &&
+                Array.from({ length: parseInt(item.feedback?.rating) }).map(
+                  (_, index) => (
+                    <Icon
+                      key={index}
+                      as={Ionicons}
+                      name="star"
+                      size="sm"
+                      color="yellow.400"
+                    />
+                  )
+                )}
+            </HStack>
           </HStack>
 
           <HStack space={3}>

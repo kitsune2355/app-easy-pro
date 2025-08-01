@@ -36,7 +36,8 @@
     "INPROGRESS": "ดำเนินการ",
     "COMPLETED": "เสร็จสิ้น",
     "FEEDBACK": "ประเมินแล้ว",
-    "WAITING_FEEDBACK": "รอการประเมิน"
+    "WAITING_FEEDBACK": "รอการประเมิน",
+    "FEEDBACK_INFO": "ข้อมูลการประเมิน"
   },
   "MENU": {
     "REPAIR_REQ": "แจ้งซ่อม",

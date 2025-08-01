@@ -36,7 +36,8 @@
     "INPROGRESS": "in progress",
     "COMPLETED": "completed",
     "FEEDBACK": "feedback",
-    "WAITING_FEEDBACK": "waiting feedback"
+    "WAITING_FEEDBACK": "waiting feedback",
+    "FEEDBACK_INFO": "Feedback info"
   },
   "MENU": {
     "REPAIR_REQ": "Repair Request",
