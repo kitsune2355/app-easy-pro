@@ -34,6 +34,7 @@ import { IRepair } from "../interfaces/repair.interface";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
+import { findNotificationIdByRepairId } from "../utils/notifications";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -42,9 +43,9 @@ const HomeScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { repairs } = useSelector((state: any) => state.repair);
   const { user } = useSelector((state: RootState) => state.auth);
+  const { notifications } = useSelector((state: RootState) => state.notify);
   const statusItem = getStatusSummary(repairs);
   const [refreshing, setRefreshing] = useState(false);
-
 
   useDoubleBackExit();
 
@@ -118,43 +119,53 @@ const HomeScreen: React.FC = () => {
     </>
   );
 
-  const renderProcessItem = (item: any, key: number) => (
-    <Pressable
-      key={item.title}
-      width="48%"
-      mb="4"
-      onPress={() => navigation.navigate(item.screen as never)}
-    >
-      {item.role.includes(user?.role) && (
-        <Box
-          bg={{
-            linearGradient: {
-              colors: gradientcolorTheme[key],
-              start: [0, 0],
-              end: [1, 1],
-            },
-          }}
-          rounded="3xl"
-          shadow={2}
-          p="4"
-          h="32"
-        >
-          <Center flex={1}>
-            <Icon as={Ionicons} name={item.icon} size="12" color="white" />
-            <Text
-              color="white"
-              fontSize="md"
-              mb="1"
-              textAlign="center"
-              fontWeight="bold"
-            >
-              {t(`MENU.${item.title}`)}
-            </Text>
-          </Center>
-        </Box>
-      )}
-    </Pressable>
-  );
+  const renderProcessItem = (item: any, key: number) => {
+    const status = statusItems[item.status as keyof typeof statusItems] || {
+      icon: "help",
+      color: "gray.400",
+      text: "UNKNOWN",
+    };
+
+    const notificationId = findNotificationIdByRepairId(notifications, item.id);
+
+    return (
+      <Pressable
+        key={item.title}
+        width="48%"
+        mb="4"
+        onPress={() => navigation.navigate(item.screen as never)}
+      >
+        {item.role.includes(user?.role) && (
+          <Box
+            bg={{
+              linearGradient: {
+                colors: gradientcolorTheme[key],
+                start: [0, 0],
+                end: [1, 1],
+              },
+            }}
+            rounded="3xl"
+            shadow={2}
+            p="4"
+            h="32"
+          >
+            <Center flex={1}>
+              <Icon as={Ionicons} name={item.icon} size="12" color="white" />
+              <Text
+                color="white"
+                fontSize="md"
+                mb="1"
+                textAlign="center"
+                fontWeight="bold"
+              >
+                {t(`MENU.${item.title}`)}
+              </Text>
+            </Center>
+          </Box>
+        )}
+      </Pressable>
+    );
+  };
 
   const renderActivityAll = (repairs: IRepair[]) => (
     <>
@@ -178,7 +189,12 @@ const HomeScreen: React.FC = () => {
             p="4"
             key={key}
             onPress={() =>
-              navigation.navigate("RepairDetailScreen", { repairId: item.id })
+              navigation.navigate("RepairDetailScreen", {
+                repairId: item.id,
+                notificationId:
+                  findNotificationIdByRepairId(notifications, item.id) ||
+                  undefined,
+              })
             }
           >
             <HStack alignItems="flex-start" space={3}>
@@ -239,13 +255,12 @@ const HomeScreen: React.FC = () => {
                           }}
                         >
                           <HStack alignItems="center" space={1}>
-                            
-                              <Icon
-                                as={Ionicons}
-                                name="alert-circle"
-                                size="4"
-                                color="yellow.500"
-                              />
+                            <Icon
+                              as={Ionicons}
+                              name="alert-circle"
+                              size="4"
+                              color="yellow.500"
+                            />
                             <Text fontSize="2xs" bold color="yellow.500">
                               {t(`PROCESS.WAITING_FEEDBACK`)}
                             </Text>
@@ -378,10 +393,18 @@ const HomeScreen: React.FC = () => {
           )}
 
         {user?.role !== "admin" &&
-          repairs.some((item) => item.created_by.user_id === user?.id) &&
+          repairs.some(
+            (item) =>
+              item.created_by.user_id === user?.id &&
+              item.status !== "feedback"
+          ) &&
           renderMyTasksSection(
             t("PROCESS.MY_REPAIR_REQ"),
-            repairs.filter((item) => item.created_by.user_id === user?.id)
+            repairs.filter(
+              (item) =>
+                item.created_by.user_id === user?.id &&
+                item.status !== "feedback"
+            )
           )}
       </VStack>
     </ScreenWrapper>

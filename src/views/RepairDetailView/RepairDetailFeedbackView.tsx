@@ -53,13 +53,22 @@ const RepairDetailFeedbackView: React.FC<RepairDetailFeedbackViewProps> = ({
       const result = await dispatch(submitFeedback(feedbackForm) as any);
 
       if (result.status === "success") {
-        showAlertDialog(t("ALERT.SUCCESS"), t("ALERT.FEEDBACK_SUBMITTED"), "success");
+        showAlertDialog(
+          t("ALERT.SUCCESS"),
+          t("ALERT.FEEDBACK_SUBMITTED"),
+          "success"
+        );
         // Reset form after successful submission
         setRating(3);
         setComment("");
+        // The repair detail will be automatically updated via fetchRepairById in submitFeedback
       } else {
-        showAlertDialog(t("ALERT.ERROR"), t("ALERT.ERROR"), "error");
-        console.error("result", result.message);
+        showAlertDialog(
+          t("ALERT.ERROR"),
+          result.message || t("ALERT.ERROR"),
+          "error"
+        );
+        console.error("Feedback submission error:", result.message);
       }
     } catch (error: any) {
       showAlertDialog(

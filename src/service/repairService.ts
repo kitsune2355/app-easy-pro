@@ -6,6 +6,8 @@ import {
   setRepairDetail,
   setServiceType,
   setJobType,
+  setSelectedServiceType,
+  setSelectedJobType,
 } from "../redux/repairSlice";
 import { AppDispatch } from "../store";
 import { env } from "../config/environment";
@@ -320,8 +322,10 @@ export const fetchAllJobType = () => async (dispatch: AppDispatch) => {
 export const fetchServiceTypeById = (id: string) => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.get(`${env.API_ENDPOINT}/get_all_service_type.php?id=${id}`);
-    dispatch(setServiceType(response.data.service_type));
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_service_type.php?rpg_id=${id}`);
+    if (response.data.service_type?.length > 0) {
+      dispatch(setSelectedServiceType(response.data.service_type[0]));
+    }
   } catch (error) {
     dispatch(setError("Failed to fetch service type"));
   } finally {
@@ -332,8 +336,10 @@ export const fetchServiceTypeById = (id: string) => async (dispatch: AppDispatch
 export const fetchJobTypeById = (id: string) => async (dispatch: AppDispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.get(`${env.API_ENDPOINT}/get_all_job_type.php?id=${id}`);
-    dispatch(setJobType(response.data.job_type));
+    const response = await axios.get(`${env.API_ENDPOINT}/get_all_job_type.php?rps_id=${id}`);
+    if (response.data.job_type?.length > 0) {
+      dispatch(setSelectedJobType(response.data.job_type[0]));
+    }
   } catch (error) {
     dispatch(setError("Failed to fetch job type"));
   } finally {

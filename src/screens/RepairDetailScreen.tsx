@@ -29,7 +29,7 @@ import { useToastMessage } from "../components/ToastMessage";
 import RepairDetailSummaryView from "../views/RepairDetailView/RepairDetailSummaryView";
 import { useAuth } from "../hooks/useAuth";
 import { fetchUserById } from "../service/userService";
-import { markNotificationAsRead } from "../service/notifyService";
+import { markNotificationAsReadWithValidation } from "../utils/notifications";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamsList } from "../interfaces/navigation/navigationParamsList.interface";
 import RepairDetailFeedbackView from "../views/RepairDetailView/RepairDetailFeedbackView";
@@ -42,7 +42,10 @@ const RepairDetailScreen: React.FC = () => {
   const { t } = useTranslation();
   const { colorTheme } = useTheme();
   const { showToast } = useToastMessage();
-  const { repairId } = route.params as { repairId: string };
+  const { repairId, notificationId } = route.params as {
+    repairId: string;
+    notificationId?: number;
+  };
   const { user } = useAuth();
   const [accepting, setAccepting] = useState(false);
 
@@ -84,11 +87,20 @@ const RepairDetailScreen: React.FC = () => {
   const onFetchRepairsById = useCallback(async () => {
     try {
       await dispatch(fetchRepairById(repairId));
-      await dispatch(markNotificationAsRead(Number(repairId)));
+      // Mark notification as read if notificationId is provided
+      if (notificationId) {
+        const success = await markNotificationAsReadWithValidation(
+          dispatch,
+          notificationId
+        );
+        if (!success) {
+          console.warn("Failed to mark notification as read");
+        }
+      }
     } catch (err) {
       console.error("Failed to fetch repair details:", err);
     }
-  }, [dispatch, repairId]);
+  }, [dispatch, repairId, notificationId]);
 
   const handleAcceptWork = useCallback(async (id: string, text: string) => {
     setAccepting(true);
@@ -204,6 +216,12 @@ const RepairDetailScreen: React.FC = () => {
                       {repairDetail.feedback?.rating}/5
                     </Text>
                   )}
+                  {repairDetail.has_feedback === 1 &&
+                    !repairDetail.feedback?.rating && (
+                      <Text fontSize="sm" color={colorTheme.colors.text} italic>
+                        {t("COMMON.FEEDBACK_SUBMITTED")}
+                      </Text>
+                    )}
                   <Text
                     color={statusItem.color}
                     fontSize="2xl"
@@ -280,9 +298,7 @@ const RepairDetailScreen: React.FC = () => {
 
                 {repairDetail.status === "feedback" &&
                   repairDetail.feedback?.rating && (
-                    <RepairDetailFeedbackInfoView
-                      repairDetail={repairDetail}
-                    />
+                    <RepairDetailFeedbackInfoView repairDetail={repairDetail} />
                   )}
               </VStack>
             )}

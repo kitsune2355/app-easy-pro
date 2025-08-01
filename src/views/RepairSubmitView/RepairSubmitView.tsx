@@ -7,7 +7,10 @@ import { useTranslation } from "react-i18next";
 import { dayJs } from "../../config/dayJs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { fetchJobTypeById, fetchServiceTypeById } from "../../service/repairService";
+import {
+  fetchJobTypeById,
+  fetchServiceTypeById,
+} from "../../service/repairService";
 
 interface RepairSubmitViewProps {
   images: string[];
@@ -28,7 +31,9 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
   const { colorTheme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { serviceType: serviceTypeData, jobType: jobTypeData } = useSelector((state: RootState) => state.repair);
+  const { selectedServiceType, selectedJobType } = useSelector(
+    (state: RootState) => state.repair
+  );
 
   useEffect(() => {
     dispatch(fetchServiceTypeById(serviceType));
@@ -77,14 +82,18 @@ const RepairSubmitView: React.FC<RepairSubmitViewProps> = ({
         <Text fontSize="xs" color="gray.500">
           {t("FORM.REPAIR_SUBMIT.SOLUTION_SERVICE_TYPE")}
         </Text>
-        <Text color={colorTheme.colors.text}>{serviceTypeData[0].rpg_name}</Text>
+        <Text color={colorTheme.colors.text}>
+          {selectedServiceType?.rpg_name || "-"}
+        </Text>
       </HStack>
 
       <HStack justifyContent="space-between">
         <Text fontSize="xs" color="gray.500">
           {t("FORM.REPAIR_SUBMIT.SOLUTION_JOB_TYPE")}
         </Text>
-        <Text color={colorTheme.colors.text}>{jobTypeData[0].rps_name}</Text>
+        <Text color={colorTheme.colors.text}>
+          {selectedJobType?.rps_name || "-"}
+        </Text>
       </HStack>
 
       <Text bold color={colorTheme.colors.text}>
